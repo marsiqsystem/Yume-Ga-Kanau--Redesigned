@@ -1,0 +1,5 @@
+services:
+  - type: web
+    name: yume-ga-kanau-dark
+    runtime: static
+    staticPublishPath: .
