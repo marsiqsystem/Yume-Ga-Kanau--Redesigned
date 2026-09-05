@@ -999,7 +999,11 @@ window.__resources = {
     #why-ygk .wy-cards{grid-template-columns:1fr}
     #why-ygk .wy-torii{display:none}
     #why-ygk .wy-bloom{width:42%}
-    #why-ygk .wy-inner{padding:clamp(112px,30vw,150px) 20px 56px}
+    /* Phones only. The old clamp(112px,30vw,150px) was sized for a much larger branch
+       than the one that renders at this breakpoint, leaving a band of empty navy between
+       this section and the one above it. Measured against the rendered branch across
+       360-620px, this keeps a comfortable gap under it without the dead space. */
+    #why-ygk .wy-inner{padding:clamp(72px,20vw,130px) 20px 56px}
   }
   @media (prefers-reduced-motion:reduce){
     #why-ygk .wy-l,#why-ygk .wy-left > *,#why-ygk .wy-card{transition:opacity .3s linear !important;transform:none !important}
@@ -1452,10 +1456,36 @@ window.__resources = {
     #meet-sensei .rv-h2{font-size:clamp(22px,5.6vw,30px);margin-bottom:16px}
     #meet-sensei .rv-rule{width:52px;height:3px;margin-bottom:16px}
     #meet-sensei .rv-sub{font-size:14.5px;line-height:1.7;margin-bottom:26px}
-    /* stacked: all seven simply follow each other, so the slider and its pager go away */
-    #meet-sensei .rv-cards{display:block;overflow:visible}
-    #meet-sensei .rv-track{display:grid;grid-auto-flow:row;grid-auto-columns:auto;
-      grid-template-columns:1fr;gap:16px;height:auto;transform:none !important}
+    /* Swipeable row, not a stack. Seven full-width cards one under the other made this
+       section endless to scroll past; as a horizontal row the reader swipes through them
+       at their own pace and the page stays short.
+
+       The track keeps its desktop grid-auto-flow:column, so only the column width and the
+       transform change. Scrolling is native (no JS): scroll-snap parks each card at the
+       same left edge as the heading above it, and scroll-padding matches the 20px gutter
+       so a snapped card lines up with the copy rather than the screen edge.
+
+       The row bleeds 20px past .rv-canvas's gutter on both sides (negative margin plus
+       equal padding) so cards travel to the true screen edge, and a mask fades them out
+       there. The mask is used rather than a gradient overlay because the band behind is
+       itself a gradient — a solid overlay would show as a lighter patch against it.
+
+       Card width is 82vw minus the gutter, which leaves the next card just visible: the
+       cheapest possible hint that the row moves. */
+    #meet-sensei .rv-cards{display:block;
+      overflow-x:auto;overflow-y:hidden;
+      scroll-snap-type:x mandatory;scroll-padding-inline:20px;
+      overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
+      margin-inline:-20px;padding-inline:20px;padding-block:2px;
+      scrollbar-width:none;
+      -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 20px,#000 calc(100% - 34px),transparent 100%);
+      mask-image:linear-gradient(90deg,transparent 0,#000 20px,#000 calc(100% - 34px),transparent 100%)}
+    #meet-sensei .rv-cards::-webkit-scrollbar{display:none}
+    #meet-sensei .rv-track{grid-auto-flow:column;grid-auto-columns:min(82vw,340px);
+      grid-template-columns:none;gap:14px;height:auto;transform:none !important;
+      /* the row must not stretch to the container, or the columns collapse */
+      width:max-content;align-items:stretch}
+    #meet-sensei .rv-card{scroll-snap-align:start}
     #meet-sensei .rv-pager{display:none}
     #meet-sensei .rv-card{padding:20px 18px;border-radius:14px}
     #meet-sensei .rv-top{margin-bottom:12px}
@@ -5177,5 +5207,79 @@ class Component extends DCLogic {
   new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
 })();
 </script>
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   Phone scrolling budget.
+
+   Measured on a 390px viewport before this block: 99 composited layers holding
+   about 61 MB of GPU texture, because 94 elements carried a permanent
+   `will-change: opacity, transform`. Every one of those is a one-shot entrance
+   fade — the hint is useful for the fraction of a second the transition runs and
+   pure cost forever after, and on a mid-range phone that much layer memory is
+   what makes scrolling stutter.
+
+   Two changes, both invisible:
+
+   1. Drop `will-change` on phones for the entrance-animation selectors. The
+      animations still play; the browser promotes them for the duration of the
+      transition on its own, which is what it does for every other transition on
+      the page. `.fq-inner` is deliberately excluded — that one is a continuous
+      scroll-driven parallax, the case will-change actually exists for.
+
+   2. `background-attachment: fixed` -> `scroll` on phones. A fixed background is
+      repainted against the viewport on every scroll frame, and the hero's is a
+      full-screen photo. iOS has never supported fixed attachment and already
+      renders it as `scroll`, so this only changes Android — and changes it to
+      what iPhone users have always seen.
+
+   Both are scoped to <=900px. Desktop keeps the fixed backgrounds, the parallax
+   and the promotion hints exactly as authored.
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  #four-stages .fs-l,
+  #four-stages .fs-head > *,
+  #four-stages .fs-curriculum,
+  #four-stages .fs-card,
+  #four-stages .fs-bi,
+  #why-ygk .wy-l,
+  #why-ygk .wy-veil,
+  #why-ygk .wy-left > *,
+  #why-ygk .wy-card,
+  #meet-sensei .sn-l, #meet-sensei .sn-eyebrow, #meet-sensei .sn-erule,
+  #meet-sensei .sn-h2, #meet-sensei .sn-sub, #meet-sensei .sn-photo,
+  #meet-sensei .sn-badge, #meet-sensei .sn-quote,
+  #meet-sensei .sn-name, #meet-sensei .sn-role, #meet-sensei .sn-stat,
+  #meet-sensei .sn-panel, #meet-sensei .sn-plabel, #meet-sensei .sn-pl1rule,
+  #meet-sensei .sn-ptext, #meet-sensei .sn-plist, #meet-sensei .sn-pquote,
+  #meet-sensei .rv-eyebrow, #meet-sensei .rv-h2, #meet-sensei .rv-rule,
+  #meet-sensei .rv-sub, #meet-sensei .rv-card, #meet-sensei .rv-pager,
+  #stage-cta .cta-card, #stage-cta .cta-scene, #stage-cta .cta-bloom,
+  #stage-cta .cta-eyebrow, #stage-cta .cta-rule, #stage-cta .cta-h2,
+  #stage-cta .cta-sub, #stage-cta .cta-feat, #stage-cta .cta-div,
+  #stage-cta .cta-btnwrap,
+  .ab-l,
+  #contact-body .cb-l {
+    will-change: auto !important;
+  }
+
+  /* 3. The seven review cards each ask the GPU to blur whatever is behind them on
+        every frame they move. Their background is all but opaque, so the blur never
+        actually shows: measured on a 390px viewport, turning it off changes the card
+        by at most 7/255 on a single channel and moves ZERO pixels by a visible amount.
+        The frosted panels that genuinely read as glass -- .wy-card over the lake photo,
+        and .fs-card -- are deliberately left alone. */
+  #meet-sensei .rv-card {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  #ygk-hero .hr-bg,
+  #ygk-hero .hr-scrim,
+  #about-page .ab-bg, #about-page .ab-scrim,
+  #contact-page .cp-bg, #contact-page .cp-scrim {
+    background-attachment: scroll !important;
+  }
+}
+</style>
 </body>
 </html>
