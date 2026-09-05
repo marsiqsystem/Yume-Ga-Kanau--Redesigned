@@ -5235,6 +5235,33 @@ class Component extends DCLogic {
    Both are scoped to <=900px. Desktop keeps the fixed backgrounds, the parallax
    and the promotion hints exactly as authored.
    ══════════════════════════════════════════════════════════════════════════ */
+/* On desktop #meet-sensei is a pinned stage: three canvases stacked in one grid cell,
+   and scroll progress adds .sn-p2 / .sn-p3 to cross-fade between them. Each phase rule
+   turns the two inactive canvases off with pointer-events:none so clicks fall through to
+   whichever one is showing.
+
+   Below 880px the pin is disabled and all three canvases are laid out one after another,
+   permanently visible. The phase classes are still applied by the script, though, and
+   `#meet-sensei.sn-p3 .rv-canvas` (0,2,0 + id) outranks the stacked-layout rule
+   `#meet-sensei .rv-canvas` (0,1,0 + id) — so from phase 3 onward the reviews inherited
+   pointer-events:none and stopped receiving touches while still being fully visible. The
+   stacked rule marks opacity and transform !important but not pointer-events, which is
+   why they looked fine and were simply inert: a swipe on the cards did nothing at all,
+   and the "Read full review" links could not be tapped.
+
+   The .fq-canvas is inert before phase 3 by the same mechanism, though in practice you
+   have reached phase 3 by the time it scrolls into view, so it worked. It is included
+   here for the same reason .sn-canvas is: on phones the phases are meaningless.
+
+   On phones every canvas is always on screen, so every canvas is always interactive. */
+@media (max-width: 880px) {
+  #meet-sensei .sn-canvas,
+  #meet-sensei .rv-canvas,
+  #meet-sensei .fq-canvas {
+    pointer-events: auto !important;
+  }
+}
+
 @media (max-width: 900px) {
   #four-stages .fs-l,
   #four-stages .fs-head > *,
