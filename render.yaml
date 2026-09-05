@@ -3,3 +3,17 @@ services:
     name: yume-ga-kanau-dark
     runtime: static
     staticPublishPath: .
+    headers:
+      # Static media: filenames are not content-hashed, so cache for 30 days
+      # rather than a year — a replaced image still reaches visitors in a month,
+      # and the edge revalidates in the background meanwhile.
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=2592000, stale-while-revalidate=86400
+      # Entry points must always be revalidated so a deploy is picked up at once.
+      - path: /index.html
+        name: Cache-Control
+        value: public, max-age=0, must-revalidate
+      - path: /support.js
+        name: Cache-Control
+        value: public, max-age=0, must-revalidate

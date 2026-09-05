@@ -3,6 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+/* Serve React from this site instead of unpkg.com.
+
+   support.js normally fetches react and react-dom from unpkg at page load and does not
+   mount anything until they arrive, so if unpkg is slow, blocked (school and office
+   networks, some regions) or unreachable, the visitor gets a permanently blank page.
+   The runtime already supports redirecting those fetches: it looks each CDN url up in
+   window.__resources first. The two files in assets/vendor/ are byte-identical to the
+   unpkg builds (verified against the runtime's own SRI hashes), so nothing about how the
+   page behaves changes — it just stops depending on a third-party server being up.
+
+   Anything not listed here still comes from the CDN, so this is safe to leave in place. */
+window.__resources = {
+  "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/vendor/react.production.min.js",
+  "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/vendor/react-dom.production.min.js"
+};
+</script>
+<link rel="preload" href="assets/vendor/react.production.min.js" as="script">
+<link rel="preload" href="assets/vendor/react-dom.production.min.js" as="script">
 <script src="./support.js"></script>
 </head>
 <body>
@@ -197,8 +216,24 @@
 
   /* Responsive */
   @media (max-width: 900px) {
-    #students-grid { grid-template-columns: 1fr !important; text-align: center; }
+    /* minmax(0,1fr), not 1fr: a plain 1fr track is minmax(auto,1fr), so the widest
+       item's min-content (the four-up stats bar, ~425px) pushed the column past the
+       screen and the section's overflow:hidden chopped the map, the stats and the
+       country cards off at the right edge on every phone. minmax(0,...) lets the
+       column shrink to the screen; min-width:0 does the same for the flex children,
+       which default to min-width:auto and refuse to shrink below their content. */
+    #students-grid { grid-template-columns: minmax(0, 1fr) !important; text-align: center; }
     #students-text-inner { align-items: center !important; }
+    #students-left, #students-text, #students-text-inner,
+    #students-left > div, .country-cards-col, .country-card { min-width: 0; }
+    #students-left p { max-width: 100%; }
+  }
+  @media (max-width: 620px) {
+    /* Four stats side by side do not fit a phone; they wrap two-up instead of being
+       squeezed. Same tiles, same styling — only the flow changes, and the vertical
+       hairlines between them are dropped because they no longer separate anything. */
+    .st-stats { flex-wrap: wrap; justify-content: center; gap: 16px 22px; }
+    .st-stats-div { display: none; }
   }
   @media (max-width: 540px) {
     .country-card { min-width: 100px; padding: 12px 16px; }
@@ -440,16 +475,16 @@
     </div>
     <div class="hr-art" style="position:relative;display:flex;justify-content:center;align-items:center;min-height:480px;overflow:hidden;contain:paint">
       <div style="position:absolute;width:min(528px,92vw);height:min(528px,92vw);border-radius:50%;background:radial-gradient(circle,rgba(196,8,46,0.30),rgba(16,23,51,0) 68%)"></div>
-      <!-- H-emblem.png: assets/yumega.png with its flat #1C223C plate flood-filled away and
+      <!-- H-emblem.png: assets/yumega.webp with its flat #1C223C plate flood-filled away and
            cut to ink bounds (604x720). No drop-shadow — it read as a cut edge under the art.
            The old separate gold ring is gone; this artwork carries its own. -->
-      <img src="assets/H-emblem.png" alt="Yume Ga Kanau" style="position:relative;width:min(480px,84vw);object-fit:contain;animation:ygkFloat 9s ease-in-out infinite" />
+      <img src="assets/H-emblem.webp" alt="Yume Ga Kanau" style="position:relative;width:min(480px,84vw);object-fit:contain;animation:ygkFloat 9s ease-in-out infinite" />
     </div>
   </div>
   </div>
 
   <div id="students-section" style="position:relative">
-    <img src="assets/flower.png" alt="" style="position:absolute;top:-20px;right:-20px;width:min(480px, 40vw);pointer-events:none;z-index:0;opacity:0.9" />
+    <img src="assets/flower.webp" alt="" style="position:absolute;top:-20px;right:-20px;width:min(480px, 40vw);pointer-events:none;z-index:0;opacity:0.9" />
     
     <div id="students-grid" style="max-width:1280px;margin:0 auto;padding:clamp(36px,5vw,60px) 28px;display:grid;grid-template-columns:1.15fr 0.85fr;gap:clamp(24px,3vw,40px);align-items:start;position:relative;z-index:1">
       <!-- ── Left: Text + Map Video ── -->
@@ -475,11 +510,11 @@
                The clip is decorative, so the browser's hover overlay (picture-in-picture,
                cast, playback-rate) is suppressed and pointer events are dropped — without
                this that toolbar floats over the map whenever the cursor crosses it. -->
-          <video id="map-video" muted playsinline preload="auto" disablepictureinpicture
+          <video id="map-video" muted playsinline preload="none" disablepictureinpicture
                  disableremoteplayback controlslist="nodownload nofullscreen noremoteplayback noplaybackrate"
                  tabindex="-1" style="display:none;pointer-events:none">
-            <source src="assets/map-transition.mp4" type="video/mp4">
             <source src="assets/map-transition.webm" type="video/webm">
+            <source src="assets/map-transition.mp4" type="video/mp4">
           </video>
           <!-- Placeholder shown until video is provided -->
           <div id="map-placeholder" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center, rgba(24,33,68,1) 0%, rgba(13,19,42,1) 100%)">
@@ -524,7 +559,7 @@
         </div>
 
         <!-- New Stats Bar -->
-        <div style="display:flex;align-items:center;justify-content:space-between;background:linear-gradient(90deg, rgba(20,28,60,0.95), rgba(16,23,51,0.9));border-radius:10px;padding:16px 20px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.05),0 8px 20px rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.03)">
+        <div class="st-stats" style="display:flex;align-items:center;justify-content:space-between;background:linear-gradient(90deg, rgba(20,28,60,0.95), rgba(16,23,51,0.9));border-radius:10px;padding:16px 20px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.05),0 8px 20px rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.03)">
           <div style="display:flex;align-items:center;gap:10px">
             <div style="width:38px;height:38px;border-radius:50%;border:1px solid rgba(196,8,46,0.3);display:flex;align-items:center;justify-content:center;color:#C4082E">
                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 00-3-3.87"></path><path d="M16 3.13a4 4 0 010 7.75"></path></svg>
@@ -534,7 +569,7 @@
               <div style="font-size:10px;color:#8B95B6;margin-top:3px">Countries<br>Global Community</div>
             </div>
           </div>
-          <div style="width:1px;height:32px;background:rgba(255,255,255,0.06)"></div>
+          <div class="st-stats-div" style="width:1px;height:32px;background:rgba(255,255,255,0.06)"></div>
           <div style="display:flex;align-items:center;gap:10px">
             <div style="width:38px;height:38px;border-radius:50%;border:1px solid rgba(196,8,46,0.3);display:flex;align-items:center;justify-content:center;color:#C4082E">
                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 1.1 2.7 3 6 3s6-1.9 6-3v-5"></path></svg>
@@ -544,7 +579,7 @@
               <div style="font-size:10px;color:#8B95B6;margin-top:3px">Years of Teaching<br>Experience</div>
             </div>
           </div>
-          <div style="width:1px;height:32px;background:rgba(255,255,255,0.06)"></div>
+          <div class="st-stats-div" style="width:1px;height:32px;background:rgba(255,255,255,0.06)"></div>
           <div style="display:flex;align-items:center;gap:10px">
             <div style="width:38px;height:38px;border-radius:50%;border:1px solid rgba(196,8,46,0.3);display:flex;align-items:center;justify-content:center;color:#C4082E">
                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
@@ -554,7 +589,7 @@
               <div style="font-size:10px;color:#8B95B6;margin-top:3px">Student Success<br>Rate in JLPT</div>
             </div>
           </div>
-          <div style="width:1px;height:32px;background:rgba(255,255,255,0.06)"></div>
+          <div class="st-stats-div" style="width:1px;height:32px;background:rgba(255,255,255,0.06)"></div>
           <div style="display:flex;align-items:center;gap:10px">
             <div style="width:38px;height:38px;border-radius:50%;border:1px solid rgba(196,8,46,0.3);display:flex;align-items:center;justify-content:center;color:#C4082E">
                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 14v-3a8 8 0 0116 0v3m-2 4h-2a2 2 0 01-2-2v-4a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2zM6 18H4a2 2 0 01-2-2v-4a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2z"></path></svg>
@@ -594,46 +629,46 @@
             <!-- India -->
             <div class="country-card">
               <div style="display:flex;align-items:center;gap:20px;z-index:1">
-                <div class="flag-ring"><img src="assets/india.png" alt="India flag" /></div>
+                <div class="flag-ring"><img loading="lazy" decoding="async" src="assets/india.webp" alt="India flag" /></div>
                 <div style="display:flex;flex-direction:column;gap:4px">
                   <span class="country-name">INDIA</span>
                   <span style="font-size:12px;color:#8B95B6">Our largest community</span>
                 </div>
               </div>
-              <img src="assets/india side.png" alt="" style="position:absolute;right:75px;bottom:0;height:85%;opacity:0.85;z-index:0;object-fit:contain;object-position:center bottom;transform:translateX(50%)" />
+              <img loading="lazy" decoding="async" src="assets/india side.webp" alt="" style="position:absolute;right:75px;bottom:0;height:85%;opacity:0.85;z-index:0;object-fit:contain;object-position:center bottom;transform:translateX(50%)" />
             </div>
             <!-- UK -->
             <div class="country-card">
               <div style="display:flex;align-items:center;gap:20px;z-index:1">
-                <div class="flag-ring"><img src="assets/uk.png" alt="UK flag" /></div>
+                <div class="flag-ring"><img loading="lazy" decoding="async" src="assets/uk.webp" alt="UK flag" /></div>
                 <div style="display:flex;flex-direction:column;gap:4px">
                   <span class="country-name">THE UK</span>
                   <span style="font-size:12px;color:#8B95B6">Passionate Japanese learners</span>
                 </div>
               </div>
-              <img src="assets/uk side.png" alt="" style="position:absolute;right:75px;bottom:0;height:85%;opacity:0.85;z-index:0;object-fit:contain;object-position:center bottom;transform:translateX(50%)" />
+              <img loading="lazy" decoding="async" src="assets/uk side.webp" alt="" style="position:absolute;right:75px;bottom:0;height:85%;opacity:0.85;z-index:0;object-fit:contain;object-position:center bottom;transform:translateX(50%)" />
             </div>
             <!-- USA -->
             <div class="country-card">
               <div style="display:flex;align-items:center;gap:20px;z-index:1">
-                <div class="flag-ring"><img src="assets/sua.png" alt="USA flag" /></div>
+                <div class="flag-ring"><img loading="lazy" decoding="async" src="assets/sua.webp" alt="USA flag" /></div>
                 <div style="display:flex;flex-direction:column;gap:4px">
                   <span class="country-name">THE USA</span>
                   <span style="font-size:12px;color:#8B95B6">Achieving new milestones</span>
                 </div>
               </div>
-              <img src="assets/usa side.png" alt="" style="position:absolute;right:75px;bottom:0;height:85%;opacity:0.85;z-index:0;object-fit:contain;object-position:center bottom;transform:translateX(50%)" />
+              <img loading="lazy" decoding="async" src="assets/usa side.webp" alt="" style="position:absolute;right:75px;bottom:0;height:85%;opacity:0.85;z-index:0;object-fit:contain;object-position:center bottom;transform:translateX(50%)" />
             </div>
             <!-- Japan -->
             <div class="country-card">
               <div style="display:flex;align-items:center;gap:20px;z-index:1">
-                <div class="flag-ring"><img src="assets/japan.png" alt="Japan flag" /></div>
+                <div class="flag-ring"><img loading="lazy" decoding="async" src="assets/japan.webp" alt="Japan flag" /></div>
                 <div style="display:flex;flex-direction:column;gap:4px">
                   <span class="country-name">JAPAN</span>
                   <span style="font-size:12px;color:#8B95B6">Learning from the heart of Japan</span>
                 </div>
               </div>
-              <img src="assets/japan side.png" alt="" style="position:absolute;right:75px;bottom:0;height:85%;opacity:0.85;z-index:0;object-fit:contain;object-position:center bottom;transform:translateX(50%)" />
+              <img loading="lazy" decoding="async" src="assets/japan side.webp" alt="" style="position:absolute;right:75px;bottom:0;height:85%;opacity:0.85;z-index:0;object-fit:contain;object-position:center bottom;transform:translateX(50%)" />
             </div>
           </div>
           
@@ -646,7 +681,7 @@
               <div style="font-size:14px;font-weight:700;color:#FFFFFF;letter-spacing:0.05em;margin-bottom:4px">ONE MISSION. ONE FAMILY.</div>
               <div style="font-size:12px;color:#8B95B6;line-height:1.4;max-width:240px">No matter where you are, you're part of the <span style="color:#C4082E;font-weight:700">YUME GA KANAU</span> family.</div>
             </div>
-            <img src="assets/gate.png" alt="" style="position:absolute;right:24px;top:0;height:115%;opacity:0.85;z-index:0;object-fit:contain;object-position:right top" />
+            <img loading="lazy" decoding="async" src="assets/gate.webp" alt="" style="position:absolute;right:24px;top:0;height:115%;opacity:0.85;z-index:0;object-fit:contain;object-position:right top" />
           </div>
 
         </div>
@@ -801,20 +836,20 @@
   <div id="four-stages">
     <div class="fs-canvas">
       <div class="fs-scene" aria-hidden="true">
-        <img class="fs-l fs-base" src="assets/components/L-base.png" alt="" />
-        <img class="fs-l fs-mountain" src="assets/components/L-mountain.png" alt="" />
-        <img class="fs-l fs-torii fs-torii-1" src="assets/components/L-torii-1.png" alt="" />
-        <img class="fs-l fs-torii fs-torii-2" src="assets/components/L-torii-2.png" alt="" />
-        <img class="fs-l fs-torii fs-torii-3" src="assets/components/L-torii-3.png" alt="" />
-        <img class="fs-l fs-torii fs-torii-4" src="assets/components/L-torii-4.png" alt="" />
-        <img class="fs-l fs-bar-img" src="assets/components/L-bar.png" alt="" />
-        <img class="fs-l fs-bloom" src="assets/components/L-bloom.png" alt="" />
-        <img class="fs-l fs-circ fs-circle-1" src="assets/components/L-circle-1.png" alt="" />
-        <img class="fs-l fs-circ fs-circle-2" src="assets/components/L-circle-2.png" alt="" />
-        <img class="fs-l fs-circ fs-circle-3" src="assets/components/L-circle-3.png" alt="" />
-        <img class="fs-l fs-circ fs-circle-4" src="assets/components/L-circle-4.png" alt="" />
+        <img loading="lazy" decoding="async" class="fs-l fs-base" src="assets/components/L-base.webp" alt="" />
+        <img loading="lazy" decoding="async" class="fs-l fs-mountain" src="assets/components/L-mountain.webp" alt="" />
+        <img loading="lazy" decoding="async" class="fs-l fs-torii fs-torii-1" src="assets/components/L-torii-1.webp" alt="" />
+        <img loading="lazy" decoding="async" class="fs-l fs-torii fs-torii-2" src="assets/components/L-torii-2.webp" alt="" />
+        <img loading="lazy" decoding="async" class="fs-l fs-torii fs-torii-3" src="assets/components/L-torii-3.webp" alt="" />
+        <img loading="lazy" decoding="async" class="fs-l fs-torii fs-torii-4" src="assets/components/L-torii-4.webp" alt="" />
+        <img loading="lazy" decoding="async" class="fs-l fs-bar-img" src="assets/components/L-bar.webp" alt="" />
+        <img loading="lazy" decoding="async" class="fs-l fs-bloom" src="assets/components/L-bloom.webp" alt="" />
+        <img loading="lazy" decoding="async" class="fs-l fs-circ fs-circle-1" src="assets/components/L-circle-1.webp" alt="" />
+        <img loading="lazy" decoding="async" class="fs-l fs-circ fs-circle-2" src="assets/components/L-circle-2.webp" alt="" />
+        <img loading="lazy" decoding="async" class="fs-l fs-circ fs-circle-3" src="assets/components/L-circle-3.webp" alt="" />
+        <img loading="lazy" decoding="async" class="fs-l fs-circ fs-circle-4" src="assets/components/L-circle-4.webp" alt="" />
       </div>
-      <img class="fs-bg-mobile" src="assets/stages-bg.png" alt="Four torii gates on a stone path across a lake, leading toward Mount Fuji at night" />
+      <img loading="lazy" decoding="async" class="fs-bg-mobile" src="assets/stages-bg.webp" alt="Four torii gates on a stone path across a lake, leading toward Mount Fuji at night" />
       <div class="fs-layer">
         <div class="fs-head">
           <div class="fs-eyebrow">The Four Stages · 4つのステージ</div>
@@ -976,11 +1011,11 @@
   </style>
   <div id="why-ygk">
     <div class="wy-scene" aria-hidden="true">
-      <img class="wy-l wy-bg" src="assets/bg.jpg" alt="" />
+      <img loading="lazy" decoding="async" class="wy-l wy-bg" src="assets/bg.webp" alt="" />
       <div class="wy-scrim"></div>
       <div class="wy-topfade"></div>
-      <img class="wy-l wy-bloom" src="assets/bloom.png" alt="" />
-      <div class="wy-anchor"><img class="wy-l wy-torii" src="assets/tiro%20.png" alt="" /></div>
+      <img loading="lazy" decoding="async" class="wy-l wy-bloom" src="assets/bloom.webp" alt="" />
+      <div class="wy-anchor"><img loading="lazy" decoding="async" class="wy-l wy-torii" src="assets/tiro%20.webp" alt="" /></div>
       <div class="wy-veil"></div>
     </div>
     <div class="wy-inner">
@@ -993,7 +1028,7 @@
       </div>
       <div class="wy-cards">
         <div class="wy-card">
-          <div class="wy-ic"><img src="assets/components/icon-doubt.png" alt="" /></div>
+          <div class="wy-ic"><img loading="lazy" decoding="async" src="assets/components/icon-doubt.webp" alt="" /></div>
           <div>
             <div class="wy-ja">質問対応</div>
             <h3>Dedicated doubt-solving</h3>
@@ -1002,7 +1037,7 @@
           </div>
         </div>
         <div class="wy-card">
-          <div class="wy-ic"><img src="assets/components/icon-exam.png" alt="" /></div>
+          <div class="wy-ic"><img loading="lazy" decoding="async" src="assets/components/icon-exam.webp" alt="" /></div>
           <div>
             <div class="wy-ja">合格対策</div>
             <h3>High-yield exam strategy</h3>
@@ -1011,7 +1046,7 @@
           </div>
         </div>
         <div class="wy-card">
-          <div class="wy-ic"><img src="assets/components/icon-speak.png" alt="" /></div>
+          <div class="wy-ic"><img loading="lazy" decoding="async" src="assets/components/icon-speak.webp" alt="" /></div>
           <div>
             <div class="wy-ja">会話実践</div>
             <h3>Speaking from day one</h3>
@@ -1020,7 +1055,7 @@
           </div>
         </div>
         <div class="wy-card">
-          <div class="wy-ic"><img src="assets/components/icon-culture.png" alt="" /></div>
+          <div class="wy-ic"><img loading="lazy" decoding="async" src="assets/components/icon-culture.webp" alt="" /></div>
           <div>
             <div class="wy-ja">文化理解</div>
             <h3>Culture, not just syllabus</h3>
@@ -1628,55 +1663,55 @@
   <div id="meet-sensei">
    <div class="sn-pin">
     <div class="fq-deco" aria-hidden="true"><div class="fq-decoin">
-      <img class="fq-side" src="assets/faq/F-side.png" alt="" />
-      <img class="fq-p fq-p1" src="assets/faq/F-petal-1.png" alt="" />
-      <img class="fq-p fq-p2" src="assets/faq/F-petal-2.png" alt="" />
-      <img class="fq-p fq-p3" src="assets/faq/F-petal-3.png" alt="" />
-      <img class="fq-p fq-p4" src="assets/faq/F-petal-4.png" alt="" />
-      <img class="fq-bloom" src="assets/faq/F-bloom.png" alt="" />
+      <img loading="lazy" decoding="async" class="fq-side" src="assets/faq/F-side.webp" alt="" />
+      <img loading="lazy" decoding="async" class="fq-p fq-p1" src="assets/faq/F-petal-1.webp" alt="" />
+      <img loading="lazy" decoding="async" class="fq-p fq-p2" src="assets/faq/F-petal-2.webp" alt="" />
+      <img loading="lazy" decoding="async" class="fq-p fq-p3" src="assets/faq/F-petal-3.webp" alt="" />
+      <img loading="lazy" decoding="async" class="fq-p fq-p4" src="assets/faq/F-petal-4.webp" alt="" />
+      <img loading="lazy" decoding="async" class="fq-bloom" src="assets/faq/F-bloom.webp" alt="" />
     </div></div>
-    <img class="sn-l sn-scene" src="assets/sensei%20comp/S-scene.png" alt="" aria-hidden="true" />
+    <img loading="lazy" decoding="async" class="sn-l sn-scene" src="assets/sensei%20comp/S-scene.webp" alt="" aria-hidden="true" />
     <div class="sn-canvas">
-      <img class="sn-l sn-cloud1" src="assets/sensei%20comp/S-cloud.png" alt="" aria-hidden="true" />
-      <img class="sn-l sn-cloud2" src="assets/sensei%20comp/S-cloud.png" alt="" aria-hidden="true" />
-      <img class="sn-l sn-cloud3" src="assets/sensei%20comp/S-cloud.png" alt="" aria-hidden="true" />
-      <img class="sn-l sn-petal1" src="assets/sensei%20comp/S-petal-a.png" alt="" aria-hidden="true" />
-      <img class="sn-l sn-petal2" src="assets/sensei%20comp/S-petal-b.png" alt="" aria-hidden="true" />
+      <img loading="lazy" decoding="async" class="sn-l sn-cloud1" src="assets/sensei%20comp/S-cloud.webp" alt="" aria-hidden="true" />
+      <img loading="lazy" decoding="async" class="sn-l sn-cloud2" src="assets/sensei%20comp/S-cloud.webp" alt="" aria-hidden="true" />
+      <img loading="lazy" decoding="async" class="sn-l sn-cloud3" src="assets/sensei%20comp/S-cloud.webp" alt="" aria-hidden="true" />
+      <img loading="lazy" decoding="async" class="sn-l sn-petal1" src="assets/sensei%20comp/S-petal-a.webp" alt="" aria-hidden="true" />
+      <img loading="lazy" decoding="async" class="sn-l sn-petal2" src="assets/sensei%20comp/S-petal-b.webp" alt="" aria-hidden="true" />
 
-      <div class="sn-eyebrow">Meet Your Sensei <img src="assets/sensei%20comp/S-blossom-b.png" alt="" /></div>
+      <div class="sn-eyebrow">Meet Your Sensei <img loading="lazy" decoding="async" src="assets/sensei%20comp/S-blossom-b.webp" alt="" /></div>
       <div class="sn-erule"></div>
       <h2 class="sn-h2">Guiding your journey<br />with experience and care.</h2>
       <p class="sn-sub">More than a teacher &mdash; a fellow learner,<br />cheering for your progress.</p>
 
-      <div class="sn-flower sn-flower-l" aria-hidden="true"><img src="assets/sensei%20comp/moving%20flower.png" alt="" /></div>
-      <div class="sn-flower sn-flower-r" aria-hidden="true"><span class="sn-fmirror"><img src="assets/sensei%20comp/moving%20flower.png" alt="" /></span></div>
+      <div class="sn-flower sn-flower-l" aria-hidden="true"><img src="assets/sensei%20comp/moving%20flower.webp" alt="" /></div>
+      <div class="sn-flower sn-flower-r" aria-hidden="true"><span class="sn-fmirror"><img src="assets/sensei%20comp/moving%20flower.webp" alt="" /></span></div>
 
-      <div class="sn-photo"><img src="assets/sensei%20comp/sensei.jpeg" alt="Parveen Kaur Sensei" /></div>
-      <div class="sn-badge"><img src="assets/sensei%20comp/S-blossom-b.png" alt="" />Parveen Kaur Sensei</div>
+      <div class="sn-photo"><img loading="lazy" decoding="async" src="assets/sensei%20comp/sensei.webp" alt="Parveen Kaur Sensei" /></div>
+      <div class="sn-badge"><img loading="lazy" decoding="async" src="assets/sensei%20comp/S-blossom-b.webp" alt="" />Parveen Kaur Sensei</div>
 
-      <img class="sn-l sn-qmark" src="assets/sensei%20comp/S-quote.png" alt="" aria-hidden="true" />
+      <img loading="lazy" decoding="async" class="sn-l sn-qmark" src="assets/sensei%20comp/S-quote.webp" alt="" aria-hidden="true" />
       <p class="sn-quote">In our classes, every mistake is a step forward, every question is welcomed, and every milestone is celebrated. Let&rsquo;s make your dream of mastering Japanese come true together.</p>
       <div class="sn-name">Parveen Kaur Sensei &middot; 先生</div>
       <div class="sn-role">Founder &amp; Lead Instructor</div>
 
-      <div class="sn-stat sn-s1"><img src="assets/sensei%20comp/S-ic-jlpt.png" alt="" /><b>JLPT Expertise</b><p>Specialized in N5&ndash;N2 teaching &amp; exam strategies</p></div>
-      <div class="sn-stat sn-s2"><img src="assets/sensei%20comp/S-ic-exp.png" alt="" /><b>Experience</b><p>5+ years of teaching Japanese learners</p></div>
-      <div class="sn-stat sn-s3"><img src="assets/sensei%20comp/S-ic-students.png" alt="" /><b>Students Guided</b><p>1000+ students across the world</p></div>
-      <div class="sn-stat sn-s4"><img src="assets/sensei%20comp/S-ic-heart.png" alt="" /><b>Teaching Philosophy</b><p>Patient, supportive and focused on real progress</p></div>
+      <div class="sn-stat sn-s1"><img loading="lazy" decoding="async" src="assets/sensei%20comp/S-ic-jlpt.webp" alt="" /><b>JLPT Expertise</b><p>Specialized in N5&ndash;N2 teaching &amp; exam strategies</p></div>
+      <div class="sn-stat sn-s2"><img loading="lazy" decoding="async" src="assets/sensei%20comp/S-ic-exp.webp" alt="" /><b>Experience</b><p>5+ years of teaching Japanese learners</p></div>
+      <div class="sn-stat sn-s3"><img loading="lazy" decoding="async" src="assets/sensei%20comp/S-ic-students.webp" alt="" /><b>Students Guided</b><p>1000+ students across the world</p></div>
+      <div class="sn-stat sn-s4"><img loading="lazy" decoding="async" src="assets/sensei%20comp/S-ic-heart.webp" alt="" /><b>Teaching Philosophy</b><p>Patient, supportive and focused on real progress</p></div>
 
       <div class="sn-panel"><span class="sn-pdiv sn-pd1"></span><span class="sn-pdiv sn-pd2"></span></div>
-      <img class="sn-l sn-pflower1" src="assets/sensei%20comp/S-blossom-a.png" alt="" aria-hidden="true" />
-      <img class="sn-l sn-pflower2" src="assets/sensei%20comp/S-blossom-a.png" alt="" aria-hidden="true" />
+      <img loading="lazy" decoding="async" class="sn-l sn-pflower1" src="assets/sensei%20comp/S-blossom-a.webp" alt="" aria-hidden="true" />
+      <img loading="lazy" decoding="async" class="sn-l sn-pflower2" src="assets/sensei%20comp/S-blossom-a.webp" alt="" aria-hidden="true" />
       <div class="sn-plabel sn-pl1">My Philosophy</div>
       <div class="sn-pl1rule"></div>
       <p class="sn-ptext">Language is more than words &mdash;<br />it&rsquo;s connection.<br />I focus on building confidence, clarity<br />and consistency so you can use Japanese<br />naturally in real life.</p>
       <div class="sn-plabel sn-pl2">Beyond the Classroom</div>
       <div class="sn-plist">
-        <div class="sn-pli"><img src="assets/sensei%20comp/S-ic-book.png" alt="" /><span>Loves Japanese literature and culture</span></div>
-        <div class="sn-pli"><img src="assets/sensei%20comp/S-ic-cup.png" alt="" /><span>Enjoys calligraphy and journaling</span></div>
-        <div class="sn-pli"><img src="assets/sensei%20comp/S-ic-plane.png" alt="" /><span>Explores Japan whenever possible</span></div>
+        <div class="sn-pli"><img loading="lazy" decoding="async" src="assets/sensei%20comp/S-ic-book.webp" alt="" /><span>Loves Japanese literature and culture</span></div>
+        <div class="sn-pli"><img loading="lazy" decoding="async" src="assets/sensei%20comp/S-ic-cup.webp" alt="" /><span>Enjoys calligraphy and journaling</span></div>
+        <div class="sn-pli"><img loading="lazy" decoding="async" src="assets/sensei%20comp/S-ic-plane.webp" alt="" /><span>Explores Japan whenever possible</span></div>
       </div>
-      <img class="sn-l sn-pq" src="assets/sensei%20comp/S-petal-soft.png" alt="" aria-hidden="true" />
+      <img loading="lazy" decoding="async" class="sn-l sn-pq" src="assets/sensei%20comp/S-petal-soft.webp" alt="" aria-hidden="true" />
       <p class="sn-pquote">Your effort today builds the fluency of tomorrow.</p>
     </div>
     <div class="rv-canvas">
@@ -1690,112 +1725,112 @@
        <div class="rv-track">
         <div class="rv-card" data-rvi="0" role="button" tabindex="0" aria-label="Read the full review">
           <div class="rv-top">
-            <img class="rv-qm" src="assets/review%20page/S-rv-quote.png" alt="" aria-hidden="true" />
+            <img loading="lazy" decoding="async" class="rv-qm" src="assets/review%20page/S-rv-quote.webp" alt="" aria-hidden="true" />
             <div class="rv-stars" aria-label="Rated 5 out of 5"><span aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div>
           </div>
           <p>You are kind, friendly and patient, and always motivated me to keep improving. Your teaching style makes even the difficult topics easy to understand.</p>
           <span class="rv-more">Read full review <span aria-hidden="true">&rarr;</span></span>
           <div class="rv-foot">
-            <img class="rv-av" src="assets/reviews/rv-charu.webp" alt="Charu Pawar" />
+            <img loading="lazy" decoding="async" class="rv-av" src="assets/reviews/rv-charu.webp" alt="Charu Pawar" />
             <div>
               <b>Charu Pawar</b>
-              <span class="rv-loc"><img src="assets/review%20page/S-flag-in.png" alt="" />New Delhi, India</span>
+              <span class="rv-loc"><img loading="lazy" decoding="async" src="assets/review%20page/S-flag-in.webp" alt="" />New Delhi, India</span>
               <span class="rv-st">JLPT N5</span>
             </div>
           </div>
         </div>
         <div class="rv-card" data-rvi="1" role="button" tabindex="0" aria-label="Read the full review">
           <div class="rv-top">
-            <img class="rv-qm" src="assets/review%20page/S-rv-quote.png" alt="" aria-hidden="true" />
+            <img loading="lazy" decoding="async" class="rv-qm" src="assets/review%20page/S-rv-quote.webp" alt="" aria-hidden="true" />
             <div class="rv-stars" aria-label="Rated 5 out of 5"><span aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div>
           </div>
           <p>I used to just memorise grammar patterns without really getting them &mdash; you&rsquo;ve taught me in a way that actually sticks. I&rsquo;d recommend you to anyone trying to clear N2.</p>
           <span class="rv-more">Read full review <span aria-hidden="true">&rarr;</span></span>
           <div class="rv-foot">
-            <img class="rv-av" src="assets/reviews/rv-amaan.webp" alt="Amaan Riaz" />
+            <img loading="lazy" decoding="async" class="rv-av" src="assets/reviews/rv-amaan.webp" alt="Amaan Riaz" />
             <div>
               <b>Amaan Riaz</b>
-              <span class="rv-loc"><img src="assets/review%20page/S-flag-in.png" alt="" /><img src="assets/review%20page/S-flag-jp.png" alt="" />New Delhi &middot; Japan</span>
+              <span class="rv-loc"><img loading="lazy" decoding="async" src="assets/review%20page/S-flag-in.webp" alt="" /><img loading="lazy" decoding="async" src="assets/review%20page/S-flag-jp.webp" alt="" />New Delhi &middot; Japan</span>
               <span class="rv-st">JLPT N2</span>
             </div>
           </div>
         </div>
         <div class="rv-card" data-rvi="2" role="button" tabindex="0" aria-label="Read the full review">
           <div class="rv-top">
-            <img class="rv-qm" src="assets/review%20page/S-rv-quote.png" alt="" aria-hidden="true" />
+            <img loading="lazy" decoding="async" class="rv-qm" src="assets/review%20page/S-rv-quote.webp" alt="" aria-hidden="true" />
             <div class="rv-stars" aria-label="Rated 5 out of 5"><span aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div>
           </div>
           <p>I especially loved the way you explained the stories and the logic behind each kanji &mdash; it made learning so much more interesting and easier to remember.</p>
           <span class="rv-more">Read full review <span aria-hidden="true">&rarr;</span></span>
           <div class="rv-foot">
-            <img class="rv-av" src="assets/reviews/rv-priyanshu.webp" alt="Priyanshu Garg" />
+            <img loading="lazy" decoding="async" class="rv-av" src="assets/reviews/rv-priyanshu.webp" alt="Priyanshu Garg" />
             <div>
               <b>Priyanshu Garg</b>
-              <span class="rv-loc"><img src="assets/review%20page/S-flag-in.png" alt="" />New Delhi, India</span>
+              <span class="rv-loc"><img loading="lazy" decoding="async" src="assets/review%20page/S-flag-in.webp" alt="" />New Delhi, India</span>
               <span class="rv-st">JLPT N4</span>
             </div>
           </div>
         </div>
         <div class="rv-card" data-rvi="3" role="button" tabindex="0" aria-label="Read the full review">
           <div class="rv-top">
-            <img class="rv-qm" src="assets/review%20page/S-rv-quote.png" alt="" aria-hidden="true" />
+            <img loading="lazy" decoding="async" class="rv-qm" src="assets/review%20page/S-rv-quote.webp" alt="" aria-hidden="true" />
             <div class="rv-stars" aria-label="Rated 5 out of 5"><span aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div>
           </div>
           <p>You explain every lesson clearly and make learning enjoyable. Whenever we have questions you help us with a smile and make sure everyone understands the topic.</p>
           <span class="rv-more">Read full review <span aria-hidden="true">&rarr;</span></span>
           <div class="rv-foot">
-            <img class="rv-av" src="assets/reviews/rv-shreya.webp" alt="Shreya Suman" />
+            <img loading="lazy" decoding="async" class="rv-av" src="assets/reviews/rv-shreya.webp" alt="Shreya Suman" />
             <div>
               <b>Shreya Suman</b>
-              <span class="rv-loc"><img src="assets/review%20page/S-flag-jp.png" alt="" />Japan</span>
+              <span class="rv-loc"><img loading="lazy" decoding="async" src="assets/review%20page/S-flag-jp.webp" alt="" />Japan</span>
               <span class="rv-st">JLPT N5</span>
             </div>
           </div>
         </div>
         <div class="rv-card" data-rvi="4" role="button" tabindex="0" aria-label="Read the full review">
           <div class="rv-top">
-            <img class="rv-qm" src="assets/review%20page/S-rv-quote.png" alt="" aria-hidden="true" />
+            <img loading="lazy" decoding="async" class="rv-qm" src="assets/review%20page/S-rv-quote.webp" alt="" aria-hidden="true" />
             <div class="rv-stars" aria-label="Rated 5 out of 5"><span aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div>
           </div>
           <p>Her teaching is clear, patient and engaging, and she puts a lot of effort into making sure every student understands the lesson. My Japanese has improved significantly.</p>
           <span class="rv-more">Read full review <span aria-hidden="true">&rarr;</span></span>
           <div class="rv-foot">
-            <img class="rv-av" src="assets/reviews/rv-preethi.webp" alt="M. Preethi" />
+            <img loading="lazy" decoding="async" class="rv-av" src="assets/reviews/rv-preethi.webp" alt="M. Preethi" />
             <div>
               <b>M. Preethi</b>
-              <span class="rv-loc"><img src="assets/review%20page/S-flag-in.png" alt="" />Tamil Nadu, India</span>
+              <span class="rv-loc"><img loading="lazy" decoding="async" src="assets/review%20page/S-flag-in.webp" alt="" />Tamil Nadu, India</span>
               <span class="rv-st">JLPT N3</span>
             </div>
           </div>
         </div>
         <div class="rv-card" data-rvi="5" role="button" tabindex="0" aria-label="Read the full review">
           <div class="rv-top">
-            <img class="rv-qm" src="assets/review%20page/S-rv-quote.png" alt="" aria-hidden="true" />
+            <img loading="lazy" decoding="async" class="rv-qm" src="assets/review%20page/S-rv-quote.webp" alt="" aria-hidden="true" />
             <div class="rv-stars" aria-label="Rated 5 out of 5"><span aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div>
           </div>
           <p>You are one of the kindest, most humble and patient teachers I have ever met, and your teaching style makes even difficult things feel simple. &#31169;&#12398;&#22823;&#22909;&#12365;&#12394;&#20808;&#29983;</p>
           <span class="rv-more">Read full review <span aria-hidden="true">&rarr;</span></span>
           <div class="rv-foot">
-            <img class="rv-av" src="assets/reviews/rv-jaskiran.webp" alt="Jaskiran Kaur" />
+            <img loading="lazy" decoding="async" class="rv-av" src="assets/reviews/rv-jaskiran.webp" alt="Jaskiran Kaur" />
             <div>
               <b>Jaskiran Kaur</b>
-              <span class="rv-loc"><img src="assets/review%20page/S-flag-in.png" alt="" />New Delhi, India</span>
+              <span class="rv-loc"><img loading="lazy" decoding="async" src="assets/review%20page/S-flag-in.webp" alt="" />New Delhi, India</span>
               <span class="rv-st">JLPT N4</span>
             </div>
           </div>
         </div>
         <div class="rv-card" data-rvi="6" role="button" tabindex="0" aria-label="Read the full review">
           <div class="rv-top">
-            <img class="rv-qm" src="assets/review%20page/S-rv-quote.png" alt="" aria-hidden="true" />
+            <img loading="lazy" decoding="async" class="rv-qm" src="assets/review%20page/S-rv-quote.webp" alt="" aria-hidden="true" />
             <div class="rv-stars" aria-label="Rated 5 out of 5"><span aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div>
           </div>
           <p>I was weak even in N4, but you took me through a revision that made my base far firmer before N3. Your daily revision tests keep new kanji and vocab impossible to forget.</p>
           <span class="rv-more">Read full review <span aria-hidden="true">&rarr;</span></span>
           <div class="rv-foot">
-            <img class="rv-av" src="assets/reviews/rv-siddiquan.webp" alt="Siddiquan Jawaid" />
+            <img loading="lazy" decoding="async" class="rv-av" src="assets/reviews/rv-siddiquan.webp" alt="Siddiquan Jawaid" />
             <div>
               <b>Siddiquan Jawaid</b>
-              <span class="rv-loc"><img src="assets/review%20page/S-flag-in.png" alt="" />Kolkata, India</span>
+              <span class="rv-loc"><img loading="lazy" decoding="async" src="assets/review%20page/S-flag-in.webp" alt="" />Kolkata, India</span>
               <span class="rv-st">JLPT N3</span>
             </div>
           </div>
@@ -1821,34 +1856,34 @@
         <div class="fq-flow">
           <div class="fq-list">
           <div class="fq-row">
-            <div class="fq-q"><img src="assets/faq/F-ic-trial.png" alt="" aria-hidden="true" /><span>What happens in a trial class?</span><svg class="fq-chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9.5 12 15.5 18 9.5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="fq-q"><img loading="lazy" decoding="async" src="assets/faq/F-ic-trial.webp" alt="" aria-hidden="true" /><span>What happens in a trial class?</span><svg class="fq-chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9.5 12 15.5 18 9.5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <div class="fq-a"><div class="fq-ain"><p>In a free trial class, we assess your current Japanese level, introduce our interactive teaching methodology, and conduct a short live lesson. It&rsquo;s a great opportunity to experience the learning atmosphere, discuss your language goals, and ask Parveen Sensei any questions before enrolling.</p></div></div>
           </div>
           <div class="fq-row">
-            <div class="fq-q"><img src="assets/faq/F-ic-time.png" alt="" aria-hidden="true" /><span>How are classes scheduled across time zones?</span><svg class="fq-chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9.5 12 15.5 18 9.5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="fq-q"><img loading="lazy" decoding="async" src="assets/faq/F-ic-time.webp" alt="" aria-hidden="true" /><span>How are classes scheduled across time zones?</span><svg class="fq-chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9.5 12 15.5 18 9.5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <div class="fq-a"><div class="fq-ain"><p>We currently accommodate learners across multiple time zones, including India, the UK, and Japan. While scheduling depends on slot availability, we always do our best to manage and align batch timings based on student requirements wherever possible.</p></div></div>
           </div>
           <div class="fq-row fq-noans">
-            <div class="fq-q"><img src="assets/faq/F-ic-miss.png" alt="" aria-hidden="true" /><span>What if I miss a class?</span></div>
+            <div class="fq-q"><img loading="lazy" decoding="async" src="assets/faq/F-ic-miss.webp" alt="" aria-hidden="true" /><span>What if I miss a class?</span></div>
             <!-- TODO: answer for “What if I miss a class?” not supplied yet. To enable this row, drop the
                  markup below back in and remove the fq-noans class + restore the chevron:
                  <div class="fq-a"><div class="fq-ain"><p>ANSWER HERE</p></div></div> -->
           </div>
           <div class="fq-row">
-            <div class="fq-q"><img src="assets/faq/F-ic-books.png" alt="" aria-hidden="true" /><span>Do I need to buy separate textbooks/materials?</span><svg class="fq-chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9.5 12 15.5 18 9.5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="fq-q"><img loading="lazy" decoding="async" src="assets/faq/F-ic-books.webp" alt="" aria-hidden="true" /><span>Do I need to buy separate textbooks/materials?</span><svg class="fq-chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9.5 12 15.5 18 9.5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <div class="fq-a"><div class="fq-ain"><p>No separate purchases are required! We provide all essential study materials, including PDF handouts, custom Kanji workbooks, vocabulary lists, and practice tests, directly through your official batch WhatsApp group.</p></div></div>
           </div>
           <div class="fq-row">
-            <div class="fq-q"><img src="assets/faq/F-ic-refund.png" alt="" aria-hidden="true" /><span>What&rsquo;s your refund/cancellation policy?</span><svg class="fq-chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9.5 12 15.5 18 9.5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="fq-q"><img loading="lazy" decoding="async" src="assets/faq/F-ic-refund.webp" alt="" aria-hidden="true" /><span>What&rsquo;s your refund/cancellation policy?</span><svg class="fq-chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9.5 12 15.5 18 9.5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <div class="fq-a"><div class="fq-ain"><p>We strive to deliver complete satisfaction. Fee payments are non-refundable once a course batch begins, but if you face unforeseen circumstances, you may request to pause your enrollment or transfer to a future batch.</p></div></div>
           </div>
           <div class="fq-row">
-            <div class="fq-q"><img src="assets/faq/F-ic-switch.png" alt="" aria-hidden="true" /><span>Can I switch from group to 1-on-1 later?</span><svg class="fq-chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9.5 12 15.5 18 9.5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="fq-q"><img loading="lazy" decoding="async" src="assets/faq/F-ic-switch.webp" alt="" aria-hidden="true" /><span>Can I switch from group to 1-on-1 later?</span><svg class="fq-chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9.5 12 15.5 18 9.5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <div class="fq-a"><div class="fq-ain"><p>Yes, but with a few conditions. Since 1-on-1 coaching requires dedicated timing slots, switching depends on slot availability. Furthermore, if you are currently enrolled in a group batch for a specific level, you must complete that level with your group&mdash;you can only transition to 1-on-1 coaching when you start your next level. Please note that fee structures for 1-on-1 personalized classes differ from group batches.</p></div></div>
           </div>
           </div>
           <div class="fq-end">
-            <div class="fq-endic"><img src="assets/sensei%20comp/S-ic-exp.png" alt="" aria-hidden="true" /></div>
+            <div class="fq-endic"><img loading="lazy" decoding="async" src="assets/sensei%20comp/S-ic-exp.webp" alt="" aria-hidden="true" /></div>
             <b>Still have a question?</b>
             <p>We&rsquo;re happy to help! Reach out to us anytime.</p>
             <div class="fq-btn" onClick="{{ goContact }}">Contact Us <span>&rarr;</span></div>
@@ -1977,9 +2012,9 @@
   </style>
   <div id="stage-cta">
     <div class="cta-card">
-      <img class="cta-scene" src="assets/S-card-scene.png" alt="" aria-hidden="true" />
+      <img loading="lazy" decoding="async" class="cta-scene" src="assets/S-card-scene.webp" alt="" aria-hidden="true" />
       <div class="cta-veil"></div>
-      <img class="cta-bloom" src="assets/S-card-bloom.png" alt="" aria-hidden="true" />
+      <img loading="lazy" decoding="async" class="cta-bloom" src="assets/S-card-bloom.webp" alt="" aria-hidden="true" />
 
       <p class="cta-eyebrow">はじめましょう</p>
       <div class="cta-rule"></div>
@@ -2277,8 +2312,13 @@
   #about-sensei .as-grid{display:grid;grid-template-columns:340px 1fr;gap:clamp(30px,4vw,56px);
     align-items:start;margin-top:clamp(26px,3vw,40px)}
   #about-sensei .as-photo{position:relative}
-  #about-sensei .as-photo::before{content:"";position:absolute;inset:16px -16px -16px 16px;
-    border:1px solid rgba(217,162,75,.4);border-radius:14px}
+  /* The offset gold frame belongs to the PHOTO only. It used to stretch to the bottom of
+     .as-photo, which also contains the name block below the picture — so its left edge ran
+     down 16px inside the text, making the name and role look like they had spilled out of
+     the box. Ending it with the picture (aspect-ratio 3/4 matches the img exactly, so the
+     frame keeps its 16px right/bottom offset) leaves the name cleanly below the photo. */
+  #about-sensei .as-photo::before{content:"";position:absolute;inset:16px -16px auto 16px;
+    aspect-ratio:3/4;border:1px solid rgba(217,162,75,.4);border-radius:14px}
   #about-sensei .as-photo img{position:relative;width:100%;aspect-ratio:3/4;object-fit:cover;
     border-radius:14px;display:block;box-shadow:0 18px 46px rgba(0,3,16,.5)}
   #about-sensei .as-meta{position:relative;margin-top:26px;padding-top:18px;
@@ -2309,7 +2349,7 @@
     #about-name .an-grid,#about-vm .av-grid,#about-sensei .as-grid{grid-template-columns:1fr}
     #about-wins .aw-grid{grid-template-columns:1fr 1fr}
     #about-sensei .as-photo{max-width:340px}
-    #about-sensei .as-photo::before{inset:12px -12px -12px 12px}
+    #about-sensei .as-photo::before{inset:12px -12px auto 12px}
   }
   @media (max-width:620px){
     #about-wins .aw-grid{grid-template-columns:1fr}
@@ -2392,7 +2432,7 @@
       </div>
       <div class="as-grid">
         <div class="ab-l ab-l-r as-photo">
-          <img src="assets/sensei.jpeg" alt="Parveen Kaur Sensei" />
+          <img loading="lazy" decoding="async" src="assets/sensei.webp" alt="Parveen Kaur Sensei" />
           <div class="as-meta">
             <div class="k">先生 · SENSEI</div>
             <div class="n">Parveen Kaur</div>
@@ -2579,13 +2619,13 @@
   <div id="explore-hero">
     <div class="eh-scene" aria-hidden="true">
       <div class="eh-sky"></div>
-      <img class="eh-bg" src="assets/bg.jpg" alt="" />
+      <img loading="lazy" decoding="async" class="eh-bg" src="assets/bg.webp" alt="" />
       <div class="eh-glow"></div>
-      <img class="eh-branch" src="assets/faq/F-branch.png" alt="" />
-      <img class="eh-p eh-p1" src="assets/faq/F-petal-1.png" alt="" />
-      <img class="eh-p eh-p2" src="assets/faq/F-petal-2.png" alt="" />
-      <img class="eh-p eh-p3" src="assets/faq/F-petal-3.png" alt="" />
-      <img class="eh-p eh-p4" src="assets/faq/F-petal-4.png" alt="" />
+      <img loading="lazy" decoding="async" class="eh-branch" src="assets/faq/F-branch.webp" alt="" />
+      <img loading="lazy" decoding="async" class="eh-p eh-p1" src="assets/faq/F-petal-1.webp" alt="" />
+      <img loading="lazy" decoding="async" class="eh-p eh-p2" src="assets/faq/F-petal-2.webp" alt="" />
+      <img loading="lazy" decoding="async" class="eh-p eh-p3" src="assets/faq/F-petal-3.webp" alt="" />
+      <img loading="lazy" decoding="async" class="eh-p eh-p4" src="assets/faq/F-petal-4.webp" alt="" />
       <div class="eh-veil"></div>
     </div>
 
@@ -2741,10 +2781,10 @@
     <div class="ec-scene" aria-hidden="true">
       <div class="ec-glow ec-glow-a"></div>
       <div class="ec-glow ec-glow-b"></div>
-      <img class="ec-bloom" src="assets/faq/F-bloom.png" alt="" />
-      <img class="ec-p ec-p1" src="assets/faq/F-petal-2.png" alt="" />
-      <img class="ec-p ec-p2" src="assets/faq/F-petal-3.png" alt="" />
-      <img class="ec-p ec-p3" src="assets/faq/F-petal-1.png" alt="" />
+      <img loading="lazy" decoding="async" class="ec-bloom" src="assets/faq/F-bloom.webp" alt="" />
+      <img loading="lazy" decoding="async" class="ec-p ec-p1" src="assets/faq/F-petal-2.webp" alt="" />
+      <img loading="lazy" decoding="async" class="ec-p ec-p2" src="assets/faq/F-petal-3.webp" alt="" />
+      <img loading="lazy" decoding="async" class="ec-p ec-p3" src="assets/faq/F-petal-1.webp" alt="" />
     </div>
 
     <div class="ec-inner">
@@ -3081,7 +3121,7 @@
   <div id="explore-stages">
   <div class="ex-frame">
     <div class="ex-sky" aria-hidden="true"></div>
-    <img class="ex-bg" src="assets/explore%20page/stage%201/bg.png" alt="" aria-hidden="true" />
+    <img loading="lazy" decoding="async" class="ex-bg" src="assets/explore%20page/stage%201/bg.webp" alt="" aria-hidden="true" />
     <div class="ex-veil" aria-hidden="true"></div>
     <div class="ex-veil2" aria-hidden="true"></div>
 
@@ -3094,21 +3134,21 @@
     <div class="ex-curric" onClick="{{ goContact }}">See full curriculum →</div>
 
     <div class="ex-rail">
-      <div class="ex-node ex-n0" data-go="0"><span class="ex-ring"><img class="ex-gly" src="assets/explore/E-g1.png" alt="" /></span><span class="ex-nlab"><b>01</b><i>N5</i></span></div>
+      <div class="ex-node ex-n0" data-go="0"><span class="ex-ring"><img loading="lazy" decoding="async" class="ex-gly" src="assets/explore/E-g1.webp" alt="" /></span><span class="ex-nlab"><b>01</b><i>N5</i></span></div>
       <span class="ex-link"></span>
-      <div class="ex-node ex-n1x" data-go="1"><span class="ex-ring"><img class="ex-gly" src="assets/explore/E-g2.png" alt="" /></span><span class="ex-nlab"><b>02</b><i>N4</i></span></div>
+      <div class="ex-node ex-n1x" data-go="1"><span class="ex-ring"><img loading="lazy" decoding="async" class="ex-gly" src="assets/explore/E-g2.webp" alt="" /></span><span class="ex-nlab"><b>02</b><i>N4</i></span></div>
       <span class="ex-link"></span>
-      <div class="ex-node ex-n2x" data-go="2"><span class="ex-ring"><img class="ex-gly" src="assets/explore/E-g3.png" alt="" /></span><span class="ex-nlab"><b>03</b><i>N3</i></span></div>
+      <div class="ex-node ex-n2x" data-go="2"><span class="ex-ring"><img loading="lazy" decoding="async" class="ex-gly" src="assets/explore/E-g3.webp" alt="" /></span><span class="ex-nlab"><b>03</b><i>N3</i></span></div>
       <span class="ex-link"></span>
-      <div class="ex-node ex-n3x" data-go="3"><span class="ex-ring"><img class="ex-gly" src="assets/explore/E-g4.png" alt="" /></span><span class="ex-nlab"><b>04</b><i>N2</i></span></div>
+      <div class="ex-node ex-n3x" data-go="3"><span class="ex-ring"><img loading="lazy" decoding="async" class="ex-gly" src="assets/explore/E-g4.webp" alt="" /></span><span class="ex-nlab"><b>04</b><i>N2</i></span></div>
       <span class="ex-link"></span>
-      <img class="ex-seal" src="assets/explore/E-seal.png" alt="夢 — the goal at the end of the path" />
+      <img loading="lazy" decoding="async" class="ex-seal" src="assets/explore/E-seal.webp" alt="夢 — the goal at the end of the path" />
     </div>
 
     <!-- ── Stage 01 · N5 ── -->
     <div class="ex-stage ex-st1">
       <div class="ex-panel">
-        <div class="ex-brush"><img src="assets/explore/E-brush-blank.png" alt="" /><img class="ex-bnum" src="assets/explore/E-g1.png" alt="" /></div>
+        <div class="ex-brush"><img loading="lazy" decoding="async" src="assets/explore/E-brush-blank.webp" alt="" /><img loading="lazy" decoding="async" class="ex-bnum" src="assets/explore/E-g1.webp" alt="" /></div>
         <div class="ex-lvl">Stage 01 · JLPT N5</div>
         <h3 class="ex-h3">Kana to first conversations</h3>
         <div class="ex-h3rule"></div>
@@ -3137,7 +3177,7 @@
     <!-- ── Stage 02 · N4 ── -->
     <div class="ex-stage ex-st2">
       <div class="ex-panel">
-        <div class="ex-brush"><img src="assets/explore/E-brush-blank.png" alt="" /><img class="ex-bnum" src="assets/explore/E-g2.png" alt="" /></div>
+        <div class="ex-brush"><img loading="lazy" decoding="async" src="assets/explore/E-brush-blank.webp" alt="" /><img loading="lazy" decoding="async" class="ex-bnum" src="assets/explore/E-g2.webp" alt="" /></div>
         <div class="ex-lvl">Stage 02 · JLPT N4</div>
         <h3 class="ex-h3">Grammar that connects</h3>
         <div class="ex-h3rule"></div>
@@ -3166,7 +3206,7 @@
     <!-- ── Stage 03 · N3 ── -->
     <div class="ex-stage ex-st3">
       <div class="ex-panel">
-        <div class="ex-brush"><img src="assets/explore/E-brush-blank.png" alt="" /><img class="ex-bnum" src="assets/explore/E-g3.png" alt="" /></div>
+        <div class="ex-brush"><img loading="lazy" decoding="async" src="assets/explore/E-brush-blank.webp" alt="" /><img loading="lazy" decoding="async" class="ex-bnum" src="assets/explore/E-g3.webp" alt="" /></div>
         <div class="ex-lvl">Stage 03 · JLPT N3</div>
         <h3 class="ex-h3">Real-world Japanese</h3>
         <div class="ex-h3rule"></div>
@@ -3195,7 +3235,7 @@
     <!-- ── Stage 04 · N2 ── -->
     <div class="ex-stage ex-st4">
       <div class="ex-panel">
-        <div class="ex-brush"><img src="assets/explore/E-brush-blank.png" alt="" /><img class="ex-bnum" src="assets/explore/E-g4.png" alt="" /></div>
+        <div class="ex-brush"><img loading="lazy" decoding="async" src="assets/explore/E-brush-blank.webp" alt="" /><img loading="lazy" decoding="async" class="ex-bnum" src="assets/explore/E-g4.webp" alt="" /></div>
         <div class="ex-lvl">Stage 04 · JLPT N2</div>
         <h3 class="ex-h3">Fluency &amp; nuance</h3>
         <div class="ex-h3rule"></div>
@@ -3231,7 +3271,7 @@
       </div>
     </div>
 
-    <div class="ex-cue"><span>Scroll to continue</span><img src="assets/explore/E-scroll.png" alt="" /></div>
+    <div class="ex-cue"><span>Scroll to continue</span><img loading="lazy" decoding="async" src="assets/explore/E-scroll.webp" alt="" /></div>
   </div>
   </div>
 
@@ -3394,8 +3434,8 @@
       <div class="fy-glow fy-glow-a"></div>
       <div class="fy-glow fy-glow-b"></div>
       <span class="fy-ghost">診</span>
-      <img class="fy-p fy-p1" src="assets/faq/F-petal-3.png" alt="" />
-      <img class="fy-p fy-p2" src="assets/faq/F-petal-1.png" alt="" />
+      <img loading="lazy" decoding="async" class="fy-p fy-p1" src="assets/faq/F-petal-3.webp" alt="" />
+      <img loading="lazy" decoding="async" class="fy-p fy-p2" src="assets/faq/F-petal-1.webp" alt="" />
     </div>
 
     <div class="fy-inner">
@@ -3796,7 +3836,7 @@
               <span class="cb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg></span>
               <div><div class="k">Instagram</div><div class="v">@yumegakanau_institute</div></div>
             </a>
-            <a data-wa href="https://wa.me/91XXXXXXXXXX" target="_blank" rel="noopener noreferrer">
+            <a data-wa href="https://wa.me/919891196802" target="_blank" rel="noopener noreferrer">
               <span class="cb-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.14-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.01-1.04 2.47s1.06 2.87 1.21 3.07c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.22 1.36.19 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35Z"/><path d="M12.04 2.5C6.79 2.5 2.53 6.76 2.53 12.01c0 1.68.44 3.32 1.28 4.77L2.5 21.5l4.85-1.27a9.46 9.46 0 0 0 4.69 1.23h.01c5.24 0 9.5-4.26 9.5-9.51 0-2.54-.99-4.93-2.78-6.72a9.44 9.44 0 0 0-6.73-2.79Zm5.55 15.05a7.87 7.87 0 0 1-5.55 2.3h-.01a7.9 7.9 0 0 1-4.02-1.1l-.29-.17-2.98.78.8-2.91-.19-.3a7.85 7.85 0 0 1-1.21-4.19c0-4.36 3.55-7.9 7.91-7.9a7.85 7.85 0 0 1 5.59 2.32 7.85 7.85 0 0 1 2.31 5.59c0 4.36-3.55 7.9-7.9 7.9Z"/></svg></span>
               <div><div class="k">WhatsApp</div><div class="v" data-wa-txt>Message Sensei directly</div></div>
             </a>
@@ -3836,7 +3876,7 @@
      sensei-stage art at first — the client asked for it removed, so the ground is the flat
      navy gradient on #ygk-foot alone. -->
 <style>
-  /* The client's own footer plate (assets/footer bg.png, 1967x796, kept) re-exported to
+  /* The client's own footer plate (assets/footer bg.webp, 1967x796, kept) re-exported to
      WebP. It already reads as night and its left half is flat navy for the copy, so it takes
      no filter — only a light left-to-right veil for the narrow widths where cover scales the
      art up and the bright half creeps under the text. */
@@ -3963,7 +4003,7 @@
 
         <div class="ft-socs">
           <a class="ft-soc" href="https://www.instagram.com/yumegakanau_institute/" target="_blank" rel="noopener noreferrer" aria-label="Yume Ga Kanau on Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.25.07 1.62.07 4.81s-.01 3.56-.07 4.81c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.25.06-1.62.07-4.85.07s-3.6-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23C2.21 15.56 2.2 15.19 2.2 12s.01-3.56.07-4.81c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.44 2.21 8.8 2.2 12 2.2Zm0 1.8c-3.14 0-3.5.01-4.74.07-.9.04-1.39.19-1.71.32-.43.17-.74.37-1.06.69-.32.32-.52.63-.69 1.06-.13.32-.28.81-.32 1.71C3.42 8.9 3.4 9.26 3.4 12s.02 3.1.08 4.15c.4.9.19 1.39.32 1.71.17.43.37.74.69 1.06.32.32.63.52 1.06.69.32.13.81.28 1.71.32 1.24.06 1.6.07 4.74.07s3.5-.01 4.74-.07c.9-.04 1.39-.19 1.71-.32.43-.17.74-.37 1.06-.69.32-.32.52-.63.69-1.06.13-.32.28-.81.32-1.71.06-1.05.08-1.41.08-4.15s-.02-3.1-.08-4.15c-.04-.9-.19-1.39-.32-1.71a2.85 2.85 0 0 0-.69-1.06 2.85 2.85 0 0 0-1.06-.69c-.32-.13-.81-.28-1.71-.32C15.5 4.01 15.14 4 12 4Z"/><path d="M12 7.15A4.85 4.85 0 1 0 12 16.85 4.85 4.85 0 0 0 12 7.15Zm0 8A3.15 3.15 0 1 1 12 8.85a3.15 3.15 0 0 1 0 6.3Z"/><circle cx="17.05" cy="6.95" r="1.15"/></svg></a>
-          <a class="ft-soc" data-wa href="https://wa.me/91XXXXXXXXXX" target="_blank" rel="noopener noreferrer" aria-label="Message Parveen Sensei on WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.14-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.01-1.04 2.47s1.06 2.87 1.21 3.07c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.22 1.36.19 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35Z"/><path d="M12.04 2.5C6.79 2.5 2.53 6.76 2.53 12.01c0 1.68.44 3.32 1.28 4.77L2.5 21.5l4.85-1.27a9.46 9.46 0 0 0 4.69 1.23h.01c5.24 0 9.5-4.26 9.5-9.51 0-2.54-.99-4.93-2.78-6.72a9.44 9.44 0 0 0-6.73-2.79Zm5.55 15.05a7.87 7.87 0 0 1-5.55 2.3h-.01a7.9 7.9 0 0 1-4.02-1.1l-.29-.17-2.98.78.8-2.91-.19-.3a7.85 7.85 0 0 1-1.21-4.19c0-4.36 3.55-7.9 7.91-7.9a7.85 7.85 0 0 1 5.59 2.32 7.85 7.85 0 0 1 2.31 5.59c0 4.36-3.55 7.9-7.9 7.9Z"/></svg></a>
+          <a class="ft-soc" data-wa href="https://wa.me/919891196802" target="_blank" rel="noopener noreferrer" aria-label="Message Parveen Sensei on WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.14-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.01-1.04 2.47s1.06 2.87 1.21 3.07c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.22 1.36.19 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35Z"/><path d="M12.04 2.5C6.79 2.5 2.53 6.76 2.53 12.01c0 1.68.44 3.32 1.28 4.77L2.5 21.5l4.85-1.27a9.46 9.46 0 0 0 4.69 1.23h.01c5.24 0 9.5-4.26 9.5-9.51 0-2.54-.99-4.93-2.78-6.72a9.44 9.44 0 0 0-6.73-2.79Zm5.55 15.05a7.87 7.87 0 0 1-5.55 2.3h-.01a7.9 7.9 0 0 1-4.02-1.1l-.29-.17-2.98.78.8-2.91-.19-.3a7.85 7.85 0 0 1-1.21-4.19c0-4.36 3.55-7.9 7.91-7.9a7.85 7.85 0 0 1 5.59 2.32 7.85 7.85 0 0 1 2.31 5.59c0 4.36-3.55 7.9-7.9 7.9Z"/></svg></a>
           <a class="ft-soc" href="mailto:yumegakanau22@gmail.com" aria-label="Email yumegakanau22@gmail.com"><svg viewBox="0 0 24 24"><path d="M3.4 5.5h17.2c.83 0 1.5.67 1.5 1.5v10c0 .83-.67 1.5-1.5 1.5H3.4c-.83 0-1.5-.67-1.5-1.5V7c0-.83.67-1.5 1.5-1.5Zm.35 1.8v.72l8.25 5.06 8.25-5.06V7.3H3.75Zm16.5 2.83-7.78 4.77a.9.9 0 0 1-.94 0L3.75 10.13v6.57h16.5v-6.57Z"/></svg></a>
         </div>
 
@@ -4108,7 +4148,7 @@
   <div class="rvm-box" role="dialog" aria-modal="true" aria-labelledby="rvm-name" tabindex="-1">
     <button class="rvm-x" type="button" data-rvm-close aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6 18 18M18 6 6 18"/></svg></button>
     <div class="rvm-head">
-      <img class="rvm-av" src="" alt="" />
+      <img loading="lazy" decoding="async" class="rvm-av" src="" alt="" />
       <div>
         <div class="rvm-name" id="rvm-name"></div>
         <div class="rvm-meta">
@@ -4119,7 +4159,7 @@
       </div>
     </div>
     <div class="rvm-body">
-      <img class="rvm-quote" src="assets/review%20page/S-rv-quote.png" alt="" aria-hidden="true" />
+      <img loading="lazy" decoding="async" class="rvm-quote" src="assets/review%20page/S-rv-quote.webp" alt="" aria-hidden="true" />
       <div class="rvm-text"></div>
     </div>
     <div class="rvm-foot">
@@ -4136,12 +4176,16 @@
 // each dc-runtime re-render, which restores the authored placeholder href — hence the
 // re-assert on a timer rather than a one-shot pass.
 (function () {
-  var WA_NUMBER = '91XXXXXXXXXX';   // country code + number, digits only. No +, spaces or dashes.
+  var WA_NUMBER = '919891196802';   // country code + number, digits only. No +, spaces or dashes.
   var WA_TEXT = 'Hello Sensei! I found Yume Ga Kanau online and I’d like to know more about your Japanese classes and the free trial.';
   var HREF = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(WA_TEXT);
 
   var REAL = WA_NUMBER.indexOf('X') < 0;
-  var SHOWN = '+' + WA_NUMBER;
+  // Grouped for reading (+91 98911 96802). The link above still uses the bare digits;
+  // this only affects the number printed on the Contact card.
+  var SHOWN = WA_NUMBER.length === 12
+    ? '+' + WA_NUMBER.slice(0, 2) + ' ' + WA_NUMBER.slice(2, 7) + ' ' + WA_NUMBER.slice(7)
+    : '+' + WA_NUMBER;
 
   function stamp() {
     var a = document.querySelectorAll('a[data-wa]'), i;
@@ -4164,7 +4208,7 @@
 
 <script>
 (function () {
-  var IN = 'assets/review%20page/S-flag-in.png', JP = 'assets/review%20page/S-flag-jp.png';
+  var IN = 'assets/review%20page/S-flag-in.webp', JP = 'assets/review%20page/S-flag-jp.webp';
 
   // Verbatim. Each entry's text is exactly what the student wrote; a blank line is a
   // paragraph break in their original. Trim nothing here — the CARD carries the short
@@ -4325,7 +4369,7 @@
     #wa-fab::after{animation:none;opacity:0}
   }
 </style>
-<a id="wa-fab" data-wa href="https://wa.me/91XXXXXXXXXX?text=Hello%20Sensei!%20I%20found%20Yume%20Ga%20Kanau%20online%20and%20I%E2%80%99d%20like%20to%20know%20more%20about%20your%20Japanese%20classes%20and%20the%20free%20trial." target="_blank" rel="noopener noreferrer" aria-label="Chat with Parveen Sensei on WhatsApp">
+<a id="wa-fab" data-wa href="https://wa.me/919891196802?text=Hello%20Sensei!%20I%20found%20Yume%20Ga%20Kanau%20online%20and%20I%E2%80%99d%20like%20to%20know%20more%20about%20your%20Japanese%20classes%20and%20the%20free%20trial." target="_blank" rel="noopener noreferrer" aria-label="Chat with Parveen Sensei on WhatsApp">
   <span class="wa-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.14-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.01-1.04 2.47s1.06 2.87 1.21 3.07c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.22 1.36.19 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35z"/><path d="M12.04 2.5C6.79 2.5 2.53 6.76 2.53 12.01c0 1.68.44 3.32 1.28 4.77L2.5 21.5l4.85-1.27a9.46 9.46 0 0 0 4.69 1.23h.01c5.24 0 9.5-4.26 9.5-9.51 0-2.54-.99-4.93-2.78-6.72a9.44 9.44 0 0 0-6.73-2.79zm5.55 15.05a7.87 7.87 0 0 1-5.55 2.3h-.01a7.9 7.9 0 0 1-4.02-1.1l-.29-.17-2.98.78.8-2.91-.19-.3a7.85 7.85 0 0 1-1.21-4.19c0-4.36 3.55-7.9 7.91-7.9a7.85 7.85 0 0 1 5.59 2.32 7.85 7.85 0 0 1 2.31 5.59c0 4.36-3.55 7.9-7.9 7.9z"/></svg></span>
   <span class="wa-tx">Chat with Sensei</span>
 </a>
@@ -4335,6 +4379,7 @@
 (function() {
   var OPEN_END = 3;            // opening transition = 0s .. 3s
   var observer = null;
+  var prewarm = null;         // fetches the clip shortly before it is needed
   var isInView = false;
   var segment = null;          // 'open' | 'close' | null
   var guardRaf = 0;
@@ -4398,8 +4443,16 @@
       if (placeholder) placeholder.style.display = 'flex';
     });
 
-    // Kick a load so the opening frames are ready to play immediately on view.
-    try { video.load(); } catch (e) {}
+    // The element is preload="none", so nothing is fetched until the section is
+    // within 600px of the viewport. That keeps the clip off the initial load while
+    // still giving it a head start before the play observer below fires.
+    if (prewarm) prewarm.disconnect();
+    prewarm = new IntersectionObserver(function (entries) {
+      if (!entries.some(function (e) { return e.isIntersecting; })) return;
+      prewarm.disconnect();
+      try { video.load(); } catch (e) {}
+    }, { rootMargin: '600px 0px' });
+    prewarm.observe(section);
 
     if (observer) observer.disconnect();
 
@@ -5066,6 +5119,63 @@ class Component extends DCLogic {
     };
   }
 }
+</script>
+<script>
+/* ──────────────────────────────────────────────────────────────────────────
+   Off-screen animation gate.
+
+   The page authors ~25 `infinite` keyframe animations (petal falls, drifting
+   clouds, spinning seals). Every one of them keeps compositing and burning CPU
+   while its section is far off-screen, which is what makes scrolling feel
+   heavy on laptops and phones.
+
+   Each animated element is watched and paused via animation-play-state while it
+   is outside the viewport (plus a 200px margin), then resumed on approach. The
+   pause point is preserved, so nothing jumps: an animation continues from where
+   it stopped. Only `infinite` animations are touched — one-shot entrance
+   animations are left alone so they still play on reveal.
+
+   The dc-runtime re-renders <x-dc> and replaces these nodes (leaving the page
+   and coming back is enough), so the scan is re-run on DOM mutations, the same
+   way the map-video and .fs-anim scripts re-bind.
+   ────────────────────────────────────────────────────────────────────────── */
+(function () {
+  if (!('IntersectionObserver' in window)) return;
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      entry.target.style.animationPlayState = entry.isIntersecting ? 'running' : 'paused';
+    });
+  }, { rootMargin: '200px 0px' });
+
+  var seen = new WeakSet();
+  var scheduled = false;
+
+  function scan() {
+    scheduled = false;
+    var nodes = document.querySelectorAll('body *');
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      if (seen.has(el)) continue;
+      var cs = window.getComputedStyle(el);
+      if (cs.animationName === 'none' || !cs.animationName) continue;
+      if (cs.animationIterationCount.indexOf('infinite') === -1) continue;
+      seen.add(el);
+      io.observe(el);
+    }
+  }
+
+  function schedule() {
+    if (scheduled) return;
+    scheduled = true;
+    if (window.requestIdleCallback) requestIdleCallback(scan, { timeout: 500 });
+    else setTimeout(scan, 200);
+  }
+
+  schedule();
+  // The runtime mounts asynchronously, so the first scan can land on an empty body.
+  new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+})();
 </script>
 </body>
 </html>
