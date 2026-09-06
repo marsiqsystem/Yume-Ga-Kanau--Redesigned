@@ -446,7 +446,7 @@ window.__resources = {
     <div class="hr-copy">
       <div style="display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(217,162,75,0.35);border-radius:2px;padding:7px 13px;margin-bottom:26px">
         <span style="width:6px;height:6px;background:#D9A24B;border-radius:50%"></span>
-        <span style="font-size:11px;letter-spacing:0.18em;color:#D9A24B">EST. DECEMBER 2025 · ONLINE CLASSES</span>
+        <span style="font-size:11px;letter-spacing:0.18em;color:#D9A24B">ONLINE CLASSES</span>
       </div>
       <h1 style="font-family:'Komika Axis',Impact,'Arial Black',sans-serif;font-size:clamp(33px,7.2vw,60px);line-height:1.15;font-weight:700;color:#F5F0E6;margin:0 0 22px;letter-spacing:0.02em;text-wrap:pretty">Learn Japanese.<br /><span style="color:#E2103C">Live your dream.</span></h1>
       <p style="font-size:16.5px;line-height:1.8;color:#C3CAE4;margin:0 0 34px;max-width:520px;text-wrap:pretty">An online institute built for learners who want more than rote memorisation. Four guided stages take you from your very first kana to N2 fluency — with interactive lessons, exam strategy, and a teacher who answers every question.</p>
@@ -464,12 +464,12 @@ window.__resources = {
           <div style="font-size:11px;letter-spacing:0.09em;color:#9BA5C6;margin-top:4px">TEACHING</div>
         </div>
         <div>
-          <div style="font-family:'Zen Old Mincho',serif;font-size:clamp(21px,3vw,26px);color:#D9A24B">4x Global</div>
+          <div style="font-family:'Zen Old Mincho',serif;font-size:clamp(21px,3vw,26px);color:#D9A24B">Global</div>
           <div style="font-size:11px;letter-spacing:0.09em;color:#9BA5C6;margin-top:4px">STUDENT BASE</div>
         </div>
         <div>
-          <div style="font-family:'Zen Old Mincho',serif;font-size:clamp(21px,3vw,26px);color:#D9A24B">1-on-1</div>
-          <div style="font-size:11px;letter-spacing:0.09em;color:#9BA5C6;margin-top:4px">&amp; SMALL BATCH</div>
+          <div style="font-family:'Zen Old Mincho',serif;font-size:clamp(21px,3vw,26px);color:#D9A24B">Small Batch</div>
+          <div style="font-size:11px;letter-spacing:0.09em;color:#9BA5C6;margin-top:4px">&amp; 1-ON-1</div>
         </div>
       </div>
     </div>
@@ -725,7 +725,8 @@ window.__resources = {
   #four-stages .fs-curriculum,
   #four-stages .fs-card,
   #four-stages .fs-bi{
-    transition:opacity .8s cubic-bezier(.22,.61,.36,1), transform .9s cubic-bezier(.22,.61,.36,1);
+    transition:opacity .8s cubic-bezier(.22,.61,.36,1), transform .9s cubic-bezier(.22,.61,.36,1),
+      background .35s ease, border-color .35s ease, color .35s ease;
     will-change:opacity, transform}
   #four-stages.fs-anim:not(.fs-in) .fs-base{opacity:0}
   #four-stages.fs-anim:not(.fs-in) .fs-mountain{opacity:0;transform:translateY(14%)}
@@ -782,8 +783,13 @@ window.__resources = {
   #four-stages .fs-rule{width:6cqw;height:.26cqw;background:linear-gradient(90deg,#C4082E,#E0632F);border-radius:2px;margin:1.6cqw 0 1.5cqw}
   #four-stages .fs-sub{font-family:'Nunito Sans',sans-serif;color:#C9D2EC;font-size:1.04cqw;line-height:1.62;margin:0;max-width:33cqw;text-shadow:0 1px 14px rgba(0,3,15,.85)}
 
-  #four-stages .fs-curriculum{position:absolute;right:3.6%;top:12.5%;font-family:'Nunito Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#EFB3C1;font-size:.95cqw;cursor:pointer;text-shadow:0 1px 3px rgba(0,3,15,.95),0 2px 16px rgba(0,3,15,.9)}
-  #four-stages .fs-curriculum:hover{color:#F7F3EA}
+  #four-stages .fs-curriculum{position:absolute;right:3.6%;top:12.5%;font-family:'Nunito Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#FFFFFF;font-size:.95cqw;cursor:pointer;text-shadow:0 1px 3px rgba(0,3,15,.8);
+    display:inline-block;padding:.8em 1.5em;border-radius:999px;
+    background:rgba(9,13,36,.62);border:1px solid rgba(217,162,75,.20);
+    -webkit-backdrop-filter:blur(14px) saturate(135%);backdrop-filter:blur(14px) saturate(135%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 8px 26px rgba(0,4,20,.34);}
+  #four-stages .fs-curriculum:hover{color:#FFFFFF;background:rgba(14,20,52,.72);
+    border-color:rgba(217,162,75,.44)}
 
   #four-stages .fs-card{position:absolute;width:20cqw;text-shadow:0 1px 10px rgba(0,3,15,.95),0 0 26px rgba(0,3,15,.78)}
   #four-stages .fs-card .lvl{font-family:'Nunito Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#B4BCD8;font-size:.82cqw;margin-bottom:.8cqw}
@@ -822,7 +828,7 @@ window.__resources = {
     #four-stages .fs-title{font-size:clamp(18px,5.4vw,26px);line-height:1.22}
     #four-stages .fs-rule{width:62px;height:3px;margin:14px 0}
     #four-stages .fs-sub{font-size:14px;max-width:none}
-    #four-stages .fs-curriculum{display:inline-block;margin:8px 0 26px;font-size:12px}
+    #four-stages .fs-curriculum{display:inline-block;margin:8px 0 26px;font-size:12px;padding:.7em 1.3em}
     #four-stages .fs-card{margin:0 0 16px;padding:18px;background:rgba(9,15,38,.66);border:1px solid rgba(217,162,75,.18);border-radius:12px;backdrop-filter:blur(3px)}
     #four-stages .fs-card .lvl{font-size:11px;margin-bottom:8px}
     #four-stages .fs-card h3{font-size:21px;margin-bottom:8px}
@@ -855,7 +861,7 @@ window.__resources = {
           <div class="fs-eyebrow">The Four Stages · 4つのステージ</div>
           <h2 class="fs-title">A path, not a pile of lessons</h2>
           <div class="fs-rule"></div>
-          <p class="fs-sub">A clear journey from your first &ldquo;あ&rdquo; to confident conversations. One step at a time.&nbsp; しっかり、着実に。</p>
+          <p class="fs-sub">A clear journey from your first &ldquo;あ&rdquo; to confident conversations. One step at a time.&nbsp; 一歩ずつ、着実に。</p>
         </div>
 
         <div class="fs-curriculum" onClick="{{ goExplore }}">See full curriculum →</div>
@@ -999,11 +1005,7 @@ window.__resources = {
     #why-ygk .wy-cards{grid-template-columns:1fr}
     #why-ygk .wy-torii{display:none}
     #why-ygk .wy-bloom{width:42%}
-    /* Phones only. The old clamp(112px,30vw,150px) was sized for a much larger branch
-       than the one that renders at this breakpoint, leaving a band of empty navy between
-       this section and the one above it. Measured against the rendered branch across
-       360-620px, this keeps a comfortable gap under it without the dead space. */
-    #why-ygk .wy-inner{padding:clamp(72px,20vw,130px) 20px 56px}
+    #why-ygk .wy-inner{padding:clamp(112px,30vw,150px) 20px 56px}
   }
   @media (prefers-reduced-motion:reduce){
     #why-ygk .wy-l,#why-ygk .wy-left > *,#why-ygk .wy-card{transition:opacity .3s linear !important;transform:none !important}
@@ -1163,7 +1165,7 @@ window.__resources = {
   #meet-sensei .sn-panel{position:absolute;left:3.6%;top:75.5%;width:92.8%;height:21.4%;
     border:1px solid #E6DEF6;border-radius:.85cqw;background:rgba(255,255,255,.5)}
   #meet-sensei .sn-pdiv{position:absolute;top:12%;bottom:12%;width:1px;background:#E6DEF6}
-  #meet-sensei .sn-pd1{left:41.4%}
+  #meet-sensei .sn-pd1{left:50%}
   #meet-sensei .sn-pd2{left:66.4%}
   #meet-sensei .sn-plabel{position:absolute;font-family:'Nunito Sans',sans-serif;font-weight:700;
     font-size:.82cqw;letter-spacing:.16em;text-transform:uppercase;color:#1E2448}
@@ -1177,9 +1179,9 @@ window.__resources = {
   #meet-sensei .sn-pli{display:grid;grid-template-columns:auto 1fr;column-gap:.85cqw;align-items:center;
     font-family:'Nunito Sans',sans-serif;font-size:.88cqw;line-height:1.34;color:#3A3358}
   #meet-sensei .sn-pli img{width:1.5cqw;height:auto;display:block}
-  #meet-sensei .sn-pquote{position:absolute;left:73.5%;top:80.0%;width:13.2%;margin:0;
+  #meet-sensei .sn-pquote{position:absolute;left:61.5%;top:80.0%;width:17%;margin:0;
     font-family:'Zen Old Mincho',serif;font-style:italic;font-size:1.28cqw;line-height:1.62;color:#1E2448}
-  #meet-sensei .sn-pq{left:69.5%;top:79.0%;width:2.6%;opacity:.5}
+  #meet-sensei .sn-pq{left:57.5%;top:79.0%;width:2.6%;opacity:.5}
   #meet-sensei .sn-pflower1{left:6.2%;top:85.0%;width:4.6%;opacity:.42}
   #meet-sensei .sn-pflower2{left:88.5%;top:85.0%;width:4.6%;opacity:.42}
 
@@ -1456,36 +1458,10 @@ window.__resources = {
     #meet-sensei .rv-h2{font-size:clamp(22px,5.6vw,30px);margin-bottom:16px}
     #meet-sensei .rv-rule{width:52px;height:3px;margin-bottom:16px}
     #meet-sensei .rv-sub{font-size:14.5px;line-height:1.7;margin-bottom:26px}
-    /* Swipeable row, not a stack. Seven full-width cards one under the other made this
-       section endless to scroll past; as a horizontal row the reader swipes through them
-       at their own pace and the page stays short.
-
-       The track keeps its desktop grid-auto-flow:column, so only the column width and the
-       transform change. Scrolling is native (no JS): scroll-snap parks each card at the
-       same left edge as the heading above it, and scroll-padding matches the 20px gutter
-       so a snapped card lines up with the copy rather than the screen edge.
-
-       The row bleeds 20px past .rv-canvas's gutter on both sides (negative margin plus
-       equal padding) so cards travel to the true screen edge, and a mask fades them out
-       there. The mask is used rather than a gradient overlay because the band behind is
-       itself a gradient — a solid overlay would show as a lighter patch against it.
-
-       Card width is 82vw minus the gutter, which leaves the next card just visible: the
-       cheapest possible hint that the row moves. */
-    #meet-sensei .rv-cards{display:block;
-      overflow-x:auto;overflow-y:hidden;
-      scroll-snap-type:x mandatory;scroll-padding-inline:20px;
-      overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
-      margin-inline:-20px;padding-inline:20px;padding-block:2px;
-      scrollbar-width:none;
-      -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 20px,#000 calc(100% - 34px),transparent 100%);
-      mask-image:linear-gradient(90deg,transparent 0,#000 20px,#000 calc(100% - 34px),transparent 100%)}
-    #meet-sensei .rv-cards::-webkit-scrollbar{display:none}
-    #meet-sensei .rv-track{grid-auto-flow:column;grid-auto-columns:min(82vw,340px);
-      grid-template-columns:none;gap:14px;height:auto;transform:none !important;
-      /* the row must not stretch to the container, or the columns collapse */
-      width:max-content;align-items:stretch}
-    #meet-sensei .rv-card{scroll-snap-align:start}
+    /* stacked: all seven simply follow each other, so the slider and its pager go away */
+    #meet-sensei .rv-cards{display:block;overflow:visible}
+    #meet-sensei .rv-track{display:grid;grid-auto-flow:row;grid-auto-columns:auto;
+      grid-template-columns:1fr;gap:16px;height:auto;transform:none !important}
     #meet-sensei .rv-pager{display:none}
     #meet-sensei .rv-card{padding:20px 18px;border-radius:14px}
     #meet-sensei .rv-top{margin-bottom:12px}
@@ -1725,22 +1701,16 @@ window.__resources = {
       <div class="sn-role">Founder &amp; Lead Instructor</div>
 
       <div class="sn-stat sn-s1"><img loading="lazy" decoding="async" src="assets/sensei%20comp/S-ic-jlpt.webp" alt="" /><b>JLPT Expertise</b><p>Specialized in N5&ndash;N2 teaching &amp; exam strategies</p></div>
-      <div class="sn-stat sn-s2"><img loading="lazy" decoding="async" src="assets/sensei%20comp/S-ic-exp.webp" alt="" /><b>Experience</b><p>5+ years of teaching Japanese learners</p></div>
-      <div class="sn-stat sn-s3"><img loading="lazy" decoding="async" src="assets/sensei%20comp/S-ic-students.webp" alt="" /><b>Students Guided</b><p>1000+ students across the world</p></div>
+      <div class="sn-stat sn-s2"><img loading="lazy" decoding="async" src="assets/sensei%20comp/S-ic-exp.webp" alt="" /><b>Experience</b><p>3+ years of teaching Japanese learners</p></div>
+      <div class="sn-stat sn-s3"><img loading="lazy" decoding="async" src="assets/sensei%20comp/S-ic-students.webp" alt="" /><b>Students Guided</b><p>Guided many students across the world</p></div>
       <div class="sn-stat sn-s4"><img loading="lazy" decoding="async" src="assets/sensei%20comp/S-ic-heart.webp" alt="" /><b>Teaching Philosophy</b><p>Patient, supportive and focused on real progress</p></div>
 
-      <div class="sn-panel"><span class="sn-pdiv sn-pd1"></span><span class="sn-pdiv sn-pd2"></span></div>
+      <div class="sn-panel"><span class="sn-pdiv sn-pd1"></span></div>
       <img loading="lazy" decoding="async" class="sn-l sn-pflower1" src="assets/sensei%20comp/S-blossom-a.webp" alt="" aria-hidden="true" />
       <img loading="lazy" decoding="async" class="sn-l sn-pflower2" src="assets/sensei%20comp/S-blossom-a.webp" alt="" aria-hidden="true" />
       <div class="sn-plabel sn-pl1">My Philosophy</div>
       <div class="sn-pl1rule"></div>
       <p class="sn-ptext">Language is more than words &mdash;<br />it&rsquo;s connection.<br />I focus on building confidence, clarity<br />and consistency so you can use Japanese<br />naturally in real life.</p>
-      <div class="sn-plabel sn-pl2">Beyond the Classroom</div>
-      <div class="sn-plist">
-        <div class="sn-pli"><img loading="lazy" decoding="async" src="assets/sensei%20comp/S-ic-book.webp" alt="" /><span>Loves Japanese literature and culture</span></div>
-        <div class="sn-pli"><img loading="lazy" decoding="async" src="assets/sensei%20comp/S-ic-cup.webp" alt="" /><span>Enjoys calligraphy and journaling</span></div>
-        <div class="sn-pli"><img loading="lazy" decoding="async" src="assets/sensei%20comp/S-ic-plane.webp" alt="" /><span>Explores Japan whenever possible</span></div>
-      </div>
       <img loading="lazy" decoding="async" class="sn-l sn-pq" src="assets/sensei%20comp/S-petal-soft.webp" alt="" aria-hidden="true" />
       <p class="sn-pquote">Your effort today builds the fluency of tomorrow.</p>
     </div>
@@ -1892,12 +1862,6 @@ window.__resources = {
           <div class="fq-row">
             <div class="fq-q"><img loading="lazy" decoding="async" src="assets/faq/F-ic-time.webp" alt="" aria-hidden="true" /><span>How are classes scheduled across time zones?</span><svg class="fq-chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9.5 12 15.5 18 9.5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <div class="fq-a"><div class="fq-ain"><p>We currently accommodate learners across multiple time zones, including India, the UK, and Japan. While scheduling depends on slot availability, we always do our best to manage and align batch timings based on student requirements wherever possible.</p></div></div>
-          </div>
-          <div class="fq-row fq-noans">
-            <div class="fq-q"><img loading="lazy" decoding="async" src="assets/faq/F-ic-miss.webp" alt="" aria-hidden="true" /><span>What if I miss a class?</span></div>
-            <!-- TODO: answer for “What if I miss a class?” not supplied yet. To enable this row, drop the
-                 markup below back in and remove the fq-noans class + restore the chevron:
-                 <div class="fq-a"><div class="fq-ain"><p>ANSWER HERE</p></div></div> -->
           </div>
           <div class="fq-row">
             <div class="fq-q"><img loading="lazy" decoding="async" src="assets/faq/F-ic-books.webp" alt="" aria-hidden="true" /><span>Do I need to buy separate textbooks/materials?</span><svg class="fq-chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9.5 12 15.5 18 9.5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -2300,7 +2264,7 @@ window.__resources = {
   /* ── 01 · foundation & the name ── */
   #about-name .an-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(30px,4vw,64px);
     align-items:center}
-  #about-name .an-seal{position:relative;text-align:center;padding:clamp(38px,4.6vw,58px) 26px;
+  #about-name .an-seal{position:relative;text-align:center;padding:clamp(14px,1.6vw,20px);
     border-radius:18px;border:1px solid rgba(217,162,75,.30);
     background:radial-gradient(120% 110% at 50% 0%,rgba(24,33,68,.75),rgba(6,12,36,.72));
     box-shadow:0 16px 44px rgba(0,3,16,.42),inset 0 1px 0 rgba(255,255,255,.07)}
@@ -2311,6 +2275,7 @@ window.__resources = {
   #about-name .an-rom{font-size:12px;letter-spacing:.22em;color:#D9A24B;margin-top:16px}
   #about-name .an-gloss{font-family:'Zen Old Mincho',serif;font-style:italic;font-size:14px;
     color:#9BA5C6;margin-top:9px}
+  #about-name .an-banner{display:block;width:100%;height:auto;border-radius:10px}
 
   /* ── 02 · vision & goal ── */
   #about-vm{background:linear-gradient(180deg,rgba(0,12,38,.80) 0%,rgba(4,15,48,.74) 50%,rgba(0,12,38,.80) 100%)}
@@ -2397,9 +2362,9 @@ window.__resources = {
         <p class="ab-body">For our students, choosing YUME GA KANAU&trade; means their dream of mastering the Japanese language &mdash; and connecting with its culture &mdash; will truly come to life.</p>
       </div>
       <div class="ab-l ab-l-r an-seal">
-        <div class="an-ja">夢が叶う</div>
-        <div class="an-rom">YUME GA KANAU</div>
-        <div class="an-gloss">&ldquo;Dreams come true&rdquo;</div>
+        <img class="an-banner" loading="lazy" decoding="async" width="1599" height="899"
+             src="assets/brand-banner.webp"
+             alt="Yume Ga Kanau™ Japanese Learning Institute — 日本語を学ぶだけでなく、感じてください · Don’t just learn Japanese, feel it!" />
       </div>
     </div>
   </div>
@@ -2664,15 +2629,14 @@ window.__resources = {
         <div class="eh-eyebrow"><span></span>Explore · コース案内</div>
         <h1 class="eh-title">Courses, stages, <br class="eh-br" />and the fastest way <br class="eh-br" /><em>to find yours.</em></h1>
         <div class="eh-rule"></div>
-        <p class="eh-sub">Three ways to learn, four stages to climb. If you already know some Japanese, skip ahead to the stage test below — it takes about a minute.</p>
+        <p class="eh-sub">Four stages to climb, at your own pace. If you already know some Japanese, skip ahead to the stage test below — it takes about a minute.</p>
         <div class="eh-cta">
           <div class="eh-btn eh-solid" data-scroll="find-your-stage">Take the stage test <span>&rarr;</span></div>
           <div class="eh-btn eh-ghost" data-scroll="explore-stages">See the four stages <span>&rarr;</span></div>
         </div>
         <div class="eh-stats">
-          <div><b>3</b><i>Ways to learn</i></div>
           <div><b>N5 &rarr; N2</b><i>Four stages</i></div>
-          <div><b>1-on-1</b><i>&amp; small batch</i></div>
+          <div><b>Small batch</b><i>&amp; 1-on-1</i></div>
         </div>
       </div>
 
@@ -2906,8 +2870,13 @@ window.__resources = {
     line-height:1.55;margin:0;max-width:calc(var(--u)*20);text-shadow:0 1px 14px rgba(0,3,15,.85)}
   #explore-stages .ex-curric{position:absolute;right:3.6%;top:6.5%;font-family:'Nunito Sans',sans-serif;
     font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#E9506A;cursor:pointer;
-    font-size:calc(var(--u)*.82);text-shadow:0 1px 3px rgba(0,3,15,.95),0 2px 16px rgba(0,3,15,.9)}
-  #explore-stages .ex-curric:hover{color:var(--ink)}
+    font-size:calc(var(--u)*.82);text-shadow:0 1px 3px rgba(0,3,15,.8);
+    display:inline-block;padding:.8em 1.5em;border-radius:999px;
+    background:rgba(9,13,36,.62);border:1px solid rgba(217,162,75,.20);
+    -webkit-backdrop-filter:blur(14px) saturate(135%);backdrop-filter:blur(14px) saturate(135%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 8px 26px rgba(0,4,20,.34);}
+  #explore-stages .ex-curric:hover{color:var(--ink);background:rgba(14,20,52,.72);
+    border-color:rgba(217,162,75,.44)}
 
   /* ── left rail: 一 二 三 四 → 夢 ── */
   #explore-stages .ex-rail{position:absolute;left:7.4%;top:36%;display:flex;flex-direction:column;
@@ -3121,7 +3090,7 @@ window.__resources = {
     #explore-stages .ex-title{font-size:clamp(24px,7.6vw,34px)}
     #explore-stages .ex-eyebrow{font-size:11px}
     #explore-stages .ex-sub{font-size:14px;max-width:none}
-    #explore-stages .ex-curric{position:relative;right:auto;top:auto;font-size:12px;margin-bottom:24px}
+    #explore-stages .ex-curric{position:relative;right:auto;top:auto;font-size:12px;margin-bottom:24px;padding:.7em 1.3em}
     #explore-stages .ex-rail,#explore-stages .ex-cue,#explore-stages .ex-prog,
     #explore-stages .ex-words{display:none}
     #explore-stages .ex-stage{position:relative;inset:auto;opacity:1;pointer-events:auto;
@@ -3715,6 +3684,14 @@ window.__resources = {
     transform:translateY(-2px);box-shadow:0 12px 30px rgba(150,6,34,.55)}
   #contact-body .cb-send span{transition:transform .3s}
   #contact-body .cb-send:hover span{transform:translateX(4px)}
+  /* Honeypot: bots fill it, humans never see it. Not display:none - some bots skip those. */
+  #contact-body .cb-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none}
+  #contact-body .cb-status{font-family:'Nunito Sans',sans-serif;font-size:13px;line-height:1.6;
+    margin:14px 0 0;color:#F2A3B4}
+  #contact-body .cb-status.is-ok{color:#9BD8B4}
+  /* React renders hidden="" as falsy, so lean on :empty for the at-rest state too */
+  #contact-body .cb-status:empty{display:none}
+  #contact-body .cb-send.is-busy{opacity:.55;pointer-events:none}
   #contact-body .cb-note{font-family:'Nunito Sans',sans-serif;font-size:12.5px;line-height:1.7;
     color:#8F99BB;margin:18px 0 0;position:relative;z-index:1}
 
@@ -3805,17 +3782,17 @@ window.__resources = {
           <div class="cb-row">
             <div class="cb-f">
               <div class="cb-lab">Your name</div>
-              <input class="cb-in" placeholder="e.g. Aiko Sharma" />
+              <input class="cb-in" data-cbf="name" name="name" type="text" autocomplete="name" placeholder="e.g. Aiko Sharma" />
             </div>
             <div class="cb-f">
               <div class="cb-lab">Email</div>
-              <input class="cb-in" placeholder="you@example.com" />
+              <input class="cb-in" data-cbf="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" />
             </div>
           </div>
           <div class="cb-row">
             <div class="cb-f">
               <div class="cb-lab">Current level</div>
-              <select class="cb-in">
+              <select class="cb-in" data-cbf="level" name="level">
                 <option>Complete beginner</option>
                 <option>Stage 1 · Around N5</option>
                 <option>Stage 2 · Around N4</option>
@@ -3826,7 +3803,7 @@ window.__resources = {
             </div>
             <div class="cb-f">
               <div class="cb-lab">What you want</div>
-              <select class="cb-in">
+              <select class="cb-in" data-cbf="goal" name="goal">
                 <option>JLPT preparation</option>
                 <option>Conversational fluency</option>
                 <option>1-on-1 personalised coaching</option>
@@ -3836,9 +3813,11 @@ window.__resources = {
           </div>
           <div class="cb-f">
             <div class="cb-lab">Anything else?</div>
-            <textarea class="cb-in" placeholder="Your timezone, preferred class timings, exam date, or what you find hardest right now."></textarea>
+            <textarea class="cb-in" data-cbf="notes" name="notes" placeholder="Your timezone, preferred class timings, exam date, or what you find hardest right now."></textarea>
           </div>
+          <input class="cb-hp" data-cbf="company" name="company" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" />
           <div class="cb-send" onClick="{{ submitForm }}">Send to sensei <span>&rarr;</span></div>
+          <p class="cb-status" role="alert" hidden></p>
           <p class="cb-note">No spam, no automated funnels. Your details go straight to Parveen Sensei.</p>
           <span class="cb-kanji" aria-hidden="true">始</span>
         </div>
@@ -4064,7 +4043,8 @@ window.__resources = {
           <a onClick="{{ goStage2 }}">JLPT N4 &middot; Stage 2</a>
           <a onClick="{{ goStage3 }}">JLPT N3 &middot; Stage 3</a>
           <a onClick="{{ goStage4 }}">JLPT N2 &middot; Stage 4</a>
-          <a onClick="{{ goExplore }}">1-on-1 Coaching</a>
+          <a onClick="{{ goExplore }}">Conversation Classes (Kaiwa) &middot; N5&ndash;N2</a>
+          <a onClick="{{ goExplore }}">Business Japanese</a>
         </div>
       </nav>
 
@@ -4081,7 +4061,7 @@ window.__resources = {
     </div>
 
     <div class="ft-bar">
-      <span>&copy; 2025 YUME GA KANAU&trade; &middot; All rights reserved.</span>
+      <span>&copy; 2025 YUME GA KANAU&trade; &middot; Est. December 2025 &middot; All rights reserved.</span>
       <div class="ft-legal">
         <a>Privacy Policy</a><span>|</span>
         <a>Terms of Service</a><span>|</span>
@@ -5207,106 +5187,122 @@ class Component extends DCLogic {
   new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
 })();
 </script>
-<style>
+<script>
 /* ══════════════════════════════════════════════════════════════════════════
-   Phone scrolling budget.
+   Trial-request form → Sensei's inbox.
 
-   Measured on a 390px viewport before this block: 99 composited layers holding
-   about 61 MB of GPU texture, because 94 elements carried a permanent
-   `will-change: opacity, transform`. Every one of those is a one-shot entrance
-   fade — the hint is useful for the fraction of a second the transition runs and
-   pure cost forever after, and on a mid-range phone that much layer memory is
-   what makes scrolling stutter.
+   The card at #contact-body is rendered by the dc-runtime (React), so its
+   onClick={{ submitForm }} only flips the "thank you" panel — it never sent
+   anything. This listener sits on `document` in the CAPTURE phase, which runs
+   before React's delegated root handler, so it can:
 
-   Two changes, both invisible:
+     1. read the fields,
+     2. block the flip and show an error if they are not usable,
+     3. POST the enquiry, and only then let the click through to React so the
+        "Your request is in." panel is telling the truth.
 
-   1. Drop `will-change` on phones for the entrance-animation selectors. The
-      animations still play; the browser promotes them for the duration of the
-      transition on its own, which is what it does for every other transition on
-      the page. `.fq-inner` is deliberately excluded — that one is a continuous
-      scroll-driven parallax, the case will-change actually exists for.
+   ── SETUP (one time) ───────────────────────────────────────────────────────
+   Go to https://web3forms.com, enter yumegakanau22@gmail.com, and they email
+   an access key. Paste it into ACCESS_KEY below. Nothing else to configure —
+   no server, no build step; the key is public by design and only ever lets a
+   submission be delivered to that one verified address.
 
-   2. `background-attachment: fixed` -> `scroll` on phones. A fixed background is
-      repainted against the viewport on every scroll frame, and the hero's is a
-      full-screen photo. iOS has never supported fixed attachment and already
-      renders it as `scroll`, so this only changes Android — and changes it to
-      what iPhone users have always seen.
-
-   Both are scoped to <=900px. Desktop keeps the fixed backgrounds, the parallax
-   and the promotion hints exactly as authored.
+   To switch providers instead (Formspree, FormSubmit, your own endpoint),
+   change ENDPOINT and the `payload` object — the rest of this file stands.
    ══════════════════════════════════════════════════════════════════════════ */
-/* On desktop #meet-sensei is a pinned stage: three canvases stacked in one grid cell,
-   and scroll progress adds .sn-p2 / .sn-p3 to cross-fade between them. Each phase rule
-   turns the two inactive canvases off with pointer-events:none so clicks fall through to
-   whichever one is showing.
+(function () {
+  var ENDPOINT   = "https://api.web3forms.com/submit";
+  var ACCESS_KEY = "PASTE_YOUR_WEB3FORMS_ACCESS_KEY_HERE";
+  var SENSEI_TO  = "yumegakanau22@gmail.com";   // shown in the error fallback only
 
-   Below 880px the pin is disabled and all three canvases are laid out one after another,
-   permanently visible. The phase classes are still applied by the script, though, and
-   `#meet-sensei.sn-p3 .rv-canvas` (0,2,0 + id) outranks the stacked-layout rule
-   `#meet-sensei .rv-canvas` (0,1,0 + id) — so from phase 3 onward the reviews inherited
-   pointer-events:none and stopped receiving touches while still being fully visible. The
-   stacked rule marks opacity and transform !important but not pointer-events, which is
-   why they looked fine and were simply inert: a swipe on the cards did nothing at all,
-   and the "Read full review" links could not be tapped.
-
-   The .fq-canvas is inert before phase 3 by the same mechanism, though in practice you
-   have reached phase 3 by the time it scrolls into view, so it worked. It is included
-   here for the same reason .sn-canvas is: on phones the phases are meaningless.
-
-   On phones every canvas is always on screen, so every canvas is always interactive. */
-@media (max-width: 880px) {
-  #meet-sensei .sn-canvas,
-  #meet-sensei .rv-canvas,
-  #meet-sensei .fq-canvas {
-    pointer-events: auto !important;
-  }
-}
-
-@media (max-width: 900px) {
-  #four-stages .fs-l,
-  #four-stages .fs-head > *,
-  #four-stages .fs-curriculum,
-  #four-stages .fs-card,
-  #four-stages .fs-bi,
-  #why-ygk .wy-l,
-  #why-ygk .wy-veil,
-  #why-ygk .wy-left > *,
-  #why-ygk .wy-card,
-  #meet-sensei .sn-l, #meet-sensei .sn-eyebrow, #meet-sensei .sn-erule,
-  #meet-sensei .sn-h2, #meet-sensei .sn-sub, #meet-sensei .sn-photo,
-  #meet-sensei .sn-badge, #meet-sensei .sn-quote,
-  #meet-sensei .sn-name, #meet-sensei .sn-role, #meet-sensei .sn-stat,
-  #meet-sensei .sn-panel, #meet-sensei .sn-plabel, #meet-sensei .sn-pl1rule,
-  #meet-sensei .sn-ptext, #meet-sensei .sn-plist, #meet-sensei .sn-pquote,
-  #meet-sensei .rv-eyebrow, #meet-sensei .rv-h2, #meet-sensei .rv-rule,
-  #meet-sensei .rv-sub, #meet-sensei .rv-card, #meet-sensei .rv-pager,
-  #stage-cta .cta-card, #stage-cta .cta-scene, #stage-cta .cta-bloom,
-  #stage-cta .cta-eyebrow, #stage-cta .cta-rule, #stage-cta .cta-h2,
-  #stage-cta .cta-sub, #stage-cta .cta-feat, #stage-cta .cta-div,
-  #stage-cta .cta-btnwrap,
-  .ab-l,
-  #contact-body .cb-l {
-    will-change: auto !important;
+  function fields(card) {
+    var out = {};
+    var els = card.querySelectorAll("[data-cbf]");
+    for (var i = 0; i < els.length; i++) out[els[i].dataset.cbf] = (els[i].value || "").trim();
+    return out;
   }
 
-  /* 3. The seven review cards each ask the GPU to blur whatever is behind them on
-        every frame they move. Their background is all but opaque, so the blur never
-        actually shows: measured on a 390px viewport, turning it off changes the card
-        by at most 7/255 on a single channel and moves ZERO pixels by a visible amount.
-        The frosted panels that genuinely read as glass -- .wy-card over the lake photo,
-        and .fs-card -- are deliberately left alone. */
-  #meet-sensei .rv-card {
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
+  function say(card, msg, ok) {
+    var el = card.querySelector(".cb-status");
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.toggle("is-ok", !!ok);
+    el.hidden = !msg;
   }
 
-  #ygk-hero .hr-bg,
-  #ygk-hero .hr-scrim,
-  #about-page .ab-bg, #about-page .ab-scrim,
-  #contact-page .cp-bg, #contact-page .cp-scrim {
-    background-attachment: scroll !important;
+  function flag(card, key, bad) {
+    var el = card.querySelector('[data-cbf="' + key + '"]');
+    if (el) el.style.borderColor = bad ? "rgba(233,80,106,.85)" : "";
   }
-}
-</style>
+
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest && e.target.closest(".cb-send");
+    if (!btn) return;
+
+    // Second pass: we already delivered, so let React show the thank-you panel.
+    if (btn.dataset.sent === "1") { delete btn.dataset.sent; return; }
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    var card = btn.closest(".cb-form") || document;
+    var f = fields(card);
+
+    flag(card, "name", false);
+    flag(card, "email", false);
+
+    if (!f.name) {
+      flag(card, "name", true);
+      return say(card, "Please add your name so Sensei knows who is writing.");
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email)) {
+      flag(card, "email", true);
+      return say(card, "That email does not look right — Sensei replies to this address.");
+    }
+    if (f.company) return;            // honeypot tripped: silently drop the bot
+
+    if (ACCESS_KEY.indexOf("PASTE_YOUR") === 0) {
+      return say(card, "This form is not connected yet. Please email " + SENSEI_TO + " directly.");
+    }
+
+    btn.classList.add("is-busy");
+    say(card, "Sending…", true);
+
+    var payload = {
+      access_key: ACCESS_KEY,
+      subject: "Trial class request — " + f.name,
+      from_name: "Yume Ga Kanau website",
+      replyto: f.email,
+      botcheck: "",
+      Name: f.name,
+      Email: f.email,
+      "Current level": f.level,
+      "What they want": f.goal,
+      "Anything else": f.notes || "—",
+      Page: location.href
+    };
+
+    fetch(ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify(payload)
+    })
+      .then(function (r) { return r.json().catch(function () { return { success: r.ok }; }); })
+      .then(function (data) {
+        if (!data || !data.success) throw new Error((data && data.message) || "send failed");
+        btn.classList.remove("is-busy");
+        say(card, "", true);
+        btn.dataset.sent = "1";
+        btn.click();                  // hand the click back to React → thank-you panel
+      })
+      .catch(function (err) {
+        btn.classList.remove("is-busy");
+        say(card, "Sorry — that did not go through. Please email " + SENSEI_TO + " directly.");
+        console.error("[trial-form]", err);
+      });
+  }, true);
+})();
+</script>
 </body>
+
 </html>
