@@ -4,8 +4,29 @@
    URLs, OG images and the sitemap are all resolved against it. Set
    NEXT_PUBLIC_SITE_URL in the Vercel project and this follows. */
 
+/* The site's own address, and the one value here that must be right.
+   Canonicals, og:url, the sitemap and every absolute URL in the JSON-LD resolve
+   against it — a canonical pointing at a domain the site does not actually
+   answer on is worse than none at all, because it tells Google to index that
+   other address instead of this one.
+
+   So the fallback is Vercel's own production URL rather than a guessed domain:
+   if NEXT_PUBLIC_SITE_URL is ever missing, the site still points at somewhere it
+   genuinely lives. VERCEL_PROJECT_PRODUCTION_URL is set by Vercel at build time
+   and has no scheme. Locally, with neither set, it falls back to localhost,
+   which is obviously wrong on sight — which is the point.
+
+   SITE.url must therefore never be read from a client component: only
+   NEXT_PUBLIC_* survives into the browser bundle. Nothing does today. */
+function siteUrl() {
+  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL)
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  return "http://localhost:3000";
+}
+
 export const SITE = {
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://yumegakanau.com",
+  url: siteUrl(),
   name: "Yume Ga Kanau™",
   legalName: "Yume Ga Kanau Japanese Learning Institute",
   email: "yumegakanau22@gmail.com",
