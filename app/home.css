@@ -1,0 +1,1039 @@
+/* Home route sections: hero, students band, four stages, why-ygk,
+   meet-sensei + reviews, FAQ, stage CTA. Verbatim from the original. */
+
+  /* assets/hero-bg.webp is exported from the supplied `HERO BACKGROUND .png` (1860×845),
+     which is left in place. The plate is bright on its right half and near-black on its
+     left, so the copy column sits on the dark side and .hr-scrim only has to deepen it. */
+  /* The header is fixed and transparent, so this section starts at the top of the page and
+     the plate simply fills it — the bar floats over the art. Only .hr-inner offsets by
+     --navh so the copy clears the links. */
+  /* overflow:hidden — the opening scales .hr-bg to 1.07, and without this the overshoot
+     widens the page and flashes a horizontal scrollbar. Nothing needs to escape the section
+     any more: the bar is fixed, so the hero already starts at the top of the page. */
+  #ygk-hero{position:relative;overflow:hidden;isolation:isolate;background:#0A1130}
+  /* The plate holds still while the copy travels over it — done with
+     background-attachment:fixed, NOT position:fixed. A fixed *element* is viewport-sized and
+     nothing clips it (overflow:hidden does not), so it showed through every transparent gap
+     between the sections further down the page. A fixed *background* is anchored to the
+     viewport the same way but is still painted only inside this element's box.
+     Caveat: a transform/filter/contain on .hr-bg or any ancestor re-anchors the background
+     to that element — which is why the opening animation below fades and does not scale.
+     The fade into #students-section stays in flow as .hr-foot. */
+  #ygk-hero .hr-bg{position:absolute;inset:0;z-index:0;pointer-events:none;
+    background-image:url("/assets/hero-bg.webp");
+    background-position:52% 52%;background-size:cover;background-attachment:fixed;
+    background-repeat:no-repeat}
+  #ygk-hero .hr-scrim{position:absolute;inset:0;z-index:1;pointer-events:none;
+    background-image:
+      linear-gradient(97deg,rgba(6,10,32,.90) 0%,rgba(6,10,32,.82) 24%,rgba(6,10,32,.52) 44%,rgba(6,10,32,.16) 64%,rgba(6,10,32,.06) 100%),
+      linear-gradient(180deg,rgba(6,10,32,.42) 0%,rgba(6,10,32,0) 22%,rgba(6,10,32,0) 100%);
+    background-attachment:fixed,fixed;background-size:cover,cover}
+  /* in flow, so the hand-off lands on the section's bottom edge and not the viewport's */
+  #ygk-hero .hr-foot{position:absolute;left:0;right:0;bottom:0;z-index:1;pointer-events:none;
+    height:clamp(90px,15vh,190px);
+    background:linear-gradient(180deg,rgba(16,23,51,0) 0%,rgba(16,23,51,.55) 52%,rgba(16,23,51,.88) 82%,#101733 100%)}
+  #ygk-hero .hr-inner{position:relative;z-index:2;max-width:1280px;margin:0 auto;
+    padding:calc(var(--navh) + clamp(24px,4vw,52px)) 28px clamp(38px,5.5vw,64px);
+    display:grid;grid-template-columns:1.05fr 0.95fr;gap:48px;align-items:center}
+  /* ── opening ──
+     CSS animations, not JS state classes: the dc-runtime rebuilds this subtree and wipes
+     className, so an animation that lives in the stylesheet simply replays on mount (which
+     is what you want when you land back on Home) instead of getting stuck half-played.
+     fill:both holds the "from" before the delay and the neutral "to" after, so nothing is
+     left transformed once the opening is over. */
+  /* the plate fades only — a transform on it would re-anchor its fixed background to the
+     element and the scene would scroll with the section again */
+  @keyframes hrPlate{from{opacity:0}to{opacity:1}}
+  @keyframes hrVeil{from{opacity:0}to{opacity:1}}
+  @keyframes hrRise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  @keyframes hrArt{from{opacity:0;transform:translateY(16px) scale(.965)}to{opacity:1;transform:none}}
+  #ygk-hero .hr-bg{animation:hrPlate 1.6s cubic-bezier(.22,.61,.36,1) both}
+  #ygk-hero .hr-scrim{animation:hrVeil 1.2s ease both}
+  #ygk-hero .hr-copy > *{animation:hrRise .9s cubic-bezier(.22,.61,.36,1) both}
+  #ygk-hero .hr-copy > *:nth-child(1){animation-delay:.20s}
+  #ygk-hero .hr-copy > *:nth-child(2){animation-delay:.32s}
+  #ygk-hero .hr-copy > *:nth-child(3){animation-delay:.46s}
+  #ygk-hero .hr-copy > *:nth-child(4){animation-delay:.58s}
+  #ygk-hero .hr-copy > *:nth-child(5){animation-delay:.70s}
+  /* the entrance sits on the column, so the emblem's own ygkFloat idle is left alone */
+  #ygk-hero .hr-art{animation:hrArt 1.2s .34s cubic-bezier(.22,.61,.36,1) both}
+  @media (prefers-reduced-motion:reduce){
+    #ygk-hero .hr-bg,#ygk-hero .hr-scrim,#ygk-hero .hr-copy > *,#ygk-hero .hr-art{
+      animation:hrVeil .01s both}
+  }
+
+  @media (max-width:860px){
+    /* stacked, so the copy no longer has a dark half to sit on — veil the whole plate */
+    #ygk-hero .hr-inner{grid-template-columns:1fr}
+    /* flat veil only — .hr-foot still draws the hand-off at the section's own bottom edge */
+    #ygk-hero .hr-scrim{background:
+      linear-gradient(180deg,rgba(6,10,32,.86) 0%,rgba(6,10,32,.74) 40%,rgba(6,10,32,.70) 100%)}
+  }
+  
+
+  /* #000e2a is the shared ground for this run of dark sections — #four-stages and
+     #why-ygk must carry the same value or a navy step shows at the join */
+  #four-stages{background:#000e2a;padding:clamp(20px,3.5vw,56px) 0;overflow:hidden}
+  #four-stages .fs-canvas{position:relative;width:100%;max-width:1600px;margin:0 auto;aspect-ratio:1672/941;container-type:inline-size}
+  #four-stages .fs-layer{position:absolute;inset:0}
+
+  /* ── layered scene ──
+     L-*.png are cut from the original composite by solving C = a·E + (1-a)·B against the
+     clean plate, so base + layers reproduces stages-bg.png exactly (max error 13/255).
+     Geometry below is measured, not eyeballed — do not hand-tune. */
+  #four-stages .fs-scene{position:absolute;inset:0;overflow:hidden;border-radius:14px}
+  #four-stages .fs-l{position:absolute;display:block;pointer-events:none;height:auto}
+  #four-stages .fs-base{inset:0;width:100%;height:100%;object-fit:cover}
+  #four-stages .fs-mountain{left:46.053%;top:8.714%;width:28.469%}
+  #four-stages .fs-bloom{left:53.289%;top:0;width:46.711%}
+  #four-stages .fs-torii-1{left:9.569%;top:34.963%;width:18.600%}
+  #four-stages .fs-torii-2{left:39.175%;top:41.233%;width:13.457%}
+  #four-stages .fs-torii-3{left:65.072%;top:42.933%;width:10.167%}
+  #four-stages .fs-torii-4{left:84.629%;top:26.142%;width:14.474%}
+  #four-stages .fs-circ{transform-origin:center center}
+  #four-stages .fs-circle-1{left:4.067%;top:36.238%;width:6.519%}
+  #four-stages .fs-circle-2{left:34.450%;top:42.614%;width:4.545%}
+  #four-stages .fs-circle-3{left:57.177%;top:44.315%;width:9.629%}
+  #four-stages .fs-circle-4{left:77.093%;top:34.857%;width:12.081%}
+  #four-stages .fs-bar-img{left:7.656%;top:79.915%;width:84.809%}
+  #four-stages .fs-bg-mobile{display:none}
+
+  /* ── entrance / exit animation (armed by JS via .fs-anim; toggled by .fs-in) ── */
+  #four-stages .fs-l,
+  #four-stages .fs-head > *,
+  #four-stages .fs-curriculum,
+  #four-stages .fs-card,
+  #four-stages .fs-bi{
+    transition:opacity .8s cubic-bezier(.22,.61,.36,1), transform .9s cubic-bezier(.22,.61,.36,1),
+      background .35s ease, border-color .35s ease, color .35s ease;
+    will-change:opacity, transform}
+  #four-stages.fs-anim:not(.fs-in) .fs-base{opacity:0}
+  #four-stages.fs-anim:not(.fs-in) .fs-mountain{opacity:0;transform:translateY(14%)}
+  #four-stages.fs-anim:not(.fs-in) .fs-bloom{opacity:0;transform:translate(2.5%,-5%)}
+  #four-stages.fs-anim:not(.fs-in) .fs-torii{opacity:0;transform:translateY(26%)}
+  #four-stages.fs-anim:not(.fs-in) .fs-circ{opacity:0;transform:scale(.55)}
+  #four-stages.fs-anim:not(.fs-in) .fs-bar-img{opacity:0;transform:translateY(34%)}
+  #four-stages.fs-anim:not(.fs-in) .fs-head > *{opacity:0;transform:translateY(20px)}
+  #four-stages.fs-anim:not(.fs-in) .fs-head > .fs-sub{transform:translateX(-28px)}
+  #four-stages.fs-anim:not(.fs-in) .fs-curriculum{opacity:0;transform:translateX(30px)}
+  #four-stages.fs-anim:not(.fs-in) .fs-card{opacity:0;transform:translateY(32px)}
+  /* .fs-bi is centred with translateY(-50%) — keep it while offsetting */
+  #four-stages.fs-anim:not(.fs-in) .fs-bi{opacity:0;transform:translateY(calc(-50% + 24px))}
+
+  /* stagger (applies on the way in; reverses on the way out) */
+  #four-stages .fs-mountain{transition-delay:.05s}
+  #four-stages .fs-torii-1{transition-delay:.12s}
+  #four-stages .fs-torii-2{transition-delay:.19s}
+  #four-stages .fs-torii-3{transition-delay:.26s}
+  #four-stages .fs-torii-4{transition-delay:.33s}
+  #four-stages .fs-bar-img{transition-delay:.22s}
+  #four-stages .fs-bloom{transition-delay:.30s}
+  #four-stages .fs-circle-1{transition-delay:.40s}
+  #four-stages .fs-circle-2{transition-delay:.47s}
+  #four-stages .fs-circle-3{transition-delay:.54s}
+  #four-stages .fs-circle-4{transition-delay:.61s}
+  #four-stages .fs-head > .fs-eyebrow{transition-delay:.10s}
+  #four-stages .fs-head > .fs-title{transition-delay:.16s}
+  #four-stages .fs-head > .fs-rule{transition-delay:.22s}
+  #four-stages .fs-head > .fs-sub{transition-delay:.30s}
+  #four-stages .fs-curriculum{transition-delay:.40s}
+  #four-stages .fs-card1{transition-delay:.34s}
+  #four-stages .fs-card2{transition-delay:.42s}
+  #four-stages .fs-card3{transition-delay:.50s}
+  #four-stages .fs-card4{transition-delay:.58s}
+  #four-stages .fs-bi1{transition-delay:.30s}
+  #four-stages .fs-bi2{transition-delay:.38s}
+  #four-stages .fs-bi3{transition-delay:.46s}
+  #four-stages .fs-bi4{transition-delay:.54s}
+
+  @media (prefers-reduced-motion:reduce){
+    #four-stages .fs-l,#four-stages .fs-head > *,#four-stages .fs-curriculum,#four-stages .fs-card,#four-stages .fs-bi{
+      transition:opacity .3s linear !important;transform:none !important}
+    #four-stages.fs-anim:not(.fs-in) .fs-l,
+    #four-stages.fs-anim:not(.fs-in) .fs-head > *,
+    #four-stages.fs-anim:not(.fs-in) .fs-curriculum,
+    #four-stages.fs-anim:not(.fs-in) .fs-card,
+    #four-stages.fs-anim:not(.fs-in) .fs-bi{opacity:1;transform:none !important}
+  }
+
+  #four-stages .fs-head{position:absolute;left:3.4%;top:3.2%;width:52%}
+  #four-stages .fs-eyebrow{font-family:'Nunito Sans',sans-serif;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#E6A44C;font-size:.86cqw;margin-bottom:1.5cqw}
+  #four-stages .fs-title{font-family:'Komika Axis',Impact,'Arial Black',sans-serif;font-weight:700;color:#F7F3EA;font-size:2.15cqw;line-height:1.14;letter-spacing:.01em;margin:0;text-shadow:0 2px 22px rgba(0,3,15,.7)}
+  #four-stages .fs-rule{width:6cqw;height:.26cqw;background:linear-gradient(90deg,#C4082E,#E0632F);border-radius:2px;margin:1.6cqw 0 1.5cqw}
+  #four-stages .fs-sub{font-family:'Nunito Sans',sans-serif;color:#C9D2EC;font-size:1.04cqw;line-height:1.62;margin:0;max-width:33cqw;text-shadow:0 1px 14px rgba(0,3,15,.85)}
+
+  #four-stages .fs-curriculum{position:absolute;right:3.6%;top:12.5%;font-family:'Nunito Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#FFFFFF;font-size:.95cqw;cursor:pointer;text-shadow:0 1px 3px rgba(0,3,15,.8);
+    display:inline-block;padding:.8em 1.5em;border-radius:999px;
+    background:rgba(9,13,36,.62);border:1px solid rgba(217,162,75,.20);
+    -webkit-backdrop-filter:blur(14px) saturate(135%);backdrop-filter:blur(14px) saturate(135%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 8px 26px rgba(0,4,20,.34);}
+  #four-stages .fs-curriculum:hover{color:#FFFFFF;background:rgba(14,20,52,.72);
+    border-color:rgba(217,162,75,.44)}
+
+  #four-stages .fs-card{position:absolute;width:20cqw;text-shadow:0 1px 10px rgba(0,3,15,.95),0 0 26px rgba(0,3,15,.78)}
+  #four-stages .fs-card .lvl{font-family:'Nunito Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#B4BCD8;font-size:.82cqw;margin-bottom:.8cqw}
+  #four-stages .fs-card h3{font-family:'Zen Old Mincho',serif;font-weight:600;color:#F7F3EA;font-size:1.62cqw;line-height:1.16;margin:0 0 .85cqw}
+  #four-stages .fs-card p{font-family:'Nunito Sans',sans-serif;color:#C6CEE8;font-size:.95cqw;line-height:1.55;margin:0 0 1.15cqw}
+  #four-stages .fs-btn{display:inline-flex;align-items:center;gap:.6cqw;font-family:'Nunito Sans',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#F7F3EA;font-size:.72cqw;padding:.72cqw 1.25cqw;border:1px solid rgba(226,74,74,.55);border-radius:999px;cursor:pointer;background:rgba(8,12,32,.4);text-shadow:none}
+  #four-stages .fs-btn:hover{border-color:#E24A4A;background:rgba(196,8,46,.18)}
+  #four-stages .fs-btn span{color:#E24A4A}
+  #four-stages .fs-card1{left:3.4%;top:44%}
+  #four-stages .fs-card2{left:33%;top:52%}
+  #four-stages .fs-card3{left:54.5%;top:51%;width:16.5cqw}
+  #four-stages .fs-card4{left:72%;top:44%;width:19cqw}
+
+  #four-stages .fs-bar{position:absolute;inset:0;pointer-events:none}
+  #four-stages .fs-bi{position:absolute;top:89%;transform:translateY(-50%)}
+  #four-stages .fs-bi b{display:block;font-family:'Nunito Sans',sans-serif;font-weight:700;color:#F2ECDF;font-size:.95cqw;margin-bottom:.4cqw}
+  #four-stages .fs-bi p{margin:0;font-family:'Nunito Sans',sans-serif;color:#A9B2CE;font-size:.75cqw;line-height:1.45}
+  #four-stages .fs-bi1{left:19%;width:14.5%}
+  #four-stages .fs-bi2{left:38.3%;width:16.5%}
+  #four-stages .fs-bi3{left:59.6%;width:13%}
+  #four-stages .fs-bi4{left:76%;width:15.5%}
+
+  @media (max-width:900px){
+    #four-stages{padding:0}
+    #four-stages .fs-canvas{aspect-ratio:auto;max-width:none;position:relative;padding:44px 20px 40px;background:#05102b;overflow:hidden}
+    #four-stages .fs-scene{display:none}
+    #four-stages .fs-bg-mobile{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.18;border-radius:0}
+    #four-stages .fs-layer,#four-stages .fs-head,#four-stages .fs-curriculum,#four-stages .fs-card,#four-stages .fs-bar,#four-stages .fs-bi{position:static;width:auto;max-width:100%;transform:none;text-shadow:none;inset:auto}
+    /* keep the stacked layout static — animate as a gentle fade only */
+    #four-stages.fs-anim:not(.fs-in) .fs-head > *,
+    #four-stages.fs-anim:not(.fs-in) .fs-curriculum,
+    #four-stages.fs-anim:not(.fs-in) .fs-card,
+    #four-stages.fs-anim:not(.fs-in) .fs-bi{transform:none !important}
+    #four-stages .fs-head{margin-bottom:22px}
+    #four-stages .fs-eyebrow{font-size:11px;margin-bottom:12px}
+    #four-stages .fs-title{font-size:clamp(18px,5.4vw,26px);line-height:1.22}
+    #four-stages .fs-rule{width:62px;height:3px;margin:14px 0}
+    #four-stages .fs-sub{font-size:14px;max-width:none}
+    #four-stages .fs-curriculum{display:inline-block;margin:8px 0 26px;font-size:12px;padding:.7em 1.3em}
+    #four-stages .fs-card{margin:0 0 16px;padding:18px;background:rgba(9,15,38,.66);border:1px solid rgba(217,162,75,.18);border-radius:12px;backdrop-filter:blur(3px)}
+    #four-stages .fs-card .lvl{font-size:11px;margin-bottom:8px}
+    #four-stages .fs-card h3{font-size:21px;margin-bottom:8px}
+    #four-stages .fs-card p{font-size:13.5px;margin-bottom:14px}
+    #four-stages .fs-btn{font-size:11px;gap:8px;padding:9px 16px}
+    #four-stages .fs-bar{display:flex;flex-direction:column;gap:16px;margin-top:24px;pointer-events:auto}
+    #four-stages .fs-bi b{font-size:14px;margin-bottom:4px}
+    #four-stages .fs-bi p{font-size:12px}
+  }
+  
+
+  /* same ground as #four-stages above it — #0A1130 here read as a lighter band and the
+     client saw it as a border between the two sections */
+  #why-ygk{position:relative;overflow:hidden;background:#000e2a;isolation:isolate;min-height:clamp(580px,45vw,760px);display:flex;align-items:center}
+  #why-ygk .wy-scene{position:absolute;inset:0;z-index:0;pointer-events:none}
+  #why-ygk .wy-l{position:absolute;display:block}
+  #why-ygk .wy-bg{inset:0;width:100%;height:100%;object-fit:cover;object-position:22% 72%}
+  /* scrim keeps the left copy legible over the lake */
+  #why-ygk .wy-scrim{position:absolute;inset:0;background:linear-gradient(102deg,rgba(8,14,40,.62) 0%,rgba(8,14,40,.34) 32%,rgba(8,14,40,.14) 54%,rgba(8,14,40,.40) 100%),linear-gradient(180deg,rgba(8,14,40,.34) 0%,rgba(8,14,40,0) 38%,rgba(8,14,40,0) 70%,rgba(8,14,40,.34) 100%)}
+  /* the lake photo is lighter than the ground above it, so its top edge read as a border
+     against #four-stages. Sits above the plate but below the bloom, so the sakura stays lit. */
+  #why-ygk .wy-topfade{position:absolute;left:0;right:0;top:0;height:clamp(70px,8vw,128px);
+    pointer-events:none;
+    background:linear-gradient(180deg,#000e2a 0%,rgba(0,14,42,.86) 26%,rgba(0,14,42,.52) 56%,rgba(0,14,42,.20) 80%,rgba(0,14,42,0) 100%)}
+  #why-ygk .wy-bloom{left:-5.5%;top:-11%;width:25%;height:auto;transform-origin:top left}
+  #why-ygk .wy-anchor{position:absolute;left:0;right:0;bottom:0;top:0;max-width:1280px;margin:0 auto}
+  /* the stone base is masked away before the section edge can slice it, so the rocks
+     dissolve into the seam mist instead of ending on a straight line */
+  #why-ygk .wy-torii{left:18.2%;bottom:0;width:28.7%;height:auto;opacity:.8;transform:translateY(10.2%);transform-origin:bottom center;filter:drop-shadow(0 18px 42px rgba(0,3,16,.55));
+    -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 70%,rgba(0,0,0,.60) 82%,rgba(0,0,0,.16) 91%,transparent 97%);
+    mask-image:linear-gradient(180deg,#000 0%,#000 70%,rgba(0,0,0,.60) 82%,rgba(0,0,0,.16) 91%,transparent 97%)}
+  /* veil sits above the torii but below .wy-inner, so the left copy stays legible
+     over the bright red pillar. Anchored to the same 1280 box as the torii. */
+  #why-ygk .wy-veil{position:absolute;left:0;right:0;top:0;bottom:0;max-width:1280px;margin:0 auto;pointer-events:none;
+    background:radial-gradient(34% 42% at 11% 60%,rgba(7,12,36,.60) 0%,rgba(7,12,36,.40) 46%,rgba(7,12,36,.14) 74%,rgba(7,12,36,0) 100%)}
+
+  /* ── seam into the light #meet-sensei band ──
+     Dawn mist rising at the foot of the torii, landing on exactly the colour the next
+     section opens with (#FBFAFE), so navy→light reads as fog rather than a cut. Sits
+     above .wy-inner (z2) — the copy is centred and clears it. */
+  #why-ygk .wy-seam{position:absolute;left:0;right:0;bottom:0;z-index:2;pointer-events:none;
+    height:clamp(112px,13vw,182px);
+    background:linear-gradient(180deg,rgba(251,250,254,0) 0%,rgba(226,224,246,.09) 30%,rgba(236,234,250,.26) 55%,rgba(244,242,252,.58) 76%,rgba(249,248,253,.88) 90%,#FBFAFE 100%)}
+  /* a low warm glow on the horizon line so the mist has a light source */
+  #why-ygk .wy-seam::after{content:"";position:absolute;left:0;right:0;bottom:0;height:64%;
+    background:radial-gradient(58% 100% at 34% 116%,rgba(255,214,196,.30) 0%,rgba(246,226,238,.14) 46%,transparent 78%)}
+
+  #why-ygk .wy-inner{position:relative;z-index:1;width:100%;max-width:1280px;margin:0 auto;padding:clamp(60px,6vw,88px) 28px clamp(78px,8vw,116px);display:grid;grid-template-columns:0.82fr 1.18fr;gap:clamp(28px,4vw,60px);align-items:center}
+
+  #why-ygk .wy-eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#D9A24B;margin-bottom:14px}
+  #why-ygk .wy-h2{font-family:'Komika Axis',Impact,'Arial Black',sans-serif;font-size:clamp(28px,4.4vw,44px);font-weight:700;letter-spacing:.01em;color:#F7F3EA;margin:0;line-height:1.16;text-shadow:0 2px 24px rgba(0,4,18,.75)}
+  #why-ygk .wy-rule{width:64px;height:3px;background:linear-gradient(90deg,#E24A4A,#C4082E);border-radius:2px;margin:20px 0}
+  #why-ygk .wy-p{font-size:15.5px;line-height:1.85;color:#C9D2EC;margin:0 0 18px;max-width:34ch;text-shadow:0 1px 12px rgba(0,4,18,.8)}
+  #why-ygk .wy-quote{font-family:'Zen Old Mincho',serif;font-size:17px;font-style:italic;color:#F08DA0;text-shadow:0 1px 12px rgba(0,4,18,.85)}
+
+  /* ── translucent glassmorphic cards ── */
+  #why-ygk .wy-cards{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,1.5vw,20px)}
+  #why-ygk .wy-card{position:relative;display:flex;gap:16px;padding:22px 22px 24px;border-radius:16px;background:linear-gradient(148deg,rgba(255,255,255,.085),rgba(255,255,255,.022));-webkit-backdrop-filter:blur(16px) saturate(135%);backdrop-filter:blur(16px) saturate(135%);border:1px solid rgba(255,255,255,.14);box-shadow:0 10px 34px rgba(0,3,16,.34),inset 0 1px 0 rgba(255,255,255,.13);transition:transform .45s cubic-bezier(.22,.61,.36,1),border-color .45s ease,box-shadow .45s ease,opacity .8s cubic-bezier(.22,.61,.36,1)}
+  #why-ygk .wy-card::after{content:"";position:absolute;inset:0;border-radius:16px;pointer-events:none;background:radial-gradient(120% 90% at 12% 0%,rgba(226,74,74,.16),transparent 58%);opacity:0;transition:opacity .45s ease}
+  #why-ygk .wy-card:hover{transform:translateY(-4px);border-color:rgba(226,74,74,.42);box-shadow:0 16px 44px rgba(0,3,16,.46),inset 0 1px 0 rgba(255,255,255,.18)}
+  #why-ygk .wy-card:hover::after{opacity:1}
+  #why-ygk .wy-ic{flex:0 0 auto;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 34% 28%,rgba(226,74,74,.20),rgba(10,16,44,.55));border:1px solid rgba(226,74,74,.30)}
+  #why-ygk .wy-ic img{width:56%;height:56%;object-fit:contain;display:block}
+  #why-ygk .wy-ja{font-family:'Zen Old Mincho',serif;font-size:13px;letter-spacing:.06em;color:#D9A24B;margin-bottom:5px}
+  #why-ygk .wy-card h3{font-family:'Zen Old Mincho',serif;font-size:18px;font-weight:600;color:#F7F3EA;margin:0;line-height:1.28}
+  #why-ygk .wy-crule{width:34px;height:2px;background:#E24A4A;border-radius:2px;margin:11px 0 10px}
+  #why-ygk .wy-card p{font-size:13.5px;line-height:1.72;color:#B9C2DE;margin:0}
+
+  /* ── entrance / exit (armed by JS: .fs-anim + .fs-in) ── */
+  #why-ygk .wy-l,#why-ygk .wy-veil,#why-ygk .wy-left > *,#why-ygk .wy-card{transition:opacity .85s cubic-bezier(.22,.61,.36,1),transform .95s cubic-bezier(.22,.61,.36,1);will-change:opacity,transform}
+  #why-ygk.fs-anim:not(.fs-in) .wy-bg{opacity:0;transform:scale(1.06)}
+  #why-ygk.fs-anim:not(.fs-in) .wy-veil{opacity:0}
+  #why-ygk.fs-anim:not(.fs-in) .wy-bloom{opacity:0;transform:translate(-9%,-11%) rotate(-4deg)}
+  #why-ygk.fs-anim:not(.fs-in) .wy-torii{opacity:0;transform:translateY(27.2%) scale(.97)}
+  #why-ygk.fs-anim:not(.fs-in) .wy-left > *{opacity:0;transform:translateX(-32px)}
+  #why-ygk.fs-anim:not(.fs-in) .wy-left > .wy-rule{transform:translateX(-32px) scaleX(.2)}
+  #why-ygk.fs-anim:not(.fs-in) .wy-card{opacity:0;transform:translateY(34px) scale(.965)}
+
+  /* stagger — reverses on the way out */
+  #why-ygk .wy-bloom{transition-delay:.10s}
+  #why-ygk .wy-torii{transition-delay:.20s}
+  #why-ygk .wy-left > .wy-eyebrow{transition-delay:.14s}
+  #why-ygk .wy-left > .wy-h2{transition-delay:.21s}
+  #why-ygk .wy-left > .wy-rule{transition-delay:.29s;transform-origin:left center}
+  #why-ygk .wy-left > .wy-p{transition-delay:.36s}
+  #why-ygk .wy-left > .wy-quote{transition-delay:.44s}
+  #why-ygk .wy-card:nth-child(1){transition-delay:.34s}
+  #why-ygk .wy-card:nth-child(2){transition-delay:.43s}
+  #why-ygk .wy-card:nth-child(3){transition-delay:.52s}
+  #why-ygk .wy-card:nth-child(4){transition-delay:.61s}
+
+  @media (max-width:1279px) and (min-width:981px){
+    #why-ygk .wy-quote{max-width:23ch}
+  }
+  @media (max-width:980px){
+    #why-ygk{min-height:0;display:block}
+    /* extra top padding so the eyebrow clears the blossom branch */
+    #why-ygk .wy-inner{grid-template-columns:1fr;gap:30px;padding:clamp(126px,17vw,168px) 22px clamp(56px,8vw,88px)}
+    #why-ygk .wy-bloom{width:27%;left:-4%;top:-4%}
+    /* tucked into the corner and faint so it cannot smear through the glass */
+    #why-ygk .wy-anchor{max-width:none}
+    #why-ygk .wy-veil{display:none}
+    #why-ygk .wy-torii{left:auto;right:-7%;bottom:0;width:33%;opacity:.20;transform:none}
+    /* shorter, so it cannot reach the stacked copy */
+    #why-ygk .wy-seam{height:clamp(64px,11vw,104px)}
+    #why-ygk .wy-scrim{background:linear-gradient(180deg,rgba(8,14,40,.72),rgba(8,14,40,.58) 45%,rgba(8,14,40,.86))}
+    #why-ygk .wy-p{max-width:none}
+    #why-ygk .wy-quote{max-width:none}
+  }
+  @media (max-width:620px){
+    #why-ygk .wy-cards{grid-template-columns:1fr}
+    #why-ygk .wy-torii{display:none}
+    #why-ygk .wy-bloom{width:42%}
+    #why-ygk .wy-inner{padding:clamp(112px,30vw,150px) 20px 56px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    #why-ygk .wy-l,#why-ygk .wy-left > *,#why-ygk .wy-card{transition:opacity .3s linear !important;transform:none !important}
+    #why-ygk.fs-anim:not(.fs-in) .wy-l,
+    #why-ygk.fs-anim:not(.fs-in) .wy-veil,
+    #why-ygk.fs-anim:not(.fs-in) .wy-left > *,
+    #why-ygk.fs-anim:not(.fs-in) .wy-card{opacity:1;transform:none !important}
+  }
+  
+
+  #meet-sensei{position:relative;padding:0;height:380vh;overflow-x:clip;
+    background:linear-gradient(180deg,#FBFAFE 0%,#F5F2FC 46%,#F8F6FD 100%);
+    --cw:min(1672px, 100%, calc(100vh * 1672 / 941));
+    --cwv:min(1672px, 100vw, calc(100vh * 1672 / 941))}
+  /* one fixed-ratio canvas (matches the 1672x941 reference exactly); every child is placed
+     in % and every type size in cqw, so the composition holds at any width */
+  #meet-sensei .sn-canvas{position:relative;width:100%;
+    max-width:var(--cw);margin:0 auto;z-index:1;
+    aspect-ratio:1672/941;container-type:inline-size;overflow:hidden}
+  #meet-sensei .sn-l{position:absolute;display:block;pointer-events:none}
+
+  /* ── scene ── */
+  #meet-sensei .sn-scene{position:absolute;z-index:0;left:auto;
+    right:calc(var(--cw) * -0.0009);top:calc(var(--cw) * -0.02707);
+    width:calc(var(--cw) * 0.96);height:auto;opacity:.9;
+    -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 74%,transparent 99%);
+    mask-image:linear-gradient(180deg,#000 0%,#000 74%,transparent 99%)}
+  #meet-sensei .sn-cloud1{left:3.9%;top:29.5%;width:7.4%;opacity:.75}
+  #meet-sensei .sn-cloud2{left:2.4%;top:39.8%;width:6.4%;opacity:.62}
+  #meet-sensei .sn-cloud3{left:25.4%;top:38.5%;width:5.6%;opacity:.5}
+  #meet-sensei .sn-petal1{left:4.3%;top:56.2%;width:2.5%;opacity:.7}
+  #meet-sensei .sn-petal2{left:26.6%;top:31.4%;width:2.9%;opacity:.55}
+
+  /* ── the growing / swaying blossom, rooted at the photo's lower-left ── */
+  #meet-sensei .sn-flower{position:absolute;width:6.48%;transform-origin:88% 92%;pointer-events:none}
+  #meet-sensei .sn-flower img{display:block;width:100%;height:auto;transform-origin:88% 92%;
+    transform:rotate(-20deg)}
+  #meet-sensei .sn-flower-l{left:1.75%;top:54.0%}
+  /* mirrored twin on the far side of the photo, sitting higher up the frame.
+     The flip lives on its own wrapper so it never fights the grow or the sway. */
+  #meet-sensei .sn-flower-r{left:24.8%;top:39.5%;transform-origin:12% 92%}
+  #meet-sensei .sn-fmirror{display:block;transform:scaleX(-1)}
+
+  /* ── headline block ── */
+  #meet-sensei .sn-eyebrow{position:absolute;left:4.5%;top:4.0%;display:flex;align-items:center;gap:.55cqw;
+    font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:.84cqw;letter-spacing:.2em;
+    text-transform:uppercase;color:#1E2448}
+  #meet-sensei .sn-eyebrow img{width:1.05cqw;height:auto;display:block}
+  #meet-sensei .sn-erule{position:absolute;left:4.5%;top:7.3%;width:2.1%;height:.18cqw;
+    background:#7C3AED;border-radius:2px}
+  #meet-sensei .sn-h2{position:absolute;left:4.5%;top:8.9%;width:48%;margin:0;
+    font-family:'Komika Axis',Impact,'Arial Black',sans-serif;font-weight:700;font-size:2.52cqw;line-height:1.3;
+    color:#241C55;letter-spacing:.01em}
+  #meet-sensei .sn-sub{position:absolute;left:4.5%;top:22.0%;width:32%;margin:0;
+    font-family:'Nunito Sans',sans-serif;font-size:1.06cqw;line-height:1.62;color:#4A4468}
+
+  /* ── portrait ── */
+  #meet-sensei .sn-photo{position:absolute;left:7.0%;top:30.9%;width:19.1%;height:41.9%;
+    border-radius:1.0cqw;overflow:hidden;box-shadow:0 1.4cqw 3.2cqw rgba(60,40,120,.16)}
+  #meet-sensei .sn-photo img{width:100%;height:100%;object-fit:cover;object-position:52% 34%;display:block}
+  #meet-sensei .sn-badge{position:absolute;left:8.0%;top:67.0%;display:flex;align-items:center;gap:.5cqw;
+    padding:.52cqw 1.0cqw;border-radius:999px;background:rgba(255,255,255,.9);
+    -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+    box-shadow:0 .4cqw 1.2cqw rgba(60,40,120,.16);
+    font-family:'Nunito Sans',sans-serif;font-size:.86cqw;font-weight:600;color:#3B3358}
+  #meet-sensei .sn-badge img{width:1.0cqw;height:auto;display:block}
+
+  /* ── pull quote ── */
+  #meet-sensei .sn-qmark{left:31.4%;top:31.8%;width:2.5%}
+  #meet-sensei .sn-quote{position:absolute;left:31.4%;top:36.6%;width:33%;margin:0;
+    font-family:'Zen Old Mincho',serif;font-size:1.42cqw;line-height:1.72;color:#241C55}
+  #meet-sensei .sn-name{position:absolute;left:31.4%;top:55.6%;
+    font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:.92cqw;letter-spacing:.14em;
+    text-transform:uppercase;color:#1E2448}
+  #meet-sensei .sn-role{position:absolute;left:31.4%;top:58.8%;
+    font-family:'Nunito Sans',sans-serif;font-size:.92cqw;color:#4A4468}
+
+  /* ── stat strip ── */
+  #meet-sensei .sn-stat{position:absolute;top:62.6%}
+  #meet-sensei .sn-stat::before{content:"";position:absolute;left:-1.1cqw;top:.3cqw;bottom:.3cqw;
+    width:1px;background:#E2DAF3}
+  #meet-sensei .sn-stat:first-of-type::before{display:none}
+  #meet-sensei .sn-stat img{width:1.85cqw;height:auto;display:block;margin-bottom:.7cqw}
+  #meet-sensei .sn-stat b{display:block;font-family:'Nunito Sans',sans-serif;font-weight:700;
+    font-size:.98cqw;color:#241C55;margin-bottom:.42cqw}
+  #meet-sensei .sn-stat p{margin:0;font-family:'Nunito Sans',sans-serif;font-size:.88cqw;
+    line-height:1.56;color:#5A5378}
+  #meet-sensei .sn-s1{left:31.4%;width:14.2%}
+  #meet-sensei .sn-s2{left:47.0%;width:13.2%}
+  #meet-sensei .sn-s3{left:62.6%;width:11.6%}
+  #meet-sensei .sn-s4{left:78.2%;width:13.4%}
+  /* icon sits beside the label in the reference, not above it */
+  #meet-sensei .sn-stat{display:grid;grid-template-columns:auto 1fr;column-gap:.85cqw;align-items:start}
+  #meet-sensei .sn-stat img{grid-row:1/3;margin-bottom:0;margin-top:.1cqw}
+
+  /* ── bottom panel ── */
+  #meet-sensei .sn-panel{position:absolute;left:3.6%;top:75.5%;width:92.8%;height:21.4%;
+    border:1px solid #E6DEF6;border-radius:.85cqw;background:rgba(255,255,255,.5)}
+  #meet-sensei .sn-pdiv{position:absolute;top:12%;bottom:12%;width:1px;background:#E6DEF6}
+  #meet-sensei .sn-pd1{left:50%}
+  #meet-sensei .sn-pd2{left:66.4%}
+  #meet-sensei .sn-plabel{position:absolute;font-family:'Nunito Sans',sans-serif;font-weight:700;
+    font-size:.82cqw;letter-spacing:.16em;text-transform:uppercase;color:#1E2448}
+  #meet-sensei .sn-pl1{left:5.8%;top:79.6%}
+  #meet-sensei .sn-pl1rule{position:absolute;left:5.8%;top:82.6%;width:1.7%;height:.15cqw;
+    background:#B79BEE;border-radius:2px}
+  #meet-sensei .sn-pl2{left:45.2%;top:78.0%}
+  #meet-sensei .sn-ptext{position:absolute;left:18.0%;top:79.8%;width:20.5%;margin:0;
+    font-family:'Zen Old Mincho',serif;font-size:1.05cqw;line-height:1.66;color:#3A3358}
+  #meet-sensei .sn-plist{position:absolute;left:45.2%;top:82.2%;width:12.2%;display:grid;row-gap:.42cqw}
+  #meet-sensei .sn-pli{display:grid;grid-template-columns:auto 1fr;column-gap:.85cqw;align-items:center;
+    font-family:'Nunito Sans',sans-serif;font-size:.88cqw;line-height:1.34;color:#3A3358}
+  #meet-sensei .sn-pli img{width:1.5cqw;height:auto;display:block}
+  #meet-sensei .sn-pquote{position:absolute;left:61.5%;top:80.0%;width:17%;margin:0;
+    font-family:'Zen Old Mincho',serif;font-style:italic;font-size:1.28cqw;line-height:1.62;color:#1E2448}
+  #meet-sensei .sn-pq{left:57.5%;top:79.0%;width:2.6%;opacity:.5}
+  #meet-sensei .sn-pflower1{left:6.2%;top:85.0%;width:4.6%;opacity:.42}
+  #meet-sensei .sn-pflower2{left:88.5%;top:85.0%;width:4.6%;opacity:.42}
+
+  /* ── entrance / exit (armed by JS: .fs-anim + .fs-in) ── */
+  #meet-sensei .sn-l,#meet-sensei .sn-eyebrow,#meet-sensei .sn-erule,#meet-sensei .sn-h2,
+  #meet-sensei .sn-sub,#meet-sensei .sn-photo,#meet-sensei .sn-badge,#meet-sensei .sn-quote,
+  #meet-sensei .sn-name,#meet-sensei .sn-role,#meet-sensei .sn-stat,#meet-sensei .sn-panel,
+  #meet-sensei .sn-plabel,#meet-sensei .sn-pl1rule,#meet-sensei .sn-ptext,#meet-sensei .sn-plist,
+  #meet-sensei .sn-pquote{
+    transition:opacity .8s cubic-bezier(.22,.61,.36,1),transform .95s cubic-bezier(.22,.61,.36,1);
+    will-change:opacity,transform}
+  #meet-sensei .sn-flower{transition:opacity .6s ease,transform 1.25s cubic-bezier(.2,.8,.3,1)}
+
+  #meet-sensei.fs-anim:not(.fs-in) .sn-scene{opacity:0;transform:translateX(5%)}
+  #meet-sensei.fs-anim:not(.fs-in) .sn-cloud1,
+  #meet-sensei.fs-anim:not(.fs-in) .sn-cloud2,
+  #meet-sensei.fs-anim:not(.fs-in) .sn-cloud3,
+  #meet-sensei.fs-anim:not(.fs-in) .sn-petal1,
+  #meet-sensei.fs-anim:not(.fs-in) .sn-petal2{opacity:0;transform:scale(.6)}
+  #meet-sensei.fs-anim:not(.fs-in) .sn-eyebrow,
+  #meet-sensei.fs-anim:not(.fs-in) .sn-h2,
+  #meet-sensei.fs-anim:not(.fs-in) .sn-sub{opacity:0;transform:translateX(-2.4cqw)}
+  #meet-sensei.fs-anim:not(.fs-in) .sn-erule{opacity:0;transform:scaleX(.15)}
+  #meet-sensei.fs-anim:not(.fs-in) .sn-photo{opacity:0;transform:translateY(2.6cqw) scale(.965)}
+  #meet-sensei.fs-anim:not(.fs-in) .sn-badge{opacity:0;transform:translateY(1.2cqw)}
+  #meet-sensei.fs-anim:not(.fs-in) .sn-qmark{opacity:0;transform:scale(.5)}
+  #meet-sensei.fs-anim:not(.fs-in) .sn-quote,
+  #meet-sensei.fs-anim:not(.fs-in) .sn-name,
+  #meet-sensei.fs-anim:not(.fs-in) .sn-role{opacity:0;transform:translateY(1.5cqw)}
+  #meet-sensei.fs-anim:not(.fs-in) .sn-stat{opacity:0;transform:translateY(1.7cqw)}
+  #meet-sensei.fs-anim:not(.fs-in) .sn-panel{opacity:0;transform:translateY(1.9cqw)}
+  #meet-sensei.fs-anim:not(.fs-in) .sn-plabel,
+  #meet-sensei.fs-anim:not(.fs-in) .sn-pl1rule,
+  #meet-sensei.fs-anim:not(.fs-in) .sn-ptext,
+  #meet-sensei.fs-anim:not(.fs-in) .sn-plist,
+  #meet-sensei.fs-anim:not(.fs-in) .sn-pquote{opacity:0;transform:translateY(1.2cqw)}
+  #meet-sensei.fs-anim:not(.fs-in) .sn-pq,
+  #meet-sensei.fs-anim:not(.fs-in) .sn-pflower1,
+  #meet-sensei.fs-anim:not(.fs-in) .sn-pflower2{opacity:0}
+  /* the blossom grows out of the photo, then sways */
+  #meet-sensei.fs-anim:not(.fs-in) .sn-flower{opacity:0;transform:scale(.04) rotate(-10deg)}
+  #meet-sensei.fs-anim:not(.fs-in) .sn-flower-r{transform:scale(.04) rotate(10deg)}
+  #meet-sensei.fs-in .sn-flower img{animation:snSway 4.67s ease-in-out 1.35s infinite alternate}
+  #meet-sensei.fs-in .sn-flower-r img{animation-delay:1.75s}
+  @keyframes snSway{from{transform:rotate(-23.2deg)}to{transform:rotate(-16.8deg)}}
+
+  /* stagger */
+  #meet-sensei .sn-scene{transition-delay:.04s}
+  #meet-sensei .sn-eyebrow{transition-delay:.10s}
+  #meet-sensei .sn-erule{transition-delay:.16s}
+  #meet-sensei .sn-h2{transition-delay:.20s}
+  #meet-sensei .sn-sub{transition-delay:.28s}
+  #meet-sensei .sn-photo{transition-delay:.30s}
+  #meet-sensei .sn-badge{transition-delay:.62s}
+  #meet-sensei .sn-flower-l{transition-delay:.52s}
+  #meet-sensei .sn-flower-r{transition-delay:.60s}
+  #meet-sensei .sn-cloud1{transition-delay:.44s}
+  #meet-sensei .sn-cloud2{transition-delay:.50s}
+  #meet-sensei .sn-cloud3{transition-delay:.56s}
+  #meet-sensei .sn-petal1{transition-delay:.60s}
+  #meet-sensei .sn-petal2{transition-delay:.64s}
+  #meet-sensei .sn-qmark{transition-delay:.34s}
+  #meet-sensei .sn-quote{transition-delay:.40s}
+  #meet-sensei .sn-name{transition-delay:.48s}
+  #meet-sensei .sn-role{transition-delay:.53s}
+  #meet-sensei .sn-s1{transition-delay:.56s}
+  #meet-sensei .sn-s2{transition-delay:.63s}
+  #meet-sensei .sn-s3{transition-delay:.70s}
+  #meet-sensei .sn-s4{transition-delay:.77s}
+  #meet-sensei .sn-panel{transition-delay:.70s}
+  #meet-sensei .sn-pl1{transition-delay:.80s}
+  #meet-sensei .sn-pl1rule{transition-delay:.84s}
+  #meet-sensei .sn-ptext{transition-delay:.86s}
+  #meet-sensei .sn-pl2{transition-delay:.88s}
+  #meet-sensei .sn-plist{transition-delay:.92s}
+  #meet-sensei .sn-pquote{transition-delay:.96s}
+  #meet-sensei .sn-pq,#meet-sensei .sn-pflower1,#meet-sensei .sn-pflower2{transition-delay:1.0s}
+
+  /* ── stacked layout: the fixed canvas cannot hold below ~880px ── */
+  @media (max-width:880px){
+    #meet-sensei .sn-canvas{aspect-ratio:auto;height:auto;max-width:none;overflow:hidden;padding:44px 20px 40px}
+    #meet-sensei .sn-eyebrow,#meet-sensei .sn-erule,#meet-sensei .sn-h2,#meet-sensei .sn-sub,
+    #meet-sensei .sn-photo,#meet-sensei .sn-badge,#meet-sensei .sn-quote,#meet-sensei .sn-name,
+    #meet-sensei .sn-role,#meet-sensei .sn-stat,#meet-sensei .sn-panel,#meet-sensei .sn-plabel,
+    #meet-sensei .sn-pl1rule,#meet-sensei .sn-ptext,#meet-sensei .sn-plist,#meet-sensei .sn-pquote,
+    #meet-sensei .sn-pdiv{position:static;left:auto;top:auto;width:auto;height:auto;
+      transform:none !important;inset:auto}
+    #meet-sensei .sn-l,#meet-sensei .sn-flower{display:none}
+    #meet-sensei .sn-scene{display:block;position:relative;left:auto;right:auto;top:auto;
+      width:100%;height:auto;margin:0;opacity:.85;-webkit-mask-image:none;mask-image:none}
+    #meet-sensei .sn-eyebrow{font-size:11px;gap:6px;margin-bottom:10px}
+    #meet-sensei .sn-eyebrow img{width:13px}
+    #meet-sensei .sn-erule{width:34px;height:2px;margin-bottom:14px}
+    #meet-sensei .sn-h2{font-size:clamp(22px,5.6vw,30px);margin-bottom:14px}
+    #meet-sensei .sn-sub{font-size:14.5px;margin-bottom:24px}
+    #meet-sensei .sn-photo{width:min(280px,72%);aspect-ratio:320/393;margin:0 0 14px;border-radius:14px}
+    #meet-sensei .sn-badge{display:inline-flex;font-size:13px;gap:7px;padding:8px 14px;margin-bottom:26px}
+    #meet-sensei .sn-badge img{width:15px}
+    #meet-sensei .sn-qmark{display:block;position:static;width:34px;margin-bottom:8px}
+    #meet-sensei .sn-quote{font-size:17px;margin-bottom:16px}
+    #meet-sensei .sn-name{font-size:12.5px;margin-bottom:5px}
+    #meet-sensei .sn-role{font-size:13.5px;margin-bottom:26px}
+    #meet-sensei .sn-stat{display:grid;grid-template-columns:auto 1fr;column-gap:12px;
+      margin-bottom:18px;align-items:start}
+    #meet-sensei .sn-stat::before{display:none}
+    #meet-sensei .sn-stat img{width:26px;margin:2px 0 0}
+    #meet-sensei .sn-stat b{font-size:15px;margin-bottom:3px}
+    #meet-sensei .sn-stat p{font-size:13.5px}
+    #meet-sensei .sn-panel,#meet-sensei .sn-pdiv{display:none}
+    #meet-sensei .sn-pl1{margin-top:30px;padding-top:26px;border-top:1px solid #E6DEF6}
+    #meet-sensei .sn-plabel{font-size:11px;margin-bottom:8px}
+    #meet-sensei .sn-pl1rule{width:26px;margin-bottom:12px}
+    #meet-sensei .sn-ptext{font-size:14.5px;margin-bottom:22px}
+    #meet-sensei .sn-plist{row-gap:11px;margin-bottom:22px}
+    #meet-sensei .sn-pli{font-size:13.5px;column-gap:11px}
+    #meet-sensei .sn-pli img{width:22px}
+    #meet-sensei .sn-pquote{font-size:17px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    #meet-sensei .sn-l,#meet-sensei .sn-eyebrow,#meet-sensei .sn-erule,#meet-sensei .sn-h2,
+    #meet-sensei .sn-sub,#meet-sensei .sn-photo,#meet-sensei .sn-badge,#meet-sensei .sn-quote,
+    #meet-sensei .sn-name,#meet-sensei .sn-role,#meet-sensei .sn-stat,#meet-sensei .sn-panel,
+    #meet-sensei .sn-plabel,#meet-sensei .sn-pl1rule,#meet-sensei .sn-ptext,#meet-sensei .sn-plist,
+    #meet-sensei .sn-pquote,#meet-sensei .sn-flower{
+      transition:opacity .3s linear !important;transform:none !important}
+    #meet-sensei.fs-anim:not(.fs-in) .sn-l,
+    #meet-sensei.fs-anim:not(.fs-in) .sn-eyebrow,#meet-sensei.fs-anim:not(.fs-in) .sn-erule,
+    #meet-sensei.fs-anim:not(.fs-in) .sn-h2,#meet-sensei.fs-anim:not(.fs-in) .sn-sub,
+    #meet-sensei.fs-anim:not(.fs-in) .sn-photo,#meet-sensei.fs-anim:not(.fs-in) .sn-badge,
+    #meet-sensei.fs-anim:not(.fs-in) .sn-quote,#meet-sensei.fs-anim:not(.fs-in) .sn-name,
+    #meet-sensei.fs-anim:not(.fs-in) .sn-role,#meet-sensei.fs-anim:not(.fs-in) .sn-stat,
+    #meet-sensei.fs-anim:not(.fs-in) .sn-panel,#meet-sensei.fs-anim:not(.fs-in) .sn-plabel,
+    #meet-sensei.fs-anim:not(.fs-in) .sn-pl1rule,#meet-sensei.fs-anim:not(.fs-in) .sn-ptext,
+    #meet-sensei.fs-anim:not(.fs-in) .sn-plist,#meet-sensei.fs-anim:not(.fs-in) .sn-pquote,
+    #meet-sensei.fs-anim:not(.fs-in) .sn-flower{opacity:1;transform:none !important}
+    #meet-sensei.fs-in .sn-flower img{animation:none}
+  }
+
+  /* ══ pinned two-phase stage: the scene stays put while slide 1 hands over to slide 2 ══ */
+  #meet-sensei .sn-pin{position:sticky;top:0;height:100vh;overflow:hidden;
+    display:grid;place-items:center;
+    background:linear-gradient(180deg,#FBFAFE 0%,#F5F2FC 46%,#F8F6FD 100%)}
+  #meet-sensei .sn-canvas,#meet-sensei .rv-canvas{grid-area:1/1}
+  #meet-sensei .rv-canvas{position:relative;width:100%;max-width:var(--cw);margin:0 auto;z-index:1;
+    aspect-ratio:1672/941;container-type:inline-size}
+  /* the canvas is centred in the 100vh pin, so the scene has to follow it down */
+  #meet-sensei .sn-scene{top:min(
+    calc((100vh - var(--cwv) * 941 / 1672) / 2 - var(--cwv) * 0.02707),
+    calc(var(--cwv) * -0.02707))}
+
+  #meet-sensei .sn-canvas,#meet-sensei .rv-canvas{
+    transition:opacity .7s ease, transform .85s cubic-bezier(.22,.61,.36,1)}
+  #meet-sensei .rv-canvas{opacity:0;transform:translateY(3.5%) scale(.985);pointer-events:none}
+  #meet-sensei.sn-p2 .sn-canvas{opacity:0;transform:translateY(-3.5%) scale(.985);pointer-events:none}
+  #meet-sensei.sn-p2 .rv-canvas{opacity:1;transform:none;pointer-events:auto}
+
+  /* ── slide 2: student voices ── */
+  #meet-sensei .rv-eyebrow{position:absolute;left:3.6%;top:8.8%;margin:0;
+    font-family:'Nunito Sans',sans-serif;font-weight:800;font-size:.84cqw;letter-spacing:.18em;
+    text-transform:uppercase;color:#1E2448}
+  #meet-sensei .rv-h2{position:absolute;left:3.6%;top:12.4%;width:58%;margin:0;
+    font-family:'Komika Axis',Impact,'Arial Black',sans-serif;font-weight:700;font-size:2.5cqw;
+    line-height:1.24;letter-spacing:.01em;color:#1E1A4A}
+  #meet-sensei .rv-rule{position:absolute;left:3.6%;top:27.3%;width:3.5%;height:.2cqw;
+    background:#6D28D9;border-radius:2px;transform-origin:left center}
+  #meet-sensei .rv-sub{position:absolute;left:3.6%;top:31.5%;width:42%;margin:0;
+    font-family:'Nunito Sans',sans-serif;font-size:1.05cqw;line-height:1.78;color:#4A4468}
+
+  /* Seven real reviews, four visible at a time. The viewport is the absolutely-positioned
+     .rv-cards; .rv-track is a 7-column row inside it that slides. The column and gap are
+     written in cqw, NOT %, because a percentage translateX resolves against the *track's*
+     width — nearly twice the viewport's — and would overshoot. Card region 92.4cqw wide,
+     gap 1.55% of that: gap 1.4322cqw, column 22.0259cqw, step 23.458cqw. Page 2 shifts
+     three steps, so it shows cards 4-7 right-aligned instead of leaving an empty slot. */
+  #meet-sensei .rv-cards{position:absolute;left:3.59%;top:43.5%;width:92.4%;height:45%;
+    overflow:hidden}
+  #meet-sensei .rv-track{display:grid;grid-auto-flow:column;grid-auto-columns:22.0259cqw;
+    gap:1.4322cqw;height:100%;
+    transition:transform .72s cubic-bezier(.22,.61,.36,1)}
+  #meet-sensei .rv-cards[data-pg="1"] .rv-track{transform:translateX(-70.374cqw)}
+  #meet-sensei .rv-card{display:flex;flex-direction:column;padding:2.0cqw 2.15cqw 1.7cqw;
+    background:rgba(255,255,255,.76);border:1px solid #EFEAFA;border-radius:1cqw;
+    box-shadow:0 1.0cqw 2.4cqw rgba(70,45,130,.07);
+    -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);cursor:pointer}
+  /* the card opens the full review, so it needs a hover state — but NOT a transform one:
+     .rv-card's transform is already the slide-in reveal, and the two would fight */
+  #meet-sensei .rv-card:hover{background:rgba(255,255,255,.94);border-color:#DED2FA;
+    box-shadow:0 1.5cqw 3.2cqw rgba(70,45,130,.13)}
+  #meet-sensei .rv-card:focus-visible{outline:2px solid #6D28D9;outline-offset:3px}
+  #meet-sensei .rv-more{margin-top:.85cqw;font-family:'Nunito Sans',sans-serif;font-weight:700;
+    font-size:.88cqw;letter-spacing:.02em;color:#6D28D9}
+  #meet-sensei .rv-more span{display:inline-block;transition:transform .3s}
+  #meet-sensei .rv-card:hover .rv-more span{transform:translateX(4px)}
+  /* the quote mark and the five stars share one row, so the rating costs the card no height */
+  #meet-sensei .rv-top{display:flex;align-items:center;justify-content:space-between;
+    gap:1cqw;margin-bottom:1.35cqw}
+  #meet-sensei .rv-qm{width:2.3cqw;height:auto;display:block}
+  #meet-sensei .rv-stars{display:flex;gap:.18cqw;color:#E6A44C;font-size:1.02cqw;
+    line-height:1;flex:none}
+  #meet-sensei .rv-card p{margin:0;font-family:'Nunito Sans',sans-serif;font-size:1.05cqw;
+    line-height:1.72;color:#3A3358}
+  #meet-sensei .rv-foot{margin-top:auto;padding-top:1.35cqw;border-top:1px solid #ECE6F8;
+    display:grid;grid-template-columns:auto 1fr;column-gap:1.0cqw;align-items:center}
+  #meet-sensei .rv-av{width:3.9cqw;height:3.9cqw;border-radius:50%;object-fit:cover;display:block}
+  #meet-sensei .rv-foot b{display:block;font-family:'Nunito Sans',sans-serif;font-weight:700;
+    font-size:1.04cqw;color:#241C55;margin-bottom:.34cqw}
+  #meet-sensei .rv-loc{display:flex;align-items:center;gap:.5cqw;margin-bottom:.3cqw;
+    font-family:'Nunito Sans',sans-serif;font-size:.92cqw;color:#3A3358}
+  #meet-sensei .rv-loc img{width:1.3cqw;height:auto;display:block;border-radius:2px}
+  #meet-sensei .rv-st{display:inline-block;font-family:'Nunito Sans',sans-serif;font-weight:700;
+    font-size:.8cqw;letter-spacing:.06em;color:#5B21B6;background:rgba(109,40,217,.09);
+    border:1px solid rgba(109,40,217,.16);border-radius:.9cqw;padding:.16cqw .6cqw}
+
+  /* pager — under the card row on the LEFT. Not beside the headline (the right half of the
+     header block is where the torii scene is brightest and the controls vanished into it),
+     and not bottom-right either: that corner belongs to the fixed #wa-fab, which sat on top
+     of the Next arrow. */
+  #meet-sensei .rv-pager{position:absolute;left:3.59%;top:90.6%;display:flex;align-items:center;
+    gap:1.1cqw}
+  #meet-sensei .rv-dots{display:flex;align-items:center;gap:.65cqw}
+  #meet-sensei .rv-dot{width:.62cqw;height:.62cqw;border-radius:50%;border:0;padding:0;
+    background:rgba(109,40,217,.24);cursor:pointer;transition:background .3s,width .3s}
+  #meet-sensei .rv-dot.on{width:2.1cqw;border-radius:.31cqw;background:#6D28D9}
+  #meet-sensei .rv-arrow{width:2.6cqw;height:2.6cqw;border-radius:50%;cursor:pointer;
+    border:1px solid rgba(109,40,217,.24);background:rgba(255,255,255,.7);
+    display:flex;align-items:center;justify-content:center;padding:0;
+    transition:background .3s,border-color .3s,opacity .3s}
+  #meet-sensei .rv-arrow svg{width:1.05cqw;height:1.05cqw;stroke:#5B21B6;stroke-width:2.4;
+    fill:none;stroke-linecap:round;stroke-linejoin:round}
+  #meet-sensei .rv-arrow:hover{background:#6D28D9;border-color:#6D28D9}
+  #meet-sensei .rv-arrow:hover svg{stroke:#fff}
+  #meet-sensei .rv-arrow[disabled]{opacity:.32;cursor:default}
+  #meet-sensei .rv-arrow[disabled]:hover{background:rgba(255,255,255,.7);border-color:rgba(109,40,217,.24)}
+  #meet-sensei .rv-arrow[disabled]:hover svg{stroke:#5B21B6}
+  #meet-sensei .rv-count{font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:.86cqw;
+    letter-spacing:.1em;color:#5A5378}
+
+  /* slide 2 reveal — staggered, and it reverses when you scroll back up */
+  #meet-sensei .rv-eyebrow,#meet-sensei .rv-h2,#meet-sensei .rv-rule,
+  #meet-sensei .rv-sub,#meet-sensei .rv-card,#meet-sensei .rv-pager{
+    transition:opacity .75s cubic-bezier(.22,.61,.36,1),transform .85s cubic-bezier(.22,.61,.36,1);
+    will-change:opacity,transform}
+  #meet-sensei:not(.sn-p2) .rv-eyebrow,
+  #meet-sensei:not(.sn-p2) .rv-h2,
+  #meet-sensei:not(.sn-p2) .rv-sub{opacity:0;transform:translateX(-2.2cqw)}
+  #meet-sensei:not(.sn-p2) .rv-rule{opacity:0;transform:scaleX(.18)}
+  #meet-sensei:not(.sn-p2) .rv-card{opacity:0;transform:translateY(2.8cqw)}
+  #meet-sensei:not(.sn-p2) .rv-pager{opacity:0;transform:translateY(1.4cqw)}
+  #meet-sensei.sn-p2 .rv-eyebrow{transition-delay:.10s}
+  #meet-sensei.sn-p2 .rv-h2{transition-delay:.17s}
+  #meet-sensei.sn-p2 .rv-rule{transition-delay:.25s}
+  #meet-sensei.sn-p2 .rv-sub{transition-delay:.31s}
+  #meet-sensei.sn-p2 .rv-card:nth-child(1){transition-delay:.36s}
+  #meet-sensei.sn-p2 .rv-card:nth-child(2){transition-delay:.44s}
+  #meet-sensei.sn-p2 .rv-card:nth-child(3){transition-delay:.52s}
+  #meet-sensei.sn-p2 .rv-card:nth-child(4){transition-delay:.60s}
+  /* cards 5-7 sit off-frame on page 1, so they only need to be revealed, not staggered */
+  #meet-sensei.sn-p2 .rv-card:nth-child(n+5){transition-delay:.60s}
+  #meet-sensei.sn-p2 .rv-pager{transition-delay:.66s}
+
+  /* ── stacked: no pin, both slides simply follow each other ── */
+  @media (max-width:880px){
+    #meet-sensei{height:auto}
+    #meet-sensei .sn-pin{position:static;height:auto;display:block;overflow:hidden;background:none}
+    #meet-sensei.fs-anim:not(.fs-in) .sn-scene{transform:translateY(2%)}
+    #meet-sensei .sn-canvas,#meet-sensei .rv-canvas{grid-area:auto;
+      opacity:1 !important;transform:none !important;pointer-events:auto}
+    #meet-sensei .rv-canvas{position:relative;aspect-ratio:auto;height:auto;max-width:none;
+      padding:8px 20px 44px}
+    #meet-sensei .rv-eyebrow,#meet-sensei .rv-h2,#meet-sensei .rv-rule,
+    #meet-sensei .rv-sub,#meet-sensei .rv-cards{position:static;width:auto;height:auto;
+      transform:none !important;opacity:1 !important;inset:auto}
+    #meet-sensei .rv-eyebrow{font-size:11px;margin-bottom:12px}
+    #meet-sensei .rv-h2{font-size:clamp(22px,5.6vw,30px);margin-bottom:16px}
+    #meet-sensei .rv-rule{width:52px;height:3px;margin-bottom:16px}
+    #meet-sensei .rv-sub{font-size:14.5px;line-height:1.7;margin-bottom:26px}
+    /* stacked: all seven simply follow each other, so the slider and its pager go away */
+    #meet-sensei .rv-cards{display:block;overflow:visible}
+    #meet-sensei .rv-track{display:grid;grid-auto-flow:row;grid-auto-columns:auto;
+      grid-template-columns:1fr;gap:16px;height:auto;transform:none !important}
+    #meet-sensei .rv-pager{display:none}
+    #meet-sensei .rv-card{padding:20px 18px;border-radius:14px}
+    #meet-sensei .rv-top{margin-bottom:12px}
+    #meet-sensei .rv-qm{width:30px}
+    #meet-sensei .rv-stars{font-size:15px;gap:2px}
+    #meet-sensei .rv-card p{font-size:14px;line-height:1.62}
+    #meet-sensei .rv-more{font-size:13px;margin-top:10px}
+    #meet-sensei .rv-foot{padding-top:14px;column-gap:12px}
+    #meet-sensei .rv-av{width:46px;height:46px}
+    #meet-sensei .rv-foot b{font-size:15px;margin-bottom:3px}
+    #meet-sensei .rv-loc{font-size:13.5px;gap:7px;margin-bottom:2px}
+    #meet-sensei .rv-st{font-size:12px;border-radius:11px;padding:2px 9px}
+    #meet-sensei .rv-loc img{width:18px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    #meet-sensei .sn-canvas,#meet-sensei .rv-canvas,#meet-sensei .rv-eyebrow,#meet-sensei .rv-h2,
+    #meet-sensei .rv-rule,#meet-sensei .rv-sub,#meet-sensei .rv-card{
+      transition:opacity .3s linear !important;transform:none !important}
+    #meet-sensei:not(.sn-p2) .rv-eyebrow,#meet-sensei:not(.sn-p2) .rv-h2,
+    #meet-sensei:not(.sn-p2) .rv-sub,#meet-sensei:not(.sn-p2) .rv-rule,
+    #meet-sensei:not(.sn-p2) .rv-card,#meet-sensei:not(.sn-p2) .rv-pager{opacity:1}
+    /* the track's transform is the slider itself, not decoration — keep it, drop the easing */
+    #meet-sensei .rv-track{transition:none !important}
+  }
+
+  /* ══ slide 3: FAQ. Taller than the frame, so its inner block travels upward
+        as you keep scrolling while the stage stays pinned. ══ */
+  #meet-sensei .fq-canvas{grid-area:1/1;position:relative;width:100%;max-width:var(--cw);
+    margin:0 auto;z-index:1;aspect-ratio:1672/941;container-type:inline-size;overflow:hidden}
+  #meet-sensei .fq-inner{position:absolute;left:0;right:0;top:0;
+    transform:translateY(calc(var(--fq,0) * var(--fqtravel,0px) * -1));will-change:transform}
+
+  /* Decorations hang off the pin, not off .fq-inner, so they hold still on screen while
+     the question list travels past them. Two nested layers: .fq-deco is the phase gate
+     (transitioned, so it eases in with slide 3); .fq-decoin is the scroll-driven fade and
+     carries NO transition, so it tracks --fq exactly instead of lagging behind the scroll.
+     Nested opacity multiplies, so each image keeps its own relative strength. */
+  #meet-sensei .fq-deco{position:absolute;inset:0;z-index:2;pointer-events:none;
+    container-type:inline-size;opacity:0;transition:opacity .6s ease}
+  /* the client wants the branch in from Student Voices (p2), not only the FAQ (p3) */
+  #meet-sensei.sn-p2 .fq-deco{opacity:1}
+  /* holds full strength until the closing card, then fades to nothing by the end */
+  #meet-sensei .fq-decoin{position:absolute;inset:0;
+    opacity:min(1, calc((1 - var(--fq,0)) * 8))}
+  #meet-sensei .fq-side{position:absolute;left:-1.9cqw;top:24%;height:auto;
+    width:calc(var(--cwv) * 0.13);opacity:.8;transform-origin:left center;
+    transition:transform .75s cubic-bezier(.22,.61,.36,1)}
+  /* Student Voices only leaves a 3.6% gutter (the FAQ leaves 9%), so while that slide is up
+     the branch tucks against the edge and sits BEHIND the canvas — the cards cover what
+     overlaps them — then slides out to its designed place when the FAQ takes over. */
+  #meet-sensei.sn-p2:not(.sn-p3) .fq-deco{z-index:0}
+  #meet-sensei.sn-p2:not(.sn-p3) .fq-side{transform:translateX(-4.8cqw) scale(.86)}
+  #meet-sensei .fq-p{position:absolute;height:auto}
+  #meet-sensei .fq-p1{left:1.4cqw;top:8%;width:calc(var(--cwv) * 0.031);opacity:.7}
+  #meet-sensei .fq-p2{left:95.2cqw;top:15%;width:calc(var(--cwv) * 0.026);opacity:.65}
+  #meet-sensei .fq-p3{left:95.4cqw;top:50%;width:calc(var(--cwv) * 0.027);opacity:.6}
+  #meet-sensei .fq-p4{left:93.2cqw;top:78%;width:calc(var(--cwv) * 0.023);opacity:.55}
+  #meet-sensei .fq-bloom{position:absolute;left:91.6cqw;top:62%;height:auto;
+    width:calc(var(--cwv) * 0.065);opacity:.8}
+
+  #meet-sensei .fq-eyebrow{position:absolute;left:9cqw;top:5.2cqw;margin:0;
+    font-family:'Nunito Sans',sans-serif;font-weight:800;font-size:.9cqw;letter-spacing:.16em;
+    text-transform:uppercase;color:#1E2448}
+  #meet-sensei .fq-rule{position:absolute;left:9cqw;top:7.9cqw;width:2.6cqw;height:.18cqw;
+    background:#B79BEE;border-radius:2px;transform-origin:left center}
+  #meet-sensei .fq-h2{position:absolute;left:9cqw;top:9.6cqw;width:50cqw;margin:0;
+    font-family:'Komika Axis',Impact,'Arial Black',sans-serif;font-weight:700;font-size:3.1cqw;
+    line-height:1.28;letter-spacing:.01em;color:#1E1A4A}
+  #meet-sensei .fq-sub{position:absolute;left:9cqw;top:21.6cqw;width:39cqw;margin:0;
+    font-family:'Nunito Sans',sans-serif;font-size:1.32cqw;line-height:1.62;color:#4A4468}
+
+  #meet-sensei .fq-flow{position:absolute;left:9cqw;top:31.5cqw;width:82cqw}
+  #meet-sensei .fq-list{display:grid;row-gap:.85cqw}
+  #meet-sensei .fq-row{border-radius:1.15cqw;overflow:hidden;
+    background:rgba(255,255,255,.62);border:1px solid #EEE8FB;
+    box-shadow:0 .7cqw 1.8cqw rgba(70,45,130,.05);
+    -webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);
+    transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease}
+  #meet-sensei .fq-row:hover{transform:translateY(-.2cqw);border-color:#DCCFF6;
+    box-shadow:0 1.1cqw 2.4cqw rgba(70,45,130,.09)}
+  #meet-sensei .fq-q{display:grid;grid-template-columns:auto 1fr auto;align-items:center;
+    column-gap:2.2cqw;padding:1.5cqw 2.4cqw;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  #meet-sensei .fq-row.fq-noans .fq-q{cursor:default}
+  /* 0fr -> 1fr animates the panel to its natural height with no JS measuring */
+  #meet-sensei .fq-a{display:grid;grid-template-rows:0fr;
+    transition:grid-template-rows .45s cubic-bezier(.4,0,.2,1)}
+  #meet-sensei .fq-row.is-open .fq-a{grid-template-rows:1fr}
+  #meet-sensei .fq-ain{overflow:hidden;min-height:0}
+  #meet-sensei .fq-ain p{margin:0;padding:0 3.4cqw 1.9cqw 9cqw;
+    font-family:'Zen Old Mincho',serif;font-size:1.72cqw;line-height:1.58;color:#4A4468;
+    opacity:0;transition:opacity .25s ease}
+  #meet-sensei .fq-row.is-open .fq-ain p{opacity:1;transition:opacity .4s ease .14s}
+  #meet-sensei .fq-row.is-open{background:rgba(255,255,255,.84);border-color:#E3D9F8}
+  #meet-sensei .fq-row img{width:4.4cqw;height:auto;display:block}
+  #meet-sensei .fq-row span{font-family:'Zen Old Mincho',serif;font-size:1.72cqw;
+    color:#1E1A4A;line-height:1.3}
+  #meet-sensei .fq-chev{width:1.7cqw;height:1.7cqw;flex:none;color:#6D28D9;
+    transition:transform .4s cubic-bezier(.4,0,.2,1)}
+  #meet-sensei .fq-row.is-open .fq-chev{transform:rotate(180deg)}
+
+  #meet-sensei .fq-end{margin-top:7cqw;text-align:center}
+  #meet-sensei .fq-endic{width:4.4cqw;height:4.4cqw;margin:0 auto .9cqw;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;background:rgba(238,232,251,.85)}
+  #meet-sensei .fq-endic img{width:52%;height:auto;display:block}
+  #meet-sensei .fq-end b{display:block;font-family:'Zen Old Mincho',serif;font-weight:600;
+    font-size:1.95cqw;color:#1E1A4A;margin-bottom:.55cqw}
+  #meet-sensei .fq-end p{margin:0 0 1.5cqw;font-family:'Nunito Sans',sans-serif;
+    font-size:1.12cqw;color:#5A5378}
+  #meet-sensei .fq-btn{display:inline-flex;align-items:center;gap:.7cqw;cursor:pointer;
+    position:relative;font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:1.2cqw;
+    letter-spacing:.02em;color:#EEF1FA;padding:1.0cqw 2.3cqw;border-radius:999px;
+    background:linear-gradient(180deg,#36406F 0%,#232D57 40%,#182144 76%,#10162E 100%);
+    border:1px solid rgba(255,255,255,.10);
+    text-shadow:0 1px 2px rgba(6,9,24,.55);
+    box-shadow:inset 0 .13cqw 0 rgba(255,255,255,.28),
+      inset 0 -.16cqw .34cqw rgba(4,7,20,.55),
+      0 .34cqw 0 #0A0E22,
+      0 .9cqw 1.7cqw rgba(10,14,34,.40);
+    transition:transform .16s ease,box-shadow .16s ease,filter .16s ease}
+  #meet-sensei .fq-btn:hover{filter:brightness(1.14);transform:translateY(-.1cqw);
+    box-shadow:inset 0 .13cqw 0 rgba(255,255,255,.34),
+      inset 0 -.16cqw .34cqw rgba(4,7,20,.55),
+      0 .44cqw 0 #0A0E22,
+      0 1.15cqw 2.1cqw rgba(10,14,34,.46)}
+  /* pressed: the button travels down onto its own edge */
+  #meet-sensei .fq-btn:active{transform:translateY(.24cqw);filter:brightness(.97);
+    box-shadow:inset 0 .13cqw 0 rgba(255,255,255,.18),
+      inset 0 -.1cqw .3cqw rgba(4,7,20,.6),
+      0 .1cqw 0 #0A0E22,
+      0 .28cqw .6cqw rgba(10,14,34,.42)}
+
+  /* slide 3 reveal */
+  #meet-sensei .fq-eyebrow,#meet-sensei .fq-rule,#meet-sensei .fq-h2,#meet-sensei .fq-sub,
+  #meet-sensei .fq-row,#meet-sensei .fq-end{
+    transition:opacity .7s cubic-bezier(.22,.61,.36,1),transform .8s cubic-bezier(.22,.61,.36,1)}
+  #meet-sensei:not(.sn-p3) .fq-eyebrow,
+  #meet-sensei:not(.sn-p3) .fq-h2,
+  #meet-sensei:not(.sn-p3) .fq-sub{opacity:0;transform:translateX(-2.2cqw)}
+  #meet-sensei:not(.sn-p3) .fq-rule{opacity:0;transform:scaleX(.18)}
+  #meet-sensei:not(.sn-p3) .fq-row{opacity:0;transform:translateY(2.4cqw)}
+  #meet-sensei:not(.sn-p3) .fq-end{opacity:0;transform:translateY(2cqw)}
+  #meet-sensei.sn-p3 .fq-eyebrow{transition-delay:.10s}
+  #meet-sensei.sn-p3 .fq-rule{transition-delay:.16s}
+  #meet-sensei.sn-p3 .fq-h2{transition-delay:.20s}
+  #meet-sensei.sn-p3 .fq-sub{transition-delay:.28s}
+  #meet-sensei.sn-p3 .fq-row:nth-child(1){transition-delay:.34s}
+  #meet-sensei.sn-p3 .fq-row:nth-child(2){transition-delay:.40s}
+  #meet-sensei.sn-p3 .fq-row:nth-child(3){transition-delay:.46s}
+  #meet-sensei.sn-p3 .fq-row:nth-child(4){transition-delay:.52s}
+  #meet-sensei.sn-p3 .fq-row:nth-child(5){transition-delay:.58s}
+  #meet-sensei.sn-p3 .fq-row:nth-child(6){transition-delay:.64s}
+  #meet-sensei.sn-p3 .fq-end{transition-delay:.70s}
+
+  /* three-way slide visibility */
+  #meet-sensei .fq-canvas{opacity:0;transform:translateY(3.5%) scale(.985);pointer-events:none;
+    transition:opacity .7s ease, transform .85s cubic-bezier(.22,.61,.36,1)}
+  #meet-sensei.sn-p3 .rv-canvas{opacity:0;transform:translateY(-3.5%) scale(.985);pointer-events:none}
+  #meet-sensei.sn-p3 .fq-canvas{opacity:1;transform:none;pointer-events:auto}
+
+  @media (max-width:880px){
+    #meet-sensei .fq-canvas{position:relative;grid-area:auto;aspect-ratio:auto;height:auto;
+      max-width:none;padding:8px 20px 44px;opacity:1 !important;transform:none !important;
+      pointer-events:auto;overflow:visible}
+    #meet-sensei .fq-inner{position:static;height:auto;transform:none !important}
+    #meet-sensei .fq-deco{display:none}
+    #meet-sensei .fq-eyebrow,#meet-sensei .fq-rule,#meet-sensei .fq-h2,#meet-sensei .fq-sub,
+    #meet-sensei .fq-flow,#meet-sensei .fq-list,#meet-sensei .fq-end{position:static;width:auto;height:auto;
+      transform:none !important;opacity:1 !important;inset:auto}
+    #meet-sensei .fq-eyebrow{font-size:11px;margin-bottom:10px}
+    #meet-sensei .fq-rule{width:30px;height:2px;margin-bottom:14px}
+    #meet-sensei .fq-h2{font-size:clamp(22px,5.6vw,30px);margin-bottom:14px}
+    #meet-sensei .fq-sub{font-size:14.5px;margin-bottom:22px}
+    #meet-sensei .fq-list{row-gap:12px;margin-bottom:30px}
+    #meet-sensei .fq-row{border-radius:14px}
+    #meet-sensei .fq-q{column-gap:14px;padding:14px 16px}
+    #meet-sensei .fq-ain p{padding:0 16px 15px 68px;font-size:15.5px;line-height:1.55}
+    #meet-sensei .fq-end{margin-top:30px}
+    #meet-sensei .fq-row img{width:38px}
+    #meet-sensei .fq-row span{font-size:15.5px}
+    #meet-sensei .fq-chev{width:18px;height:18px}
+    #meet-sensei .fq-endic{width:46px;height:46px;margin-bottom:10px}
+    #meet-sensei .fq-end b{font-size:19px;margin-bottom:6px}
+    #meet-sensei .fq-end p{font-size:14px;margin-bottom:16px}
+    #meet-sensei .fq-btn{font-size:14px;gap:8px;padding:12px 26px;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -2px 4px rgba(4,7,20,.55),
+        0 4px 0 #0A0E22,0 10px 18px rgba(10,14,34,.40)}
+    #meet-sensei .fq-btn:hover{transform:translateY(-1px);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.34),inset 0 -2px 4px rgba(4,7,20,.55),
+        0 5px 0 #0A0E22,0 13px 22px rgba(10,14,34,.46)}
+    #meet-sensei .fq-btn:active{transform:translateY(3px);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 -1px 3px rgba(4,7,20,.6),
+        0 1px 0 #0A0E22,0 3px 7px rgba(10,14,34,.42)}
+  }
+  @media (prefers-reduced-motion:reduce){
+    #meet-sensei .fq-canvas,#meet-sensei .fq-eyebrow,#meet-sensei .fq-rule,#meet-sensei .fq-h2,
+    #meet-sensei .fq-sub,#meet-sensei .fq-row,#meet-sensei .fq-end{
+      transition:opacity .3s linear !important;transform:none !important}
+    #meet-sensei:not(.sn-p3) .fq-eyebrow,#meet-sensei:not(.sn-p3) .fq-rule,
+    #meet-sensei:not(.sn-p3) .fq-h2,#meet-sensei:not(.sn-p3) .fq-sub,
+    #meet-sensei:not(.sn-p3) .fq-row,#meet-sensei:not(.sn-p3) .fq-end{opacity:1}
+    #meet-sensei .fq-a{transition:none}
+    #meet-sensei .fq-ain p,#meet-sensei .fq-chev{transition:none}
+  }
+  
+
+  #stage-cta{background:linear-gradient(180deg,#F8F6FD 0%,#F5F2FC 55%,#F2EFFA 100%);
+    padding:clamp(46px,5.5vw,86px) clamp(18px,3vw,40px) clamp(58px,6.5vw,96px)}
+  #stage-cta .cta-card{position:relative;width:100%;max-width:1560px;margin:0 auto;
+    aspect-ratio:1919/527;container-type:inline-size;border-radius:1.35cqw;overflow:hidden;
+    background:linear-gradient(100deg,#0B1030 0%,#111739 46%,#151B47 100%);
+    box-shadow:0 1.4cqw 3.4cqw rgba(30,18,70,.20)}
+  #stage-cta .cta-scene{position:absolute;right:0;top:0;height:100%;width:auto;display:block;
+    pointer-events:none}
+  /* feather the scene into the card so its cut left edge never reads as a seam */
+  #stage-cta .cta-veil{position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(95deg,#0B1030 0%,rgba(11,16,48,.97) 30%,rgba(12,18,52,.72) 45%,rgba(12,18,52,.18) 58%,rgba(12,18,52,0) 70%)}
+  #stage-cta .cta-bloom{position:absolute;left:-1.8cqw;bottom:-2.4cqw;width:17.5cqw;height:auto;
+    pointer-events:none}
+
+  #stage-cta .cta-eyebrow{position:absolute;left:6.3cqw;top:4.4cqw;margin:0;
+    font-family:'Zen Old Mincho',serif;font-size:1.16cqw;letter-spacing:.14em;color:#F2557A}
+  #stage-cta .cta-rule{position:absolute;left:6.3cqw;top:7.3cqw;width:2.1cqw;height:.13cqw;
+    background:#E24A6A;border-radius:2px;transform-origin:left center}
+  #stage-cta .cta-h2{position:absolute;left:6.3cqw;top:8.3cqw;width:52cqw;margin:0;
+    font-family:'Zen Old Mincho',serif;font-weight:600;font-size:2.85cqw;line-height:1.16;
+    color:#FFFFFF}
+  #stage-cta .cta-h2 em{font-style:normal;color:#F2456B}
+  #stage-cta .cta-sub{position:absolute;left:6.3cqw;top:12.9cqw;width:46cqw;margin:0;
+    font-family:'Nunito Sans',sans-serif;font-size:1.16cqw;line-height:1.62;color:#C6CDE6}
+
+  #stage-cta .cta-feats{position:absolute;left:6.3cqw;top:19.2cqw;display:flex;align-items:center;
+    gap:2.1cqw}
+  #stage-cta .cta-feat{display:flex;align-items:center;gap:1.0cqw}
+  #stage-cta .cta-fi{flex:none;width:3.5cqw;height:3.5cqw;border-radius:50%;display:flex;
+    align-items:center;justify-content:center;background:rgba(226,74,106,.14);
+    border:1px solid rgba(242,85,122,.34);color:#F2557A}
+  #stage-cta .cta-fi svg{width:1.7cqw;height:1.7cqw}
+  #stage-cta .cta-feat span{font-family:'Nunito Sans',sans-serif;font-size:1.1cqw;
+    line-height:1.32;color:#E6EAF6}
+  #stage-cta .cta-div{width:1px;height:2.9cqw;background:rgba(198,205,230,.24)}
+
+  #stage-cta .cta-btnwrap{position:absolute;left:61.5cqw;top:13.2cqw;width:26cqw;text-align:center}
+  #stage-cta .cta-btn{display:inline-flex;align-items:center;justify-content:center;gap:.85cqw;
+    width:100%;cursor:pointer;font-family:'Nunito Sans',sans-serif;font-weight:700;
+    font-size:1.28cqw;letter-spacing:.06em;color:#FFF;padding:1.15cqw 1.6cqw;border-radius:999px;
+    background:linear-gradient(100deg,#C4082E,#E23A5C 55%,#C4082E);
+    border:1px solid rgba(255,150,175,.5);
+    box-shadow:0 0 1.6cqw rgba(226,58,92,.55),0 .7cqw 1.8cqw rgba(120,10,40,.45),
+      inset 0 1px 0 rgba(255,255,255,.22);
+    transition:transform .28s ease,box-shadow .28s ease,filter .28s ease}
+  #stage-cta .cta-btn:hover{transform:translateY(-.15cqw);filter:brightness(1.06);
+    box-shadow:0 0 2.4cqw rgba(226,58,92,.75),0 1.0cqw 2.2cqw rgba(120,10,40,.5),
+      inset 0 1px 0 rgba(255,255,255,.28)}
+  #stage-cta .cta-note{margin:.95cqw 0 0;font-family:'Nunito Sans',sans-serif;font-size:1.02cqw;
+    color:#D3D9EC;text-shadow:0 1px .25cqw rgba(6,10,32,.95),0 0 .8cqw rgba(6,10,32,.85)}
+
+  /* ── entrance / exit (armed by JS: .fs-anim + .fs-in) ── */
+  #stage-cta .cta-card,#stage-cta .cta-scene,#stage-cta .cta-bloom,#stage-cta .cta-eyebrow,
+  #stage-cta .cta-rule,#stage-cta .cta-h2,#stage-cta .cta-sub,#stage-cta .cta-feat,
+  #stage-cta .cta-div,#stage-cta .cta-btnwrap{
+    transition:opacity .8s cubic-bezier(.22,.61,.36,1),transform .95s cubic-bezier(.22,.61,.36,1);
+    will-change:opacity,transform}
+  #stage-cta.fs-anim:not(.fs-in) .cta-card{opacity:0;transform:translateY(2.4cqw) scale(.985)}
+  #stage-cta.fs-anim:not(.fs-in) .cta-scene{opacity:0;transform:translateX(4%)}
+  #stage-cta.fs-anim:not(.fs-in) .cta-bloom{opacity:0;transform:translateY(2cqw) scale(.94)}
+  #stage-cta.fs-anim:not(.fs-in) .cta-eyebrow,
+  #stage-cta.fs-anim:not(.fs-in) .cta-h2,
+  #stage-cta.fs-anim:not(.fs-in) .cta-sub{opacity:0;transform:translateX(-1.8cqw)}
+  #stage-cta.fs-anim:not(.fs-in) .cta-rule{opacity:0;transform:scaleX(.16)}
+  #stage-cta.fs-anim:not(.fs-in) .cta-feat,
+  #stage-cta.fs-anim:not(.fs-in) .cta-div{opacity:0;transform:translateY(1.2cqw)}
+  #stage-cta.fs-anim:not(.fs-in) .cta-btnwrap{opacity:0;transform:translateY(1.4cqw) scale(.97)}
+  #stage-cta .cta-scene{transition-delay:.06s}
+  #stage-cta .cta-eyebrow{transition-delay:.16s}
+  #stage-cta .cta-rule{transition-delay:.22s}
+  #stage-cta .cta-h2{transition-delay:.26s}
+  #stage-cta .cta-sub{transition-delay:.34s}
+  #stage-cta .cta-bloom{transition-delay:.38s}
+  #stage-cta .cta-btnwrap{transition-delay:.44s}
+  #stage-cta .cta-feats > *:nth-child(1){transition-delay:.48s}
+  #stage-cta .cta-feats > *:nth-child(2){transition-delay:.52s}
+  #stage-cta .cta-feats > *:nth-child(3){transition-delay:.56s}
+  #stage-cta .cta-feats > *:nth-child(4){transition-delay:.60s}
+  #stage-cta .cta-feats > *:nth-child(5){transition-delay:.64s}
+
+  @media (max-width:900px){
+    #stage-cta .cta-card{aspect-ratio:auto;height:auto;padding:30px 22px 34px;border-radius:18px}
+    #stage-cta .cta-scene{height:auto;width:118%;right:-9%;top:auto;bottom:0;opacity:.30}
+    #stage-cta .cta-veil{background:linear-gradient(180deg,rgba(11,16,48,.5),rgba(11,16,48,.9) 55%)}
+    #stage-cta .cta-bloom{width:120px;left:-14px;bottom:-10px;opacity:.75}
+    #stage-cta .cta-eyebrow,#stage-cta .cta-rule,#stage-cta .cta-h2,#stage-cta .cta-sub,
+    #stage-cta .cta-feats,#stage-cta .cta-btnwrap{position:relative;left:auto;top:auto;width:auto;
+      transform:none !important;inset:auto}
+    #stage-cta .cta-eyebrow{font-size:13px;margin-bottom:10px}
+    #stage-cta .cta-rule{width:30px;height:2px;margin-bottom:14px}
+    #stage-cta .cta-h2{font-size:clamp(23px,6vw,32px);margin-bottom:12px}
+    #stage-cta .cta-sub{font-size:14.5px;margin-bottom:22px}
+    #stage-cta .cta-btnwrap{width:100%;text-align:left;margin-bottom:24px}
+    #stage-cta .cta-btn{width:auto;font-size:13.5px;gap:9px;padding:14px 24px;letter-spacing:.05em}
+    #stage-cta .cta-note{font-size:13px;margin-top:10px}
+    #stage-cta .cta-feats{flex-direction:column;align-items:flex-start;gap:14px}
+    #stage-cta .cta-div{display:none}
+    #stage-cta .cta-fi{width:38px;height:38px}
+    #stage-cta .cta-fi svg{width:19px;height:19px}
+    #stage-cta .cta-feat{gap:12px}
+    #stage-cta .cta-feat span{font-size:14px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    #stage-cta .cta-card,#stage-cta .cta-scene,#stage-cta .cta-bloom,#stage-cta .cta-eyebrow,
+    #stage-cta .cta-rule,#stage-cta .cta-h2,#stage-cta .cta-sub,#stage-cta .cta-feat,
+    #stage-cta .cta-div,#stage-cta .cta-btnwrap{
+      transition:opacity .3s linear !important;transform:none !important}
+    #stage-cta.fs-anim:not(.fs-in) .cta-card,#stage-cta.fs-anim:not(.fs-in) .cta-scene,
+    #stage-cta.fs-anim:not(.fs-in) .cta-bloom,#stage-cta.fs-anim:not(.fs-in) .cta-eyebrow,
+    #stage-cta.fs-anim:not(.fs-in) .cta-rule,#stage-cta.fs-anim:not(.fs-in) .cta-h2,
+    #stage-cta.fs-anim:not(.fs-in) .cta-sub,#stage-cta.fs-anim:not(.fs-in) .cta-feat,
+    #stage-cta.fs-anim:not(.fs-in) .cta-div,#stage-cta.fs-anim:not(.fs-in) .cta-btnwrap{opacity:1}
+  }
+  

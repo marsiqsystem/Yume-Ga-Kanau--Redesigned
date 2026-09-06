@@ -1,0 +1,240 @@
+/* Contact route styles, extracted verbatim from the original
+   single-file build. Only url() paths changed, to root-absolute. */
+
+/* assets/contact us bg.png (1908x824, kept) served as assets/contact-bg.webp. This plate
+     is already dark, so it needs only a light wash rather than the heavy darkening the
+     About plate wants.
+
+     ── the plate is the WHOLE PAGE's background, not the hero's ──
+     Painted once on #contact-page with background-attachment:fixed, so it stays put behind
+     every band as the page scrolls over it, exactly like #about-page. That is why
+     #contact-body below is translucent rather than a solid ground. A fixed *background*
+     rather than a fixed *element* because nothing clips a fixed element; and a `transform`
+     on this element or a child carrying it would re-anchor the background to that element. */
+  #contact-page{position:relative;isolation:isolate;
+    background-color:#0b1030;
+    background-image:url("/assets/contact-bg.webp");
+    background-position:72% 50%;background-size:cover;
+    background-attachment:fixed;background-repeat:no-repeat}
+  #contact-page::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:rgba(7,11,36,.30)}
+  #contact-page > *{position:relative;z-index:1}
+
+  #contact-hero{position:relative;overflow:hidden;
+    min-height:clamp(520px,74vh,820px);display:flex;align-items:center}
+  #contact-hero .ct-scrim{position:absolute;inset:0;z-index:1;pointer-events:none;
+    background-image:
+      linear-gradient(96deg,rgba(9,12,44,.92) 0%,rgba(9,12,44,.86) 24%,rgba(9,12,44,.60) 41%,rgba(9,12,44,.16) 56%,rgba(9,12,44,.02) 72%,rgba(9,12,44,.14) 100%),
+      linear-gradient(180deg,rgba(9,12,44,.50) 0%,rgba(9,12,44,0) 22%,rgba(9,12,44,0) 100%);
+    background-attachment:fixed,fixed;background-size:cover,cover}
+  /* stays translucent — the plate continues behind the body below rather than ending here */
+  #contact-hero .ct-foot{position:absolute;left:0;right:0;bottom:0;z-index:1;pointer-events:none;
+    height:clamp(80px,13vh,170px);
+    background:linear-gradient(180deg,rgba(11,16,48,0) 0%,rgba(11,16,48,.30) 52%,rgba(11,16,48,.52) 100%)}
+  #contact-hero .ct-inner{position:relative;z-index:2;width:100%;max-width:1560px;margin:0 auto;
+    padding:calc(var(--navh) + clamp(26px,4vw,56px)) clamp(22px,4vw,72px) clamp(40px,5.5vw,80px)}
+  #contact-hero .ct-copy{max-width:min(52%,700px)}
+  #contact-hero .ct-eyebrow{display:flex;align-items:center;gap:16px;margin:0 0 22px;
+    font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:clamp(10px,.78vw,12px);
+    letter-spacing:.26em;text-transform:uppercase;color:#D9A24B}
+  #contact-hero .ct-eyebrow::after{content:"";flex:1;max-width:120px;height:1px;
+    background:linear-gradient(90deg,rgba(217,162,75,.7),rgba(217,162,75,0))}
+  #contact-hero .ct-h1{font-family:'Komika Axis',Impact,'Arial Black',sans-serif;font-weight:700;
+    font-size:clamp(26px,3.2vw,48px);line-height:1.26;letter-spacing:.01em;color:#F7F3EA;margin:0;
+    text-wrap:balance;text-shadow:0 3px 26px rgba(0,4,20,.6)}
+  #contact-hero .ct-h1 em{font-style:normal;color:#E2103C;
+    text-shadow:0 3px 26px rgba(0,4,20,.55),0 0 30px rgba(226,16,60,.22)}
+  /* The Japanese half keeps its serif — Komika has no kana. It is a block so the phrase
+     never wraps mid-word (はじめましょう。 was breaking after the は), and a touch smaller
+     so the two lines balance. */
+  #contact-hero .ct-h1 span{display:block;font-family:'Zen Old Mincho',serif;font-weight:500;
+    font-size:.82em;letter-spacing:.02em;margin-top:.24em;color:#EFEAF4}
+  #contact-hero .ct-brush{width:min(400px,68%);height:3px;margin:24px 0 28px;border-radius:3px;
+    background:linear-gradient(90deg,#C4082E 0%,#E2103C 34%,rgba(226,16,60,.55) 72%,rgba(226,16,60,0) 100%)}
+  #contact-hero .ct-p{font-family:'Nunito Sans',sans-serif;font-size:clamp(14px,1.05vw,16.5px);
+    line-height:1.86;color:#C6CDE6;margin:0;max-width:56ch;text-wrap:pretty;
+    text-shadow:0 1px 14px rgba(0,4,20,.7)}
+  #contact-hero .ct-meta{display:flex;flex-wrap:wrap;gap:clamp(14px,2vw,30px);
+    margin-top:clamp(26px,3.2vw,44px)}
+  #contact-hero .ct-item{display:flex;align-items:center;gap:11px;
+    font-family:'Nunito Sans',sans-serif;font-size:clamp(12px,.92vw,14px);color:#DCE2F4;
+    text-shadow:0 1px 10px rgba(0,4,20,.8)}
+  #contact-hero .ct-item i{display:flex;align-items:center;justify-content:center;flex:none;
+    width:38px;height:38px;border-radius:50%;border:1px solid rgba(226,74,106,.45);color:#F2456B;
+    background:radial-gradient(circle at 38% 30%,rgba(226,16,60,.16),rgba(9,13,42,.30))}
+  #contact-hero .ct-item i svg{width:46%;height:46%;display:block}
+
+  /* ── entry (plays on mount, i.e. every time the page is opened) ── */
+  @keyframes ctFade{from{opacity:0}to{opacity:1}}
+  @keyframes ctRise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  @keyframes ctBrush{from{opacity:0;transform:scaleX(.08)}to{opacity:1;transform:none}}
+  #contact-hero .ct-bg{animation:ctFade 1.4s ease both}
+  #contact-hero .ct-scrim{animation:ctFade 1.1s ease both}
+  #contact-hero .ct-eyebrow{animation:ctRise .8s .16s cubic-bezier(.22,.61,.36,1) both}
+  #contact-hero .ct-h1{animation:ctRise .9s .26s cubic-bezier(.22,.61,.36,1) both}
+  #contact-hero .ct-brush{transform-origin:left center;
+    animation:ctBrush .95s .42s cubic-bezier(.22,.61,.36,1) both}
+  #contact-hero .ct-p{animation:ctRise .9s .5s cubic-bezier(.22,.61,.36,1) both}
+  #contact-hero .ct-item{animation:ctRise .8s cubic-bezier(.22,.61,.36,1) both}
+  #contact-hero .ct-item:nth-child(1){animation-delay:.62s}
+  #contact-hero .ct-item:nth-child(2){animation-delay:.70s}
+  #contact-hero .ct-item:nth-child(3){animation-delay:.78s}
+  @media (prefers-reduced-motion:reduce){
+    #contact-hero .ct-bg,#contact-hero .ct-scrim,#contact-hero .ct-eyebrow,#contact-hero .ct-h1,
+    #contact-hero .ct-brush,#contact-hero .ct-p,#contact-hero .ct-item{animation:ctFade .01s both}
+  }
+
+  @media (max-width:1100px){ #contact-hero .ct-copy{max-width:min(64%,620px)} }
+  @media (max-width:860px){
+    #contact-hero{min-height:0;display:block}
+    #contact-hero .ct-copy{max-width:none}
+    #contact-hero .ct-bg{background-position:64% 40%}
+    #contact-hero .ct-scrim{background-image:
+      linear-gradient(180deg,rgba(9,12,44,.88) 0%,rgba(9,12,44,.80) 46%,rgba(9,12,44,.78) 100%)}
+  }
+  
+
+  /* TRANSLUCENT, not solid — the client's plate is #contact-page's own background and stays
+     put behind this band as it scrolls over it. Only the very tail goes opaque, to hand over
+     to the footer. Keep these values rgba(). */
+  #contact-body{position:relative;
+    background:linear-gradient(180deg,rgba(11,16,48,.52) 0%,rgba(0,12,38,.80) 12%,rgba(0,12,38,.80) 78%,rgba(6,12,34,.94) 94%,#060c22 100%);
+    overflow:hidden;isolation:isolate}
+  #contact-body .cb-wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;
+    padding:clamp(52px,6vw,90px) 28px clamp(58px,6.5vw,96px)}
+  #contact-body .cb-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(20px,2.6vw,40px);
+    align-items:start}
+
+  /* the shared glass card — same recipe as .ab-card on About */
+  #contact-body .cb-card{position:relative;border-radius:16px;overflow:hidden;
+    background:linear-gradient(150deg,rgba(255,255,255,.058),rgba(255,255,255,.018));
+    border:1px solid rgba(245,240,230,.10);
+    box-shadow:0 12px 36px rgba(0,3,16,.34),inset 0 1px 0 rgba(255,255,255,.08);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+  #contact-body .cb-kanji{position:absolute;right:-.06em;bottom:-.26em;font-family:'Zen Old Mincho',serif;
+    font-size:clamp(90px,11vw,150px);line-height:1;color:rgba(226,16,60,.10);pointer-events:none;
+    user-select:none}
+  #contact-body .cb-eye{font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:11px;
+    letter-spacing:.22em;text-transform:uppercase;color:#D9A24B;margin-bottom:14px}
+  #contact-body .cb-h2{font-family:'Komika Axis',Impact,'Arial Black',sans-serif;font-weight:700;
+    font-size:clamp(22px,2.5vw,32px);line-height:1.26;letter-spacing:.01em;color:#F7F3EA;margin:0}
+  #contact-body .cb-h2 em{font-style:normal;color:#E2103C}
+  #contact-body .cb-rule{width:56px;height:3px;border-radius:3px;margin:18px 0 26px;
+    background:linear-gradient(90deg,#E2103C,#C4082E)}
+
+  /* ── the form ── */
+  #contact-body .cb-form{padding:clamp(28px,3.2vw,44px) clamp(22px,2.8vw,40px)}
+  #contact-body .cb-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+  #contact-body .cb-f{position:relative;z-index:1}
+  #contact-body .cb-lab{font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:10.5px;
+    letter-spacing:.16em;text-transform:uppercase;color:#9BA5C6;margin-bottom:9px}
+  #contact-body .cb-in{width:100%;box-sizing:border-box;font-family:'Nunito Sans',sans-serif;
+    background:rgba(6,12,36,.62);border:1px solid rgba(245,240,230,.16);border-radius:10px;
+    padding:14px 15px;font-size:14.5px;color:#F5F0E6;outline:none;
+    transition:border-color .3s ease,box-shadow .3s ease,background .3s ease}
+  #contact-body .cb-in::placeholder{color:#7B85A8}
+  #contact-body .cb-in:hover{border-color:rgba(245,240,230,.28)}
+  #contact-body .cb-in:focus{border-color:#E2103C;background:rgba(6,12,36,.8);
+    box-shadow:0 0 0 3px rgba(226,16,60,.16)}
+  #contact-body select.cb-in{appearance:none;-webkit-appearance:none;cursor:pointer;
+    padding-right:38px;
+    background-image:linear-gradient(45deg,transparent 50%,#D9A24B 50%),linear-gradient(135deg,#D9A24B 50%,transparent 50%);
+    background-position:calc(100% - 19px) 21px,calc(100% - 13px) 21px;
+    background-size:6px 6px,6px 6px;background-repeat:no-repeat}
+  #contact-body select.cb-in option{background:#0b1130;color:#F5F0E6}
+  #contact-body textarea.cb-in{min-height:120px;resize:vertical;line-height:1.7}
+  #contact-body .cb-send{display:inline-flex;align-items:center;gap:10px;cursor:pointer;margin-top:26px;
+    font-family:'Nunito Sans',sans-serif;font-size:14px;font-weight:800;letter-spacing:.08em;
+    text-transform:uppercase;color:#FFF6F2;padding:16px 32px;border-radius:999px;
+    background:linear-gradient(120deg,#C4082E,#A80828);border:1px solid rgba(255,246,242,.22);
+    box-shadow:0 8px 24px rgba(120,4,26,.45);
+    transition:transform .3s,box-shadow .3s,background .3s}
+  #contact-body .cb-send:hover{background:linear-gradient(120deg,#E0143C,#B90A2E);
+    transform:translateY(-2px);box-shadow:0 12px 30px rgba(150,6,34,.55)}
+  #contact-body .cb-send span{transition:transform .3s}
+  #contact-body .cb-send:hover span{transform:translateX(4px)}
+  /* Honeypot: bots fill it, humans never see it. Not display:none - some bots skip those. */
+  #contact-body .cb-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none}
+  #contact-body .cb-status{font-family:'Nunito Sans',sans-serif;font-size:13px;line-height:1.6;
+    margin:14px 0 0;color:#F2A3B4}
+  #contact-body .cb-status.is-ok{color:#9BD8B4}
+  /* React renders hidden="" as falsy, so lean on :empty for the at-rest state too */
+  #contact-body .cb-status:empty{display:none}
+  #contact-body .cb-send.is-busy{opacity:.55;pointer-events:none}
+  #contact-body .cb-note{font-family:'Nunito Sans',sans-serif;font-size:12.5px;line-height:1.7;
+    color:#8F99BB;margin:18px 0 0;position:relative;z-index:1}
+
+  /* sent state */
+  #contact-body .cb-sent{padding:clamp(40px,5vw,64px) clamp(24px,3vw,44px);text-align:center}
+  #contact-body .cb-sent .ja{font-family:'Zen Old Mincho',serif;font-size:clamp(30px,4vw,44px);
+    color:#D9A24B;margin-bottom:18px}
+  #contact-body .cb-sent p{font-family:'Nunito Sans',sans-serif;font-size:15px;line-height:1.85;
+    color:#C3CAE4;margin:16px auto 0;max-width:46ch;position:relative;z-index:1}
+  #contact-body .cb-again{display:inline-flex;align-items:center;gap:9px;cursor:pointer;margin-top:30px;
+    font-family:'Nunito Sans',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;
+    text-transform:uppercase;color:#F5F0E6;padding:13px 26px;border-radius:999px;
+    border:1px solid rgba(245,240,230,.3);transition:border-color .3s,color .3s,transform .3s}
+  #contact-body .cb-again:hover{border-color:#D9A24B;color:#D9A24B;transform:translateY(-2px)}
+
+  /* ── the aside ── */
+  #contact-body .cb-aside{display:flex;flex-direction:column;gap:clamp(16px,1.8vw,22px)}
+  #contact-body .cb-pad{padding:clamp(24px,2.6vw,32px) clamp(22px,2.4vw,30px)}
+  #contact-body .cb-sub{font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:10.5px;
+    letter-spacing:.2em;text-transform:uppercase;color:#D9A24B;margin-bottom:20px}
+  #contact-body .cb-reach{display:flex;flex-direction:column;gap:18px;position:relative;z-index:1}
+  #contact-body .cb-reach > div,#contact-body .cb-reach > a{display:flex;align-items:center;gap:14px}
+  /* the three contact rows are links; "Class mode" is a plain div and stays inert */
+  #contact-body .cb-reach > a{cursor:pointer;border-radius:12px;margin:-6px -8px;padding:6px 8px;
+    transition:background .25s}
+  #contact-body .cb-reach > a:hover{background:rgba(245,240,230,.045)}
+  #contact-body .cb-reach > a:hover .v{color:#FFF6F2}
+  #contact-body .cb-reach > a:hover .cb-ic{border-color:rgba(226,74,106,.85);color:#FF5C7E}
+  #contact-body .cb-reach > a:focus-visible{outline:2px solid #E2103C;outline-offset:2px}
+  #contact-body .cb-reach .cb-ic{transition:border-color .25s,color .25s}
+  #contact-body .cb-ic{display:flex;align-items:center;justify-content:center;flex:none;
+    width:40px;height:40px;border-radius:50%;border:1px solid rgba(226,74,106,.42);color:#F2456B;
+    background:radial-gradient(circle at 38% 30%,rgba(226,16,60,.16),rgba(9,13,42,.30))}
+  #contact-body .cb-ic svg{width:44%;height:44%;display:block}
+  #contact-body .cb-reach .k{font-family:'Nunito Sans',sans-serif;font-size:10px;letter-spacing:.16em;
+    text-transform:uppercase;color:#8F99BB;margin-bottom:3px}
+  #contact-body .cb-reach .v{font-family:'Nunito Sans',sans-serif;font-size:14px;color:#F5F0E6;
+    word-break:break-word}
+  #contact-body .cb-times{display:flex;flex-direction:column;gap:0;position:relative;z-index:1}
+  #contact-body .cb-times > div{display:flex;justify-content:space-between;align-items:baseline;gap:14px;
+    padding:13px 0;border-bottom:1px solid rgba(245,240,230,.09);
+    font-family:'Nunito Sans',sans-serif;font-size:13.5px;color:#C3CAE4}
+  #contact-body .cb-times > div:last-child{border-bottom:0}
+  #contact-body .cb-times b{font-weight:700;color:#F5F0E6;white-space:nowrap}
+  #contact-body .cb-times + p{font-family:'Nunito Sans',sans-serif;font-size:12.5px;line-height:1.75;
+    color:#8F99BB;margin:16px 0 0;position:relative;z-index:1}
+  /* the stage-test nudge, the one accented card in the column */
+  #contact-body .cb-nudge{background:linear-gradient(140deg,rgba(196,8,46,.20),rgba(10,16,44,.62));
+    border-color:rgba(226,16,60,.34)}
+  #contact-body .cb-nudge h3{font-family:'Komika Axis',Impact,'Arial Black',sans-serif;font-weight:700;
+    font-size:clamp(16px,1.5vw,19px);line-height:1.32;color:#F7F3EA;margin:0 0 12px;
+    position:relative;z-index:1}
+  #contact-body .cb-nudge p{font-family:'Nunito Sans',sans-serif;font-size:13.5px;line-height:1.75;
+    color:#C3CAE4;margin:0 0 18px;position:relative;z-index:1}
+  #contact-body .cb-link{position:relative;z-index:1;display:inline-flex;align-items:center;gap:9px;
+    cursor:pointer;font-family:'Nunito Sans',sans-serif;font-size:13px;font-weight:800;
+    letter-spacing:.08em;text-transform:uppercase;color:#F2557A;transition:color .3s,gap .3s}
+  #contact-body .cb-link:hover{color:#FFF6F2;gap:14px}
+
+  /* ── scroll-in, via the shared .fs-anim / .fs-in script ── */
+  #contact-body .cb-l{transition:opacity .85s cubic-bezier(.22,.61,.36,1),transform .95s cubic-bezier(.22,.61,.36,1);
+    will-change:opacity,transform}
+  #contact-body.fs-anim:not(.fs-in) .cb-l{opacity:0;transform:translateY(26px) scale(.985)}
+  #contact-body .cb-l:nth-child(1){transition-delay:.04s}
+  #contact-body .cb-l:nth-child(2){transition-delay:.14s}
+  #contact-body .cb-l:nth-child(3){transition-delay:.24s}
+  @media (prefers-reduced-motion:reduce){
+    #contact-body .cb-l{transition:opacity .3s linear !important;transform:none !important}
+    #contact-body.fs-anim:not(.fs-in) .cb-l{opacity:1;transform:none !important}
+  }
+
+  @media (max-width:980px){
+    #contact-body .cb-grid{grid-template-columns:1fr}
+  }
+  @media (max-width:560px){
+    #contact-body .cb-row{grid-template-columns:1fr}
+  }

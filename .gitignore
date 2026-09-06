@@ -5,12 +5,21 @@ Desktop.ini
 .DS_Store
 *.swp
 
-# node, if a tool ever gets added here
+# dependencies
 node_modules/
 npm-debug.log*
+.pnp
+.pnp.js
 
-# Large working originals that the site does not serve.
-# The site loads the .webp exports; these are the source files kept for re-export.
-# Uncomment if you would rather keep the repo small than keep the originals in it.
-# assets/*.psd
-# assets/map-transition.original.mov
+# next.js
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+# env
+.env*
+!.env.example
+
+# vercel
+.vercel

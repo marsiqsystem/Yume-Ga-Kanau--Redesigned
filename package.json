@@ -1,0 +1,25 @@
+{
+  "name": "yume-ga-kanau",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "seo-check": "node scripts/seo-check.mjs"
+  },
+  "dependencies": {
+    "next": "^15.5.4",
+    "nodemailer": "^10.0.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "@types/nodemailer": "^8.0.1",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5"
+  }
+}

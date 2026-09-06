@@ -1,0 +1,273 @@
+/* About route styles, extracted verbatim from the original
+   single-file build. Only url() paths changed, to root-absolute. */
+
+/* assets/about-bg.webp is exported from the supplied `ABOUT BG.png` (1908x824), which is
+     left in place. Like the old nav plate it is a PALE painting: the reference comp is the
+     same art in deep navy, so it is darkened here rather than baked dark, and .ab-scrim
+     deepens the left third where the copy sits. The bar is fixed and transparent, so the
+     plate runs to the top of the page and only .ab-inner offsets by --navh. */
+
+  /* ── the plate is the WHOLE PAGE's background, not the hero's ──
+     It is painted once on #about-page, sized to the viewport and background-attachment:fixed,
+     so it stays put behind every band as the page scrolls past it. That is why the bands
+     below are translucent rather than solid #000e2a — they are washes over this art. A
+     fixed *background* is used rather than a fixed *element* because nothing clips a fixed
+     element (overflow:hidden does not), so one would spill outside the page. Note: a
+     `transform` on #about-page or any child that carries this would re-anchor it. */
+  #about-page{position:relative;isolation:isolate;
+    background-color:#0b1030;
+    background-image:
+      linear-gradient(0deg,rgba(11,17,54,.24),rgba(11,17,54,.24)),
+      url("/assets/about-bg.webp");
+    background-position:center,72% 50%;
+    background-size:cover,cover;
+    background-attachment:fixed,fixed;
+    background-repeat:no-repeat,no-repeat}
+  /* the darkening that used to sit on .ab-bg — as an overlay, since filter on #about-page
+     would create a containing block and re-anchor the fixed background */
+  #about-page::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:rgba(6,10,34,.42)}
+  #about-page > *{position:relative;z-index:1}
+
+  #about-hero{position:relative;overflow:hidden;min-height:clamp(560px,82vh,880px);
+    display:flex;align-items:center}
+  /* only the reading scrim is left on the hero — the art itself now comes from #about-page */
+  #about-hero .ab-scrim{position:absolute;inset:0;z-index:1;pointer-events:none;
+    background-image:
+      linear-gradient(96deg,rgba(9,13,42,.90) 0%,rgba(9,13,42,.84) 26%,rgba(9,13,42,.56) 43%,rgba(9,13,42,.14) 58%,rgba(9,13,42,0) 74%,rgba(9,13,42,.10) 100%),
+      linear-gradient(180deg,rgba(9,13,42,.50) 0%,rgba(9,13,42,0) 22%,rgba(9,13,42,0) 100%);
+    background-attachment:fixed,fixed;background-size:cover,cover}
+  /* softens the hero's reading scrim into the body wash — it must stay translucent now,
+     since the plate continues behind the bands below rather than ending here */
+  #about-hero .ab-foot{position:absolute;left:0;right:0;bottom:0;z-index:1;pointer-events:none;
+    height:clamp(90px,15vh,190px);
+    background:linear-gradient(180deg,rgba(0,14,42,0) 0%,rgba(0,14,42,.30) 52%,rgba(0,14,42,.52) 100%)}
+  #about-hero .ab-inner{position:relative;z-index:2;width:100%;max-width:1560px;margin:0 auto;
+    padding:calc(var(--navh) + clamp(28px,4vw,60px)) clamp(22px,4vw,72px) clamp(44px,6vw,86px)}
+  #about-hero .ab-copy{max-width:min(52%,720px)}
+
+  #about-hero .ab-eyebrow{display:flex;align-items:center;gap:16px;margin:0 0 22px;
+    font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:clamp(10px,.78vw,12px);
+    letter-spacing:.26em;text-transform:uppercase;color:#D9A24B}
+  #about-hero .ab-eyebrow::after{content:"";flex:1;max-width:120px;height:1px;
+    background:linear-gradient(90deg,rgba(217,162,75,.7),rgba(217,162,75,0))}
+  #about-hero .ab-h1{font-family:'Komika Axis',Impact,'Arial Black',sans-serif;font-weight:700;
+    font-size:clamp(27px,3.3vw,50px);line-height:1.24;letter-spacing:.01em;color:#F7F3EA;
+    margin:0;text-wrap:balance;text-shadow:0 3px 26px rgba(0,4,20,.6)}
+  #about-hero .ab-h1 em{font-style:normal;color:#E2103C;
+    text-shadow:0 3px 26px rgba(0,4,20,.55),0 0 30px rgba(226,16,60,.22)}
+  /* the brush stroke under the headline, tapering the way the reference has it */
+  #about-hero .ab-brush{width:min(430px,72%);height:3px;margin:26px 0 30px;border-radius:3px;
+    transform-origin:left center;
+    background:linear-gradient(90deg,#C4082E 0%,#E2103C 34%,rgba(226,16,60,.55) 72%,rgba(226,16,60,0) 100%)}
+  #about-hero .ab-p{font-family:'Nunito Sans',sans-serif;font-size:clamp(14px,1.05vw,16.5px);
+    line-height:1.86;color:#C6CDE6;margin:0;max-width:60ch;text-wrap:pretty;
+    text-shadow:0 1px 14px rgba(0,4,20,.7)}
+
+  /* ── the four marks ── */
+  #about-hero .ab-marks{display:flex;align-items:stretch;gap:clamp(10px,1.6vw,26px);
+    margin-top:clamp(30px,3.6vw,52px)}
+  #about-hero .ab-mark{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;
+    text-align:center;gap:12px;padding:0 clamp(4px,1vw,14px)}
+  #about-hero .ab-mark + .ab-mark{border-left:1px solid rgba(226,74,106,.22)}
+  #about-hero .ab-mark i{display:flex;align-items:center;justify-content:center;flex:none;
+    width:clamp(44px,3.5vw,56px);height:clamp(44px,3.5vw,56px);border-radius:50%;
+    border:1px solid rgba(226,74,106,.45);color:#F2456B;
+    background:radial-gradient(circle at 38% 30%,rgba(226,16,60,.16),rgba(9,13,42,.28));
+    box-shadow:0 6px 20px rgba(0,4,20,.35)}
+  #about-hero .ab-mark i svg{width:46%;height:46%;display:block}
+  #about-hero .ab-mark span{font-family:'Nunito Sans',sans-serif;font-size:clamp(11.5px,.85vw,13.5px);
+    line-height:1.42;color:#DCE2F4;text-shadow:0 1px 10px rgba(0,4,20,.8)}
+
+  /* vertical 夢が叶う + seal, sitting in the brush ring like the reference.
+     ABSOLUTE, not fixed: the plate itself is now the page's background and stays put, but
+     this lettering belongs to the hero — fixed, it floated over the bands below. */
+  #about-hero .ab-vert{position:absolute;z-index:2;left:58.5%;top:50%;transform:translateY(-50%);
+    display:flex;flex-direction:column;align-items:center;gap:16px;pointer-events:none}
+  #about-hero .ab-vert b{writing-mode:vertical-rl;font-family:'Zen Old Mincho',serif;font-weight:500;
+    font-size:clamp(15px,1.5vw,24px);letter-spacing:.42em;color:#F0EAF6;
+    text-shadow:0 2px 16px rgba(0,4,20,.8)}
+  #about-hero .ab-seal{width:clamp(28px,2.4vw,38px);height:clamp(28px,2.4vw,38px);border-radius:4px;
+    display:flex;align-items:center;justify-content:center;background:#C4082E;color:#FFF3F4;
+    font-family:'Zen Old Mincho',serif;font-size:clamp(14px,1.2vw,19px);
+    box-shadow:0 6px 18px rgba(120,4,26,.5)}
+
+  /* ── entry (plays on mount, i.e. every time the page is opened) ── */
+  /* fade only — a transform here would re-anchor the plate's fixed background to the element */
+  @keyframes abPlate{from{opacity:0}to{opacity:1}}
+  @keyframes abFade{from{opacity:0}to{opacity:1}}
+  @keyframes abRise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  @keyframes abBrush{from{opacity:0;transform:scaleX(.08)}to{opacity:1;transform:none}}
+  @keyframes abVert{from{opacity:0;transform:translateY(calc(-50% + 14px))}to{opacity:1;transform:translateY(-50%)}}
+  #about-hero .ab-bg{animation:abPlate 1.5s cubic-bezier(.22,.61,.36,1) both}
+  #about-hero .ab-scrim{animation:abFade 1.1s ease both}
+  #about-hero .ab-eyebrow{animation:abRise .8s .16s cubic-bezier(.22,.61,.36,1) both}
+  #about-hero .ab-h1{animation:abRise .9s .26s cubic-bezier(.22,.61,.36,1) both}
+  #about-hero .ab-brush{animation:abBrush .95s .42s cubic-bezier(.22,.61,.36,1) both}
+  #about-hero .ab-p{animation:abRise .9s .5s cubic-bezier(.22,.61,.36,1) both}
+  #about-hero .ab-mark{animation:abRise .8s cubic-bezier(.22,.61,.36,1) both}
+  #about-hero .ab-mark:nth-child(1){animation-delay:.62s}
+  #about-hero .ab-mark:nth-child(2){animation-delay:.70s}
+  #about-hero .ab-mark:nth-child(3){animation-delay:.78s}
+  #about-hero .ab-mark:nth-child(4){animation-delay:.86s}
+  #about-hero .ab-vert{animation:abVert 1s .55s cubic-bezier(.22,.61,.36,1) both}
+  @media (prefers-reduced-motion:reduce){
+    #about-hero .ab-bg,#about-hero .ab-scrim,#about-hero .ab-eyebrow,#about-hero .ab-h1,
+    #about-hero .ab-brush,#about-hero .ab-p,#about-hero .ab-mark{animation:abFade .01s both}
+    #about-hero .ab-vert{animation:none}
+  }
+
+  @media (max-width:1100px){
+    #about-hero .ab-copy{max-width:min(64%,640px)}
+    #about-hero .ab-vert{display:none}
+  }
+  @media (max-width:860px){
+    /* stacked: the copy no longer has a dark half to sit on, so veil the whole plate */
+    #about-hero{min-height:0;display:block}
+    #about-hero .ab-copy{max-width:none}
+    #about-hero .ab-bg{object-position:64% 40%}
+    /* flat veil only — .ab-foot still draws the hand-off at the section's own bottom edge */
+    #about-hero .ab-scrim{background:
+      linear-gradient(180deg,rgba(9,13,42,.90) 0%,rgba(9,13,42,.82) 46%,rgba(9,13,42,.80) 100%)}
+    #about-hero .ab-marks{flex-wrap:wrap;gap:22px 0}
+    #about-hero .ab-mark{flex:0 0 50%}
+    #about-hero .ab-mark:nth-child(3){border-left:0}
+  }
+  
+
+  /* One ground for the whole run, matching the colour the hero fades out on, so the four
+     bands read as one page rather than four stacked blocks. */
+  /* TRANSLUCENT, not solid — the client's plate is the page's own background and stays put
+     behind these bands as they scroll over it. Opaque grounds here would hide it below the
+     hero, which is exactly what was wrong before. Keep every value here an rgba(). */
+  #about-name,#about-vm,#about-wins,#about-sensei{position:relative;
+    background:rgba(0,12,38,.80);overflow:hidden;isolation:isolate}
+  .ab-wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;
+    padding:clamp(56px,6.5vw,96px) 28px}
+  .ab-eye{font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:#D9A24B;margin-bottom:14px}
+  .ab-h2{font-family:'Komika Axis',Impact,'Arial Black',sans-serif;font-weight:700;
+    font-size:clamp(25px,3vw,40px);line-height:1.24;letter-spacing:.01em;color:#F7F3EA;margin:0}
+  .ab-h2 em{font-style:normal;color:#E2103C}
+  .ab-rule{width:64px;height:3px;border-radius:3px;margin:20px 0 22px;
+    background:linear-gradient(90deg,#E2103C,#C4082E)}
+  .ab-body{font-family:'Nunito Sans',sans-serif;font-size:15.5px;line-height:1.85;color:#C3CAE4;
+    margin:0 0 16px;text-wrap:pretty}
+  .ab-body:last-child{margin-bottom:0}
+  /* the glass card used across all four bands */
+  .ab-card{position:relative;border-radius:16px;overflow:hidden;
+    background:linear-gradient(150deg,rgba(255,255,255,.058),rgba(255,255,255,.018));
+    border:1px solid rgba(245,240,230,.10);
+    box-shadow:0 12px 36px rgba(0,3,16,.34),inset 0 1px 0 rgba(255,255,255,.08);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    transition:transform .45s cubic-bezier(.22,.61,.36,1),border-color .45s ease,box-shadow .45s ease}
+  .ab-card:hover{transform:translateY(-4px);border-color:rgba(226,16,60,.38);
+    box-shadow:0 18px 46px rgba(0,3,16,.46),inset 0 1px 0 rgba(255,255,255,.12)}
+  /* big kanji sitting behind a card, the way the stage cards use theirs */
+  .ab-kanji{position:absolute;right:-.06em;bottom:-.26em;font-family:'Zen Old Mincho',serif;
+    font-size:clamp(90px,11vw,150px);line-height:1;color:rgba(226,16,60,.10);pointer-events:none;
+    user-select:none}
+
+  /* ── scroll-in (armed by the shared .fs-anim / .fs-in script) ── */
+  .ab-l{transition:opacity .85s cubic-bezier(.22,.61,.36,1),transform .95s cubic-bezier(.22,.61,.36,1);
+    will-change:opacity,transform}
+  .fs-anim:not(.fs-in) .ab-l{opacity:0;transform:translateY(26px)}
+  .fs-anim:not(.fs-in) .ab-l.ab-l-r{transform:translateY(26px) scale(.97)}
+  .ab-l:nth-child(1){transition-delay:.04s}
+  .ab-l:nth-child(2){transition-delay:.12s}
+  .ab-l:nth-child(3){transition-delay:.20s}
+  .ab-l:nth-child(4){transition-delay:.28s}
+  @media (prefers-reduced-motion:reduce){
+    .ab-l{transition:opacity .3s linear !important;transform:none !important}
+    .fs-anim:not(.fs-in) .ab-l{opacity:1;transform:none !important}
+  }
+
+  /* ── 01 · foundation & the name ── */
+  #about-name .an-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(30px,4vw,64px);
+    align-items:center}
+  #about-name .an-seal{position:relative;text-align:center;padding:clamp(14px,1.6vw,20px);
+    border-radius:18px;border:1px solid rgba(217,162,75,.30);
+    background:radial-gradient(120% 110% at 50% 0%,rgba(24,33,68,.75),rgba(6,12,36,.72));
+    box-shadow:0 16px 44px rgba(0,3,16,.42),inset 0 1px 0 rgba(255,255,255,.07)}
+  #about-name .an-seal::after{content:"";position:absolute;inset:12px;border-radius:12px;
+    border:1px solid rgba(217,162,75,.16);pointer-events:none}
+  #about-name .an-ja{font-family:'Zen Old Mincho',serif;font-size:clamp(44px,6.4vw,72px);
+    line-height:1.18;letter-spacing:.06em;color:#F7F3EA}
+  #about-name .an-rom{font-size:12px;letter-spacing:.22em;color:#D9A24B;margin-top:16px}
+  #about-name .an-gloss{font-family:'Zen Old Mincho',serif;font-style:italic;font-size:14px;
+    color:#9BA5C6;margin-top:9px}
+  #about-name .an-banner{display:block;width:100%;height:auto;border-radius:10px}
+
+  /* ── 02 · vision & goal ── */
+  #about-vm{background:linear-gradient(180deg,rgba(0,12,38,.80) 0%,rgba(4,15,48,.74) 50%,rgba(0,12,38,.80) 100%)}
+  #about-vm .av-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2vw,24px);
+    margin-top:clamp(26px,3vw,40px)}
+  #about-vm .av-card{padding:clamp(28px,3vw,40px) clamp(24px,2.6vw,36px)}
+  #about-vm .av-ja{font-family:'Zen Old Mincho',serif;font-size:20px;color:#D9A24B;margin-bottom:6px}
+  #about-vm .av-card h3{font-family:'Komika Axis',Impact,'Arial Black',sans-serif;font-weight:700;
+    font-size:clamp(19px,1.9vw,25px);color:#F7F3EA;margin:0 0 14px;letter-spacing:.01em}
+  #about-vm .av-card p{font-family:'Nunito Sans',sans-serif;font-size:15px;line-height:1.82;
+    color:#C3CAE4;margin:0;position:relative;z-index:1;text-wrap:pretty}
+
+  /* ── 03 · achievements ── */
+  #about-wins .aw-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(14px,1.5vw,20px);
+    margin-top:clamp(28px,3.2vw,42px)}
+  #about-wins .aw-card{padding:30px 26px 32px}
+  #about-wins .aw-n{font-family:'Zen Old Mincho',serif;font-size:15px;color:#D9A24B;
+    letter-spacing:.12em;margin-bottom:14px}
+  #about-wins .aw-card b{display:block;font-family:'Nunito Sans',sans-serif;font-weight:700;
+    font-size:16px;color:#F7F3EA;margin-bottom:10px;line-height:1.34}
+  #about-wins .aw-card p{font-family:'Nunito Sans',sans-serif;font-size:13.5px;line-height:1.75;
+    color:#AEB7D6;margin:0}
+  #about-wins .aw-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;
+    background:linear-gradient(180deg,#E2103C,rgba(196,8,46,0));opacity:.75}
+
+  /* ── 04 · sensei ── */
+  /* the tail fades to the footer's navy so the page hands over without a step */
+  #about-sensei{background:linear-gradient(180deg,rgba(0,12,38,.80) 0%,rgba(0,12,38,.84) 62%,rgba(6,12,34,.94) 92%,#060c22 100%)}
+  #about-sensei .as-grid{display:grid;grid-template-columns:340px 1fr;gap:clamp(30px,4vw,56px);
+    align-items:start;margin-top:clamp(26px,3vw,40px)}
+  #about-sensei .as-photo{position:relative}
+  /* The offset gold frame belongs to the PHOTO only. It used to stretch to the bottom of
+     .as-photo, which also contains the name block below the picture — so its left edge ran
+     down 16px inside the text, making the name and role look like they had spilled out of
+     the box. Ending it with the picture (aspect-ratio 3/4 matches the img exactly, so the
+     frame keeps its 16px right/bottom offset) leaves the name cleanly below the photo. */
+  #about-sensei .as-photo::before{content:"";position:absolute;inset:16px -16px auto 16px;
+    aspect-ratio:3/4;border:1px solid rgba(217,162,75,.4);border-radius:14px}
+  #about-sensei .as-photo img{position:relative;width:100%;aspect-ratio:3/4;object-fit:cover;
+    border-radius:14px;display:block;box-shadow:0 18px 46px rgba(0,3,16,.5)}
+  #about-sensei .as-meta{position:relative;margin-top:26px;padding-top:18px;
+    border-top:1px solid rgba(245,240,230,.14)}
+  #about-sensei .as-meta .k{font-size:12px;letter-spacing:.14em;color:#D9A24B}
+  #about-sensei .as-meta .n{font-family:'Zen Old Mincho',serif;font-size:clamp(21px,3vw,26px);
+    color:#F5F0E6;margin-top:8px}
+  #about-sensei .as-meta .r{font-size:13.5px;color:#9BA5C6;margin-top:6px;line-height:1.6}
+  #about-sensei .as-msg{padding:clamp(26px,3.4vw,38px) clamp(22px,3vw,34px);margin-top:30px;
+    border-left:3px solid #D9A24B}
+  #about-sensei .as-msg .k{font-size:11px;letter-spacing:.2em;color:#D9A24B;margin-bottom:18px;
+    text-transform:uppercase}
+  #about-sensei .as-msg p{font-family:'Zen Old Mincho',serif;font-size:18px;line-height:1.82;
+    color:#F5F0E6;margin:0 0 16px;position:relative;z-index:1;text-wrap:pretty}
+  #about-sensei .as-msg .sig{position:relative;z-index:1;font-size:13px;letter-spacing:.1em;color:#EFB3C1}
+  #about-sensei .as-cta{display:flex;gap:14px;margin-top:32px;flex-wrap:wrap}
+  #about-sensei .as-btn{display:inline-flex;align-items:center;gap:10px;cursor:pointer;
+    font-family:'Nunito Sans',sans-serif;font-size:14px;font-weight:700;letter-spacing:.04em;
+    padding:15px 28px;border-radius:999px;
+    transition:transform .3s,box-shadow .3s,background .3s,border-color .3s,color .3s}
+  #about-sensei .as-btn.p{background:linear-gradient(120deg,#C4082E,#A80828);color:#FFF6F2;
+    border:1px solid rgba(255,246,242,.22);box-shadow:0 8px 24px rgba(120,4,26,.45)}
+  #about-sensei .as-btn.p:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(150,6,34,.55)}
+  #about-sensei .as-btn.s{border:1px solid rgba(245,240,230,.3);color:#F5F0E6}
+  #about-sensei .as-btn.s:hover{border-color:#D9A24B;color:#D9A24B;transform:translateY(-2px)}
+
+  @media (max-width:980px){
+    #about-name .an-grid,#about-vm .av-grid,#about-sensei .as-grid{grid-template-columns:1fr}
+    #about-wins .aw-grid{grid-template-columns:1fr 1fr}
+    #about-sensei .as-photo{max-width:340px}
+    #about-sensei .as-photo::before{inset:12px -12px auto 12px}
+  }
+  @media (max-width:620px){
+    #about-wins .aw-grid{grid-template-columns:1fr}
+    #about-sensei .as-msg p{font-size:16.5px}
+  }

@@ -1,0 +1,221 @@
+/* The site footer's own styles. Extracted from the original single-file build.
+
+   Everything below #ygk-foot came across verbatim; only url() paths changed, to
+   root-absolute, since these now load from /public rather than beside the HTML. */
+
+/* The client's own footer plate (assets/footer bg.webp, 1967x796, kept) re-exported to
+     WebP. It already reads as night and its left half is flat navy for the copy, so it takes
+     no filter — only a light left-to-right veil for the narrow widths where cover scales the
+     art up and the bright half creeps under the text. */
+  #ygk-foot{position:relative;overflow:hidden;isolation:isolate;
+    border-top:1px solid rgba(217,162,75,0.22);
+    background:#0A0F2A url('/assets/footer-bg.webp') right center/cover no-repeat}
+  #ygk-foot::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+    background:linear-gradient(90deg,rgba(9,13,38,.70) 0%,rgba(9,13,38,.56) 34%,rgba(9,13,38,.44) 62%,rgba(9,13,38,.38) 100%)}
+  /* the demo column lands squarely on the moon, the brightest part of the plate — it gets its
+     own soft scrim so the paragraph and the note keep their contrast without dimming the art
+     everywhere else */
+  #ygk-foot .ft-demo{position:relative}
+  #ygk-foot .ft-demo::before{content:'';position:absolute;z-index:-1;
+    left:clamp(8px,1.2vw,22px);right:-14px;top:-18px;bottom:-18px;border-radius:18px;
+    background:radial-gradient(120% 100% at 40% 50%,rgba(7,11,32,.72),rgba(7,11,32,.30) 70%,transparent 100%)}
+
+
+  #ygk-foot .ft-inner{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 28px}
+  #ygk-foot .ft-grid{display:grid;grid-template-columns:1.42fr .78fr .92fr 1.18fr;
+    gap:0;padding:64px 0 46px}
+  #ygk-foot .ft-col{padding-left:clamp(22px,2.6vw,44px);
+    border-left:1px solid rgba(245,240,230,0.08)}
+
+  /* ── brand column ── */
+  #ygk-foot .ft-lock{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+  #ygk-foot .ft-emb{width:clamp(52px,4.4vw,64px);height:auto;display:block;flex:none}
+  #ygk-foot .ft-word{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  #ygk-foot .ft-word img{height:clamp(20px,1.9vw,26px);width:auto;display:block}
+  #ygk-foot .ft-ja{font-family:'Zen Old Mincho',serif;font-size:clamp(15px,1.35vw,19px);
+    color:#F5F0E6;letter-spacing:.08em;white-space:nowrap}
+  #ygk-foot .ft-inst{font-size:9.5px;letter-spacing:.22em;color:#9BA5C6;margin-top:6px}
+  #ygk-foot .ft-tag{font-family:'Zen Old Mincho',serif;font-style:italic;
+    font-size:clamp(15px,1.3vw,17px);color:#E3E7F4;margin:0 0 12px}
+  #ygk-foot .ft-desc{font-size:13.5px;line-height:1.75;color:#8F99BB;margin:0;max-width:330px}
+
+  #ygk-foot .ft-socs{display:flex;gap:14px;margin:26px 0 0}
+  #ygk-foot .ft-soc{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;border:1px solid rgba(226,16,60,.42);background:rgba(255,255,255,.02);
+    color:#EFD9DE;transition:background .3s,border-color .3s,color .3s,transform .3s}
+  #ygk-foot .ft-soc svg{width:23px;height:23px;fill:currentColor;display:block}
+  #ygk-foot .ft-soc:hover{background:#C4082E;border-color:#C4082E;color:#FFF6F2;transform:translateY(-3px)}
+  #ygk-foot .ft-soc:focus-visible{outline:2px solid #E6A44C;outline-offset:3px}
+
+  #ygk-foot .ft-dream{display:flex;align-items:flex-end;gap:14px;margin-top:32px}
+  #ygk-foot .ft-slash{width:34px;height:34px;flex:none;position:relative}
+  #ygk-foot .ft-slash::before{content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;
+    background:rgba(217,162,75,.5)}
+  #ygk-foot .ft-slash::after{content:'';position:absolute;left:2px;bottom:0;width:1px;height:30px;
+    background:rgba(217,162,75,.5);transform:rotate(-26deg);transform-origin:bottom left}
+  #ygk-foot .ft-dream b{display:block;font-family:'Zen Old Mincho',serif;font-weight:500;
+    font-size:19px;letter-spacing:.16em;color:#EDE7DA}
+  #ygk-foot .ft-dream span{display:block;font-size:11px;letter-spacing:.34em;color:#A08A63;margin-top:4px}
+
+  /* ── link columns ── */
+  #ygk-foot .ft-lab{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+  #ygk-foot .ft-lab b{font-weight:600;font-size:11.5px;letter-spacing:.2em;color:#D9A24B}
+  #ygk-foot .ft-lab i{flex:1;max-width:64px;height:1px;background:linear-gradient(90deg,rgba(217,162,75,.6),transparent)}
+  #ygk-foot .ft-list{display:flex;flex-direction:column;gap:13px}
+  #ygk-foot .ft-list a{font-size:14.5px;color:#C3CAE4;cursor:pointer;width:fit-content;
+    transition:color .25s,transform .25s}
+  #ygk-foot .ft-list a:hover{color:#F5F0E6;transform:translateX(3px)}
+
+  /* ── demo-class panel (was the newsletter sign-up) ── */
+  #ygk-foot .ft-demo p{font-size:14px;line-height:1.75;color:#A8B1CE;margin:0 0 22px;max-width:360px}
+  #ygk-foot .ft-cta{display:inline-flex;align-items:center;gap:11px;cursor:pointer;
+    padding:15px 26px;border-radius:12px;border:0;
+    background:linear-gradient(120deg,#C4082E,#9C0724);color:#FFF6F2;
+    font-family:inherit;font-weight:800;font-size:14.5px;letter-spacing:.03em;
+    box-shadow:0 10px 26px rgba(196,8,46,.30);
+    transition:background .3s,transform .3s,box-shadow .3s}
+  #ygk-foot .ft-cta span{transition:transform .3s}
+  #ygk-foot .ft-cta:hover{background:linear-gradient(120deg,#E0143C,#B90A2E);transform:translateY(-2px);
+    box-shadow:0 14px 32px rgba(196,8,46,.38)}
+  #ygk-foot .ft-cta:hover span{transform:translateX(4px)}
+  #ygk-foot .ft-note{display:flex;align-items:flex-start;gap:10px;margin-top:18px;
+    font-size:13px;line-height:1.5;color:#8F99BB;max-width:330px}
+  #ygk-foot .ft-note svg{width:17px;height:17px;flex:none;stroke:#E2103C;stroke-width:1.7;fill:none}
+
+  /* ── bottom bar ── */
+  #ygk-foot .ft-bar{border-top:1px solid rgba(245,240,230,0.1);padding:20px 0 40px;
+    display:flex;align-items:center;justify-content:space-between;gap:18px 28px;flex-wrap:wrap;
+    font-size:12.5px;color:#8F99BB}
+  #ygk-foot .ft-legal{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  #ygk-foot .ft-legal span{color:rgba(245,240,230,.18)}
+  #ygk-foot .ft-legal a{color:#8F99BB;cursor:pointer;transition:color .25s}
+  #ygk-foot .ft-legal a:hover{color:#C3CAE4}
+  #ygk-foot .ft-cc{font-family:'Zen Old Mincho',serif;color:#A8B1CE}
+
+  @media (max-width:1080px){
+    #ygk-foot .ft-grid{grid-template-columns:1fr 1fr;gap:44px 0}
+    #ygk-foot .ft-brand{grid-column:1 / -1}
+    #ygk-foot .ft-col:nth-of-type(2){padding-left:0;border-left:0}
+  }
+  @media (max-width:760px){
+    #ygk-foot .ft-grid{grid-template-columns:1fr;gap:38px;padding:52px 0 38px}
+    #ygk-foot .ft-col{padding-left:0;border-left:0;
+      border-top:1px solid rgba(245,240,230,0.08);padding-top:30px}
+    #ygk-foot{background-position:78% center}
+    #ygk-foot::before{background:linear-gradient(180deg,rgba(9,13,38,.66) 0%,rgba(9,13,38,.82) 55%,rgba(7,11,32,.92) 100%)}
+    #ygk-foot .ft-bar{padding-bottom:32px}
+    #ygk-foot .ft-desc{max-width:none}
+  }
+  @media (prefers-reduced-motion:reduce){
+    #ygk-foot .ft-soc,#ygk-foot .ft-cta,#ygk-foot .ft-cta span,#ygk-foot .ft-list a{transition:none}
+  }
+
+/* Footer + WhatsApp FAB. Shared by every route. */
+
+  #rv-modal{position:fixed;inset:0;z-index:90;display:flex;align-items:center;
+    justify-content:center;padding:clamp(16px,3vw,40px);
+    font-family:'Nunito Sans','Helvetica Neue',Helvetica,sans-serif}
+  #rv-modal[hidden]{display:none}
+  #rv-modal .rvm-scrim{position:absolute;inset:0;background:rgba(12,8,32,.72);
+    -webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);animation:rvmFade .28s ease both}
+  #rv-modal .rvm-box{position:relative;width:100%;max-width:760px;max-height:88vh;
+    display:flex;flex-direction:column;overflow:hidden;
+    background:linear-gradient(180deg,#FFFFFF 0%,#FAF8FF 100%);
+    border:1px solid #E7DFFA;border-radius:22px;
+    box-shadow:0 34px 90px rgba(20,10,60,.42);
+    animation:rvmRise .38s cubic-bezier(.22,.61,.36,1) both}
+  @keyframes rvmFade{from{opacity:0}to{opacity:1}}
+  @keyframes rvmRise{from{opacity:0;transform:translateY(18px) scale(.975)}to{opacity:1;transform:none}}
+
+  #rv-modal .rvm-x{position:absolute;right:14px;top:14px;width:38px;height:38px;border-radius:50%;
+    border:1px solid #EDE6FB;background:#fff;color:#4A4468;cursor:pointer;padding:0;
+    display:flex;align-items:center;justify-content:center;
+    transition:background .25s,color .25s,border-color .25s}
+  #rv-modal .rvm-x svg{width:16px;height:16px;stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round}
+  #rv-modal .rvm-x:hover{background:#6D28D9;border-color:#6D28D9;color:#fff}
+
+  #rv-modal .rvm-head{display:flex;align-items:center;gap:18px;
+    padding:30px clamp(24px,3.4vw,40px) 20px;border-bottom:1px solid #F0EBFB}
+  #rv-modal .rvm-av{width:74px;height:74px;border-radius:50%;object-fit:cover;flex:none;
+    border:2px solid #EDE6FB}
+  #rv-modal .rvm-name{font-family:'Komika Axis',Impact,'Arial Black',sans-serif;
+    font-size:clamp(19px,2.1vw,25px);color:#1E1A4A;letter-spacing:.01em;line-height:1.2}
+  #rv-modal .rvm-meta{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin-top:8px}
+  #rv-modal .rvm-loc{display:flex;align-items:center;gap:7px;font-size:14px;color:#3A3358}
+  #rv-modal .rvm-loc img{width:18px;height:auto;border-radius:2px;display:block}
+  #rv-modal .rvm-lv{font-weight:700;font-size:12px;letter-spacing:.06em;color:#5B21B6;
+    background:rgba(109,40,217,.09);border:1px solid rgba(109,40,217,.16);
+    border-radius:11px;padding:3px 10px}
+  #rv-modal .rvm-stars{margin-top:8px;color:#E6A44C;font-size:16px;letter-spacing:1px;line-height:1}
+
+  /* the long ones genuinely are long — the body scrolls, the header and pager do not */
+  /* flex:1 so the pager stays pinned to the bottom edge of the full-screen phone sheet
+     instead of floating under a short review */
+  #rv-modal .rvm-body{flex:1 1 auto;min-height:0;overflow-y:auto;
+    padding:24px clamp(24px,3.4vw,40px) 26px;-webkit-overflow-scrolling:touch}
+  #rv-modal .rvm-body p{margin:0 0 14px;font-size:clamp(14.5px,1.1vw,16px);line-height:1.78;
+    color:#3A3358;white-space:pre-wrap}
+  #rv-modal .rvm-body p:last-child{margin-bottom:0}
+  #rv-modal .rvm-quote{width:34px;height:auto;display:block;margin-bottom:14px;opacity:.9}
+
+  #rv-modal .rvm-foot{display:flex;align-items:center;justify-content:space-between;gap:14px;
+    padding:16px clamp(24px,3.4vw,40px);border-top:1px solid #F0EBFB;background:#FCFAFF}
+  #rv-modal .rvm-count{font-weight:700;font-size:13px;letter-spacing:.1em;color:#5A5378}
+  #rv-modal .rvm-nav{display:inline-flex;align-items:center;gap:9px;cursor:pointer;padding:9px 16px;
+    border-radius:999px;border:1px solid rgba(109,40,217,.24);background:#fff;
+    font-family:inherit;font-weight:700;font-size:13.5px;color:#5B21B6;
+    transition:background .25s,border-color .25s,color .25s}
+  #rv-modal .rvm-nav svg{width:14px;height:14px;stroke:currentColor;stroke-width:2.4;fill:none;
+    stroke-linecap:round;stroke-linejoin:round}
+  #rv-modal .rvm-nav:hover{background:#6D28D9;border-color:#6D28D9;color:#fff}
+  #rv-modal .rvm-nav:focus-visible,#rv-modal .rvm-x:focus-visible{outline:2px solid #6D28D9;outline-offset:2px}
+
+  @media (max-width:560px){
+    #rv-modal{padding:0}
+    #rv-modal .rvm-box{max-width:none;max-height:100vh;height:100vh;border-radius:0;border:0}
+    #rv-modal .rvm-head{padding:26px 20px 18px;gap:14px}
+    #rv-modal .rvm-av{width:60px;height:60px}
+    #rv-modal .rvm-body{padding:20px}
+    #rv-modal .rvm-foot{padding:14px 20px}
+    #rv-modal .rvm-nav span{display:none}
+    #rv-modal .rvm-nav{padding:11px 16px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    #rv-modal .rvm-scrim,#rv-modal .rvm-box{animation-duration:.01s}
+  }
+
+
+  #wa-fab{position:fixed;right:clamp(16px,2.2vw,30px);bottom:clamp(16px,2.2vw,30px);z-index:70;
+    display:flex;align-items:center;gap:0;text-decoration:none;
+    height:clamp(52px,4.4vw,62px);padding:0 clamp(6px,.55vw,8px) 0 0;
+    border-radius:999px;background:#25D366;color:#fff;
+    box-shadow:0 10px 30px rgba(18,140,70,.34),0 2px 8px rgba(0,14,42,.24);
+    transition:transform .32s cubic-bezier(.22,.61,.36,1),box-shadow .32s,background .32s}
+  #wa-fab:hover{background:#1FBB59;color:#fff;transform:translateY(-3px);
+    box-shadow:0 16px 40px rgba(18,140,70,.42),0 3px 10px rgba(0,14,42,.28)}
+  #wa-fab .wa-ic{flex:none;width:clamp(52px,4.4vw,62px);height:100%;
+    display:flex;align-items:center;justify-content:center}
+  #wa-fab .wa-ic svg{width:clamp(26px,2.2vw,31px);height:clamp(26px,2.2vw,31px);fill:#fff;display:block}
+  /* the label is width-collapsed rather than hidden, so it slides open instead of popping */
+  #wa-fab .wa-tx{max-width:0;overflow:hidden;white-space:nowrap;opacity:0;
+    font-family:'Nunito Sans','Helvetica Neue',Helvetica,sans-serif;font-weight:800;
+    font-size:clamp(13px,1.05vw,15px);letter-spacing:.02em;
+    transition:max-width .42s cubic-bezier(.22,.61,.36,1),opacity .3s,padding-right .42s}
+  #wa-fab:hover .wa-tx,#wa-fab:focus-visible .wa-tx{max-width:220px;opacity:1;padding-right:14px}
+  #wa-fab:focus-visible{outline:3px solid #F5F0E6;outline-offset:3px}
+  /* one slow ring, so it reads as available without nagging */
+  #wa-fab::after{content:'';position:absolute;right:0;bottom:0;
+    width:clamp(52px,4.4vw,62px);height:clamp(52px,4.4vw,62px);border-radius:50%;
+    border:2px solid rgba(37,211,102,.55);pointer-events:none;animation:waRing 2.8s ease-out infinite}
+  #wa-fab:hover::after{animation-play-state:paused;opacity:0}
+  @keyframes waRing{0%{transform:scale(1);opacity:.65}70%{transform:scale(1.45);opacity:0}100%{opacity:0}}
+  @media (max-width:600px){
+    #wa-fab{height:52px;padding-right:0}
+    #wa-fab .wa-ic{width:52px}
+    #wa-fab .wa-tx{display:none}
+    #wa-fab::after{width:52px;height:52px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    #wa-fab,#wa-fab .wa-tx{transition:none}
+    #wa-fab::after{animation:none;opacity:0}
+  }
