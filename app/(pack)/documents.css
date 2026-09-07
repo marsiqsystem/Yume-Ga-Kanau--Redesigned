@@ -1,0 +1,240 @@
+/* Styles for the enrolment document pack (/admin and /d/...).
+
+   Lifted from the Claude Design handoff, which specifies these values exactly.
+   They live here rather than inline because inputs need :hover, :focus and
+   :checked states, and those cannot be expressed as inline styles.
+
+   Everything is namespaced under .pack so nothing here can reach the marketing
+   pages, which share the same body background but not these rules. */
+
+/* The site nav, footer and WhatsApp button are marketing furniture. A document
+   the student was handed a private link to should not carry them, and neither
+   should the admin console. This layout is the only place they are hidden. */
+body:has(.pack) #ygk-nav,
+body:has(.pack) #ygk-foot,
+body:has(.pack) #wa-fab {
+  display: none !important;
+}
+
+.pack {
+  font-family: var(--font-nunito), 'Nunito Sans', system-ui, sans-serif;
+  color: #F5F0E6;
+  padding: 40px 20px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+}
+
+/* One document = one 1000px "screen page", per the design's canvas spec. */
+.pack-sheet {
+  width: 100%;
+  max-width: 1000px;
+  background-color: #101733;
+  background-image:
+    radial-gradient(circle at 18% 0%, rgba(196, 8, 46, 0.16), transparent 42%),
+    radial-gradient(circle at 88% 8%, rgba(217, 162, 75, 0.10), transparent 38%);
+  color: #F5F0E6;
+  box-shadow: 0 24px 70px rgba(0, 3, 16, 0.55);
+  border-radius: 18px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Fields ───────────────────────────────────────────────────────────────── */
+
+.pack input,
+.pack select,
+.pack textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(6, 12, 36, 0.62);
+  border: 1px solid rgba(245, 240, 230, 0.16);
+  border-radius: 10px;
+  padding: 14px 15px;
+  font-family: inherit;
+  font-size: 14.5px;
+  color: #F5F0E6;
+  outline: none;
+  transition: border-color 0.16s, box-shadow 0.16s, background 0.16s;
+}
+
+.pack input:hover,
+.pack select:hover,
+.pack textarea:hover {
+  border-color: rgba(245, 240, 230, 0.28);
+}
+
+.pack input:focus,
+.pack select:focus,
+.pack textarea:focus {
+  border-color: #E2103C;
+  background: rgba(6, 12, 36, 0.8);
+  box-shadow: 0 0 0 3px rgba(226, 16, 60, 0.16);
+}
+
+.pack ::placeholder { color: #7B85A8; }
+
+.pack textarea {
+  min-height: 120px;
+  line-height: 1.7;
+  resize: vertical;
+}
+
+/* The gold caret is drawn with two gradients rather than a background image, so
+   there is no extra request and it stays crisp at any zoom. */
+.pack select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: rgba(6, 12, 36, 0.62);
+  background-image:
+    linear-gradient(45deg, transparent 50%, #D9A24B 50%),
+    linear-gradient(135deg, #D9A24B 50%, transparent 50%);
+  background-position: calc(100% - 19px) calc(50% - 1px), calc(100% - 13px) calc(50% - 1px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.pack select option { background: #101733; color: #F5F0E6; }
+
+/* A date input's native picker icon is near-black on this ground, so it is
+   inverted to stay visible. */
+.pack input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.55;
+  cursor: pointer;
+}
+
+.pack input[type="checkbox"],
+.pack input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  flex: none;
+  padding: 0;
+  border-radius: 7px;
+  cursor: pointer;
+  position: relative;
+}
+
+.pack input[type="radio"] { border-radius: 50%; }
+
+.pack input[type="checkbox"]:checked,
+.pack input[type="radio"]:checked {
+  background: #C4082E;
+  border-color: #C4082E;
+}
+
+.pack input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid #FFF6F2;
+  border-width: 0 2px 2px 0;
+  transform: rotate(40deg);
+}
+
+.pack input[type="radio"]:checked::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background: #FFF6F2;
+}
+
+/* Keyboard users must be able to see which box they are on; the coloured focus
+   ring above only shows on text fields. */
+.pack input[type="checkbox"]:focus-visible,
+.pack input[type="radio"]:focus-visible {
+  box-shadow: 0 0 0 3px rgba(226, 16, 60, 0.35);
+}
+
+/* A field the student may not edit — the office-use values Sensei signed into
+   the link. Styled as a field so the page reads consistently, but visibly inert. */
+.pack-locked {
+  background: rgba(6, 12, 36, 0.34);
+  border: 1px dashed rgba(245, 240, 230, 0.16);
+  border-radius: 10px;
+  padding: 14px 15px;
+  font-size: 14.5px;
+  color: #C3CAE4;
+  min-height: 49px;
+  display: flex;
+  align-items: center;
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
+
+.pack-btn {
+  padding: 16px 32px;
+  border-radius: 999px;
+  background: linear-gradient(120deg, #C4082E, #A80828);
+  border: 1px solid rgba(255, 246, 242, 0.22);
+  box-shadow: 0 8px 24px rgba(120, 4, 26, 0.45);
+  font: 800 14px/1 var(--font-nunito), 'Nunito Sans', sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #FFF6F2;
+  cursor: pointer;
+  transition: filter 0.16s;
+}
+
+.pack-btn:hover:not(:disabled) { filter: brightness(1.08); }
+.pack-btn:disabled { opacity: 0.55; cursor: default; }
+
+.pack-btn-quiet {
+  padding: 12px 22px;
+  border-radius: 999px;
+  background: rgba(245, 240, 230, 0.07);
+  border: 1px solid rgba(245, 240, 230, 0.18);
+  font: 700 12.5px/1 var(--font-nunito), 'Nunito Sans', sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #C3CAE4;
+  cursor: pointer;
+  transition: border-color 0.16s, color 0.16s;
+}
+
+.pack-btn-quiet:hover { border-color: rgba(245, 240, 230, 0.4); color: #F5F0E6; }
+
+/* ── Small responsive corrections ─────────────────────────────────────────── */
+
+/* globals.css collapses any inline grid-template-columns to a single column
+   under 900px, which is what these documents want too. These rules cover the
+   things it does not reach: the wide sheet padding and the masthead. */
+@media (max-width: 760px) {
+  .pack { padding: 20px 12px 60px; }
+  .pack-pad { padding-left: 24px !important; padding-right: 24px !important; }
+  .pack-masthead { flex-wrap: wrap !important; gap: 18px !important; }
+  .pack-masthead-aside { width: 100% !important; }
+}
+
+/* ── Print ────────────────────────────────────────────────────────────────── */
+
+/* The brief says these may be exported to PDF for records. Left alone, a
+   full-bleed dark sheet prints as a black rectangle and drops the text, because
+   most browsers strip background colours but keep foreground ones. Forcing the
+   backgrounds through keeps the document looking like itself on paper. */
+@media print {
+  .pack {
+    padding: 0;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .pack-sheet {
+    box-shadow: none;
+    border-radius: 0;
+    max-width: none;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  /* Controls are not part of the document being kept. */
+  .pack-noprint { display: none !important; }
+  .pack-sheet { break-inside: auto; }
+}

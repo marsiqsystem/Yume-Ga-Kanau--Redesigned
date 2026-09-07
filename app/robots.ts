@@ -3,9 +3,20 @@ import { SITE } from "@/lib/seo";
 
 /* Next builds this into /robots.txt.
 
-   Everything is crawlable except the mail endpoint, which has nothing to index
-   and only answers POST. The sitemap line is what points crawlers at the full
-   list of pages without them having to discover each one by following links. */
+   Everything is crawlable except three things:
+
+     /api/    the mail endpoints. Nothing to index; they only answer POST.
+     /admin   Sensei's private console.
+     /d/      generated document links. Each one is meant for exactly one
+              student, and a fee receipt carrying a name and an amount should
+              never turn up in a search result.
+
+   The last two also carry `noindex` in their own page metadata, which is
+   deliberate belt and braces: robots.txt stops a crawl, the meta tag stops a
+   link that someone pastes somewhere public from being indexed anyway.
+
+   The sitemap line is what points crawlers at the full list of pages without
+   them having to discover each one by following links. */
 
 /* The crawlers behind AI search and chat answers. A blanket `User-agent: *`
    already permits them, but two of these are opt-OUT gates that publishers are
@@ -41,11 +52,13 @@ const AI_AGENTS = [
   "MistralAI-User",
 ];
 
+const PRIVATE = ["/api/", "/admin", "/d/"];
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
-      { userAgent: "*", allow: "/", disallow: ["/api/"] },
-      { userAgent: AI_AGENTS, allow: "/", disallow: ["/api/"] },
+      { userAgent: "*", allow: "/", disallow: PRIVATE },
+      { userAgent: AI_AGENTS, allow: "/", disallow: PRIVATE },
     ],
     sitemap: `${SITE.url}/sitemap.xml`,
     host: SITE.url,
