@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { MAX_VALUE, docById, keysFor } from "@/lib/documents";
+import { docById, keysFor, limitsFor } from "@/lib/documents";
 import { SESSION_COOKIE, sessionValid, sign, signingConfigured } from "@/lib/sign";
 
 /* Turns what Sensei typed into a shareable link.
@@ -32,11 +32,12 @@ export async function POST(req: Request) {
   if (!doc) return NextResponse.json({ ok: false, error: "Unknown document." }, { status: 400 });
 
   const raw = (body.values ?? {}) as Record<string, unknown>;
+  const limits = limitsFor(doc);
   const values: Record<string, string> = {};
   for (const key of keysFor(doc)) {
     const v = raw[key];
     if (typeof v !== "string") continue;
-    const trimmed = v.trim().slice(0, MAX_VALUE);
+    const trimmed = v.trim().slice(0, limits[key]);
     // Empty values are left out entirely so they render as [ ... ] and, just as
     // usefully, so the signed payload stays small enough for a tidy URL.
     if (trimmed) values[key] = trimmed;

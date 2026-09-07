@@ -1,4 +1,5 @@
 import React from "react";
+import { BUSINESS } from "@/lib/business";
 import { SENSEI_EMAIL, SITE, WHATSAPP } from "@/lib/seo";
 
 /* The pieces every document in the pack is built from.
@@ -378,7 +379,8 @@ export function DocFooter() {
     >
       {SITE.legalName} · yumegakanau.in · {SENSEI_EMAIL} · WhatsApp {WHATSAPP.display}
       <br />
-      Registered name: {SITE.legalName} · Founded December 2025 · Online only
+      Registered name: {BUSINESS.registeredName} · {BUSINESS.address} · Founded December 2025 · Online
+      only
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { WHATSAPP, SENSEI_EMAIL } from "@/lib/seo";
-import { val, type DocValues } from "@/lib/documents";
+import { BLANK, opt, repeatRows, repeatSpec, val, type DocValues } from "@/lib/documents";
+import { tidyAmount } from "@/lib/money";
 import {
   Body,
   Card,
@@ -13,25 +14,21 @@ import {
   Rule,
   SectionTitle,
 } from "./DocParts";
+import UpiQr from "./UpiQr";
 
 /* The fee structure sheet.
 
    The website deliberately publishes no prices, so this is where they live —
-   which makes it the one persuasive document in the pack, and the design lets it
-   carry more of the brand artwork than the others.
+   which makes it the one persuasive document in the pack, and the design lets
+   it carry more of the brand artwork than the others.
 
-   Any fee Sensei leaves blank stays blank and shows as [ ... ]. That is
-   deliberate on her side too: a blank cell reads as "ask me", and inventing a
-   number here would be worse than showing nothing. */
+   The programme rows are Sensei's own: she names, prices, adds and deletes them
+   in the console. Any fee she leaves blank stays blank and shows as [ ... ].
+   That is deliberate on her side too — a blank cell reads as "ask me", and
+   inventing a number here would be worse than showing nothing. */
 
-const ROWS = [
-  { stage: "Stage 1", level: "N5", dur: "durN5", fee: "feeN5", fmt: "Small batch, live online" },
-  { stage: "Stage 2", level: "N4", dur: "durN4", fee: "feeN4", fmt: "Small batch, live online" },
-  { stage: "Stage 3", level: "N3", dur: "durN3", fee: "feeN3", fmt: "Small batch, live online" },
-  { stage: "Stage 4", level: "N2", dur: "durN2", fee: "feeN2", fmt: "Small batch, live online" },
-  { stage: "Kaiwa", level: "Any", dur: "durKaiwa", fee: "feeKaiwa", fmt: "Conversational Japanese" },
-  { stage: "Business", level: "Any", dur: "durBiz", fee: "feeBiz", fmt: "Business Japanese" },
-] as const;
+const PROGRAMMES = repeatSpec("fees", "Programmes & fees");
+const RATES = repeatSpec("fees", "1-on-1 coaching");
 
 const INCLUDED = [
   "Live online classes in small batches",
@@ -43,6 +40,36 @@ const INCLUDED = [
 ] as const;
 
 const GRID = "1fr .7fr 1fr 1.5fr 1.2fr";
+
+/* Sheets issued before the rows became editable carried one fixed key per
+   stage. Those links are in students' chat histories and must keep opening as
+   the sheet they were, so an old-shaped link is read back into the new rows
+   rather than rendering as an empty table. */
+const LEGACY = [
+  { pst: "Stage 1", plv: "N5", dur: "durN5", fee: "feeN5", pfm: "Small batch, live online" },
+  { pst: "Stage 2", plv: "N4", dur: "durN4", fee: "feeN4", pfm: "Small batch, live online" },
+  { pst: "Stage 3", plv: "N3", dur: "durN3", fee: "feeN3", pfm: "Small batch, live online" },
+  { pst: "Stage 4", plv: "N2", dur: "durN2", fee: "feeN2", pfm: "Small batch, live online" },
+  { pst: "Kaiwa", plv: "Any", dur: "durKaiwa", fee: "feeKaiwa", pfm: "Conversational Japanese" },
+  { pst: "Business", plv: "Any", dur: "durBiz", fee: "feeBiz", pfm: "Business Japanese" },
+] as const;
+
+function legacyProgrammes(v: DocValues): DocValues[] {
+  return LEGACY.map((r) => ({
+    pst: r.pst,
+    plv: r.plv,
+    pdu: opt(v, r.dur),
+    pfm: r.pfm,
+    pfe: opt(v, r.fee),
+  }));
+}
+
+function legacyRates(v: DocValues): DocValues[] {
+  return [
+    { ru: "Per hour", rd: "Private, scheduled with you", rf: opt(v, "fee1v1Hour") },
+    { ru: "Per module", rd: "Private, scheduled with you", rf: opt(v, "fee1v1Module") },
+  ];
+}
 
 function Bullet({ children }: { children: React.ReactNode }) {
   return (
@@ -63,7 +90,29 @@ function Detail({ label, value }: { label: string; value: string }) {
   );
 }
 
+/* A cell that shows a blank marker rather than collapsing, because a gap in a
+   priced table reads as a missing row rather than as "ask me". */
+function cell(value: string): string {
+  return value || BLANK;
+}
+
 export default function FeeStructure({ v }: { v: DocValues }) {
+  const typed = repeatRows(v, PROGRAMMES);
+  const programmes = typed.length > 0 ? typed : legacyProgrammes(v);
+
+  const typedRates = repeatRows(v, RATES);
+  const rates =
+    typedRates.length > 0
+      ? typedRates
+      : opt(v, "fee1v1Hour") || opt(v, "fee1v1Module")
+        ? legacyRates(v)
+        : [];
+
+  /* Older sheets had a single "Bank / account name" box. Whichever of the two
+     an old link carries is shown as the account name, so nothing that was
+     already sent loses a line. */
+  const accountName = opt(v, "accountName") || opt(v, "bankName");
+
   return (
     <div className="pack-sheet">
       {/* This sheet's masthead carries the large crest as a watermark — the one
@@ -126,9 +175,9 @@ export default function FeeStructure({ v }: { v: DocValues }) {
               <div style={{ textAlign: "right" }}>Fee</div>
             </div>
 
-            {ROWS.map((r) => (
+            {programmes.map((r, i) => (
               <div
-                key={r.stage + r.level}
+                key={i}
                 style={{
                   display: "grid",
                   gridTemplateColumns: GRID,
@@ -139,29 +188,26 @@ export default function FeeStructure({ v }: { v: DocValues }) {
                   color: "#C3CAE4",
                 }}
               >
-                <div style={{ font: `700 14px/1.3 ${FONT_BODY}`, color: "#F5F0E6" }}>{r.stage}</div>
-                <div style={{ font: `700 18px/1 ${FONT_SERIF}`, color: "#E2103C" }}>{r.level}</div>
-                <div>{val(v, r.dur)}</div>
-                <div>{r.fmt}</div>
+                <div style={{ font: `700 14px/1.3 ${FONT_BODY}`, color: "#F5F0E6" }}>{cell(r.pst)}</div>
+                <div style={{ font: `700 18px/1 ${FONT_SERIF}`, color: "#E2103C" }}>{r.plv}</div>
+                <div>{cell(r.pdu)}</div>
+                <div>{r.pfm}</div>
                 <div style={{ textAlign: "right", font: `800 14px/1.3 ${FONT_BODY}`, color: "#F7F3EA" }}>
-                  {val(v, r.fee)}
+                  {r.pfe ? tidyAmount(r.pfe) : BLANK}
                 </div>
               </div>
             ))}
 
-            {/* 1-on-1 sits in its own group: the design separates it, and its
+            {/* 1-on-1 sits in its own band: the design separates it, and its
                 fees genuinely differ from group fees. */}
-            {[
-              { unit: "Per hour", key: "fee1v1Hour" },
-              { unit: "Per module", key: "fee1v1Module" },
-            ].map((r) => (
+            {rates.map((r, i) => (
               <div
-                key={r.key}
+                key={`rate-${i}`}
                 style={{
                   display: "grid",
                   gridTemplateColumns: GRID,
                   alignItems: "center",
-                  borderTop: "1px solid rgba(245,240,230,.18)",
+                  borderTop: `1px solid rgba(245,240,230,${i === 0 ? ".18" : ".08"})`,
                   background: "rgba(217,162,75,.07)",
                   padding: "14px 15px",
                   font: `400 13.5px/1.5 ${FONT_BODY}`,
@@ -169,10 +215,10 @@ export default function FeeStructure({ v }: { v: DocValues }) {
                 }}
               >
                 <div style={{ font: `700 14px/1.3 ${FONT_BODY}`, color: "#F5F0E6" }}>1-on-1 coaching</div>
-                <div style={{ font: `600 13px/1.3 ${FONT_BODY}`, color: "#D9A24B" }}>{r.unit}</div>
-                <div style={{ gridColumn: "span 2" }}>Private, scheduled with you</div>
+                <div style={{ font: `600 13px/1.3 ${FONT_BODY}`, color: "#D9A24B" }}>{cell(r.ru)}</div>
+                <div style={{ gridColumn: "span 2" }}>{cell(r.rd)}</div>
                 <div style={{ textAlign: "right", font: `800 14px/1.3 ${FONT_BODY}`, color: "#F7F3EA" }}>
-                  {val(v, r.key)}
+                  {r.rf ? tidyAmount(r.rf) : BLANK}
                 </div>
               </div>
             ))}
@@ -217,15 +263,33 @@ export default function FeeStructure({ v }: { v: DocValues }) {
             <SectionTitle size={20}>HOW TO PAY</SectionTitle>
             <Rule mb={18} />
             <Detail label="UPI ID" value={val(v, "upiId")} />
-            <Detail label="Bank / account name" value={val(v, "bankName")} />
+            <Detail label="Account name" value={accountName || BLANK} />
             <Detail label="Account number" value={val(v, "accountNo")} />
             <Detail label="IFSC" value={val(v, "ifsc")} />
+            <Detail label="Bank" value={val(v, "bankName")} />
             <div style={{ font: `400 12px/1.7 ${FONT_BODY}`, color: "#8F99BB", marginTop: 14 }}>
               Send the payment screenshot on WhatsApp to receive your receipt. Fees are non-refundable once
               a batch begins; a pause or transfer may be requested in case of unforeseen circumstances.
             </div>
           </Card>
         </div>
+
+        {/* No amount on this one: the sheet quotes several fees and the reader
+            has not chosen yet, so the code opens their UPI app on the right ID
+            and lets them type the figure they were quoted. */}
+        <Card mt={24} pad="30px 28px">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 28, alignItems: "center" }}>
+            <div>
+              <SectionTitle size={20}>PAY BY UPI</SectionTitle>
+              <Rule mb={18} />
+              <Body>
+                Scan with any UPI app — GPay, PhonePe, Paytm, BHIM — and enter the fee for the stage you
+                are joining. Send the screenshot on WhatsApp and your receipt follows.
+              </Body>
+            </div>
+            <UpiQr amount={null} upiId={opt(v, "upiId") || undefined} note="Course fee" size={160} compact />
+          </div>
+        </Card>
 
         <div style={{ textAlign: "center", marginTop: 34 }}>
           <a className="pack-btn" style={{ display: "inline-block" }} href={WHATSAPP.href}>

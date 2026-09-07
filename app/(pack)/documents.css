@@ -203,6 +203,85 @@ body:has(.pack) #wa-fab {
 
 .pack-btn-quiet:hover { border-color: rgba(245, 240, 230, 0.4); color: #F5F0E6; }
 
+/* ── Repeating rows ───────────────────────────────────────────────────────── */
+
+/* One row of a group Sensei can add to and delete from — a receipt line, a
+   programme on the fee sheet. It is drawn as a card rather than a bare row of
+   boxes so that "this block is one line of the document, and this button
+   deletes that line" is obvious without reading anything. */
+
+.pack-row {
+  border-radius: 14px;
+  border: 1px solid rgba(245, 240, 230, 0.10);
+  background: rgba(6, 12, 36, 0.28);
+  padding: 16px 18px 18px;
+  transition: border-color 0.16s;
+}
+
+.pack-row:focus-within { border-color: rgba(217, 162, 75, 0.34); }
+
+/* Deleting is the one destructive control in the console, so it stays quiet
+   until it is pointed at, and only then turns crimson. */
+.pack-row-remove {
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid rgba(245, 240, 230, 0.16);
+  font: 700 10.5px/1 var(--font-nunito), 'Nunito Sans', sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8F99BB;
+  cursor: pointer;
+  flex: none;
+  transition: border-color 0.16s, color 0.16s, background 0.16s;
+}
+
+.pack-row-remove:hover:not(:disabled) {
+  border-color: #C4082E;
+  background: rgba(196, 8, 46, 0.14);
+  color: #EFB3C1;
+}
+
+/* Disabled at the minimum row count. Kept on the page rather than hidden, so
+   the row does not reflow the instant it becomes the last one. */
+.pack-row-remove:disabled { opacity: 0.32; cursor: default; }
+
+.pack-row-add {
+  padding: 11px 20px;
+  border-radius: 999px;
+  background: rgba(217, 162, 75, 0.10);
+  border: 1px dashed rgba(217, 162, 75, 0.45);
+  font: 800 12px/1 var(--font-nunito), 'Nunito Sans', sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #D9A24B;
+  cursor: pointer;
+  transition: background 0.16s, border-color 0.16s;
+}
+
+.pack-row-add:hover:not(:disabled) {
+  background: rgba(217, 162, 75, 0.18);
+  border-color: rgba(217, 162, 75, 0.7);
+}
+
+.pack-row-add:disabled { opacity: 0.4; cursor: default; }
+
+/* ── Paid stamp ───────────────────────────────────────────────────────────── */
+
+/* The angled "PAID IN FULL" mark on a settled invoice. Rotated and translucent
+   so it reads as a stamp over the document rather than as a field in it. */
+.pack-stamp {
+  display: inline-block;
+  transform: rotate(-8deg);
+  border: 3px solid rgba(74, 168, 112, 0.75);
+  border-radius: 10px;
+  padding: 10px 20px;
+  font: 700 24px/1 'Komika Axis', Impact, 'Arial Black', sans-serif;
+  letter-spacing: 0.06em;
+  color: rgba(122, 214, 160, 0.92);
+  background: rgba(74, 168, 112, 0.10);
+}
+
 /* ── Small responsive corrections ─────────────────────────────────────────── */
 
 /* globals.css collapses any inline grid-template-columns to a single column

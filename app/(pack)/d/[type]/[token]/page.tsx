@@ -6,6 +6,7 @@ import AdmissionForm from "@/components/documents/AdmissionForm";
 import ConfirmationLetter from "@/components/documents/ConfirmationLetter";
 import FeeReceipt from "@/components/documents/FeeReceipt";
 import FeeStructure from "@/components/documents/FeeStructure";
+import Invoice from "@/components/documents/Invoice";
 import WelcomePack from "@/components/documents/WelcomePack";
 import { DocBody, DocFooter, DocTitle, Eyebrow, Masthead, Rule, Body, Card } from "@/components/documents/DocParts";
 
@@ -86,6 +87,8 @@ export default async function DocumentPage({ params }: Params) {
   switch (type) {
     case "admission":
       return <AdmissionForm office={v} token={token} />;
+    case "invoice":
+      return <Invoice v={v} />;
     case "receipt":
       return <FeeReceipt v={v} />;
     case "fees":
