@@ -18,6 +18,7 @@ const UPDATED = {
   explore: "2026-09-07",
   about: "2026-09-07",
   contact: "2026-09-07",
+  legal: "2026-09-07",
 } as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -26,5 +27,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE.url}/explore`, lastModified: UPDATED.explore, changeFrequency: "monthly", priority: 0.9 },
     { url: `${SITE.url}/about`, lastModified: UPDATED.about, changeFrequency: "yearly", priority: 0.7 },
     { url: `${SITE.url}/contact`, lastModified: UPDATED.contact, changeFrequency: "yearly", priority: 0.8 },
+    /* The legal documents are listed so they can be found and cited, but at low
+       priority — they are not what anyone is searching for. */
+    { url: `${SITE.url}/privacy`, lastModified: UPDATED.legal, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${SITE.url}/terms`, lastModified: UPDATED.legal, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${SITE.url}/cookies`, lastModified: UPDATED.legal, changeFrequency: "yearly", priority: 0.3 },
   ];
 }

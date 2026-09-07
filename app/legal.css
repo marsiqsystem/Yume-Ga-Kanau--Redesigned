@@ -1,0 +1,104 @@
+/* Privacy, Terms and Cookies. One stylesheet for all three — they are the same
+   document shape, and the only page type on the site whose job is to be read
+   rather than to persuade, so the artwork stays out of the way and the measure
+   is set for reading. */
+
+#legal-page{position:relative;background:#0A1130;min-height:100vh;isolation:isolate}
+/* A single quiet wash rather than the full plates the marketing routes use:
+   these pages are long, and a busy ground makes small print harder to read. */
+#legal-page::before{content:"";position:absolute;inset:0 0 auto;height:min(520px,60vh);
+  z-index:0;pointer-events:none;
+  background:
+    radial-gradient(90% 120% at 78% 0%,rgba(196,8,46,.16),rgba(10,17,48,0) 62%),
+    linear-gradient(180deg,#131C43 0%,#0A1130 100%)}
+
+#legal-page .lg-inner{position:relative;z-index:1;max-width:780px;margin:0 auto;
+  padding:calc(var(--navh) + clamp(30px,5vw,60px)) 24px clamp(70px,9vw,120px)}
+
+/* ── masthead ── */
+#legal-page .lg-eyebrow{display:flex;align-items:center;gap:10px;
+  font-family:'Nunito Sans',sans-serif;font-weight:800;font-size:11px;
+  letter-spacing:.2em;text-transform:uppercase;color:#D9A24B;margin-bottom:16px}
+#legal-page .lg-eyebrow::after{content:"";flex:1;height:1px;
+  background:linear-gradient(90deg,rgba(217,162,75,.42),rgba(217,162,75,0))}
+
+#legal-page h1{font-family:'Komika Axis',Impact,'Arial Black',sans-serif;
+  font-size:clamp(28px,6vw,46px);line-height:1.16;font-weight:700;color:#F5F0E6;
+  letter-spacing:.02em;margin:0 0 18px;text-wrap:balance}
+#legal-page .lg-rule{width:64px;height:3px;border-radius:3px;margin:0 0 22px;
+  background:linear-gradient(90deg,#C4082E,#D9A24B)}
+#legal-page .lg-standfirst{font-family:'Nunito Sans',sans-serif;font-size:16.5px;
+  line-height:1.8;color:#C3CAE4;margin:0 0 22px;text-wrap:pretty}
+
+#legal-page .lg-meta{display:flex;flex-wrap:wrap;gap:8px 24px;font-family:'Nunito Sans',sans-serif;
+  font-size:13px;color:#8F99BB;padding:16px 0 0;border-top:1px solid rgba(245,240,230,.1)}
+#legal-page .lg-meta b{color:#C3CAE4;font-weight:700}
+
+/* ── the plain-language summary that opens each document ── */
+#legal-page .lg-tldr{margin:30px 0 8px;padding:20px 22px;border-radius:12px;
+  background:rgba(217,162,75,.07);border:1px solid rgba(217,162,75,.22)}
+#legal-page .lg-tldr h2{font-family:'Nunito Sans',sans-serif;font-size:11.5px;font-weight:800;
+  letter-spacing:.16em;text-transform:uppercase;color:#D9A24B;margin:0 0 10px}
+#legal-page .lg-tldr p{font-family:'Nunito Sans',sans-serif;font-size:15.5px;line-height:1.72;
+  color:#E4E8F6;margin:0 0 10px}
+#legal-page .lg-tldr p:last-child{margin-bottom:0}
+
+/* ── body ── */
+#legal-page section{margin-top:42px;scroll-margin-top:calc(var(--navh) + 20px)}
+#legal-page h2{font-family:'Zen Old Mincho',serif;font-weight:600;
+  font-size:clamp(19px,3vw,25px);line-height:1.3;color:#F7F3EA;margin:0 0 6px;text-wrap:balance}
+#legal-page h2 .lg-n{color:#C4082E;font-family:'Nunito Sans',sans-serif;font-weight:800;
+  font-size:.62em;margin-right:.6em;letter-spacing:.04em;vertical-align:.12em}
+#legal-page h3{font-family:'Nunito Sans',sans-serif;font-weight:800;font-size:15.5px;
+  color:#F5F0E6;margin:22px 0 6px}
+#legal-page p,#legal-page li{font-family:'Nunito Sans',sans-serif;font-size:15.5px;
+  line-height:1.78;color:#C3CAE4;text-wrap:pretty}
+#legal-page p{margin:0 0 12px}
+#legal-page ul{margin:0 0 12px;padding-left:20px}
+#legal-page li{margin-bottom:7px}
+#legal-page li::marker{color:#D9A24B}
+#legal-page strong{color:#F5F0E6;font-weight:700}
+#legal-page a{color:#E8607A;text-decoration:underline;text-underline-offset:3px;
+  text-decoration-thickness:1px;transition:color .25s}
+#legal-page a:hover{color:#FF8FA3}
+#legal-page a:focus-visible{outline:2px solid #D9A24B;outline-offset:3px;border-radius:2px}
+
+/* Definition rows — used for "what we collect" and "what each term means".
+   A table would scroll badly on a phone, so it is a two-column grid that
+   collapses to stacked pairs. */
+#legal-page .lg-defs{display:grid;grid-template-columns:minmax(150px,.42fr) 1fr;
+  gap:0;margin:14px 0 18px;border-top:1px solid rgba(245,240,230,.1)}
+#legal-page .lg-defs dt{font-family:'Nunito Sans',sans-serif;font-weight:800;font-size:14.5px;
+  color:#F5F0E6;padding:13px 18px 13px 0;border-bottom:1px solid rgba(245,240,230,.1)}
+#legal-page .lg-defs dd{margin:0;font-family:'Nunito Sans',sans-serif;font-size:15px;
+  line-height:1.7;color:#C3CAE4;padding:13px 0;border-bottom:1px solid rgba(245,240,230,.1)}
+
+/* the one thing on these pages that should be easy to find */
+#legal-page .lg-contact{margin-top:44px;padding:22px 24px;border-radius:12px;
+  background:linear-gradient(140deg,rgba(196,8,46,.14),rgba(19,28,67,.6));
+  border:1px solid rgba(196,8,46,.3)}
+#legal-page .lg-contact h2{font-size:19px;margin-bottom:8px}
+#legal-page .lg-contact p{margin-bottom:0}
+
+#legal-page .lg-back{display:inline-flex;align-items:center;gap:9px;margin-top:38px;
+  font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:#C3CAE4;text-decoration:none;
+  padding:11px 20px;border-radius:999px;border:1px solid rgba(245,240,230,.2);
+  transition:border-color .25s,color .25s,background .25s}
+#legal-page .lg-back:hover{color:#FFF6F2;border-color:rgba(217,162,75,.5);
+  background:rgba(217,162,75,.08)}
+
+/* sibling documents, so the three are reachable from one another */
+#legal-page .lg-siblings{display:flex;flex-wrap:wrap;gap:10px;margin-top:34px;
+  padding-top:22px;border-top:1px solid rgba(245,240,230,.1)}
+#legal-page .lg-siblings a{font-family:'Nunito Sans',sans-serif;font-size:13.5px;font-weight:700;
+  color:#8F99BB;text-decoration:none;padding:8px 15px;border-radius:999px;
+  border:1px solid rgba(245,240,230,.14);transition:color .25s,border-color .25s}
+#legal-page .lg-siblings a:hover{color:#F5F0E6;border-color:rgba(245,240,230,.34)}
+
+@media (max-width:620px){
+  #legal-page .lg-defs{grid-template-columns:1fr;gap:0}
+  #legal-page .lg-defs dt{padding:13px 0 2px;border-bottom:0}
+  #legal-page .lg-defs dd{padding:0 0 13px}
+  #legal-page p,#legal-page li{font-size:15px}
+}

@@ -8,7 +8,7 @@
 
    Exits non-zero on any failure, so it can gate a deploy. */
 const BASE = process.argv[2] ?? "http://localhost:3555";
-const ROUTES = ["/", "/about", "/explore", "/contact"];
+const ROUTES = ["/", "/about", "/explore", "/contact", "/privacy", "/terms", "/cookies"];
 
 let fail = 0;
 const bad = (m) => { console.log("  FAIL " + m); fail++; };

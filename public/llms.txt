@@ -37,6 +37,18 @@ A six-question test at /explore recommends a starting stage.
 - [Explore](/explore): what each stage covers, and the stage-finder test.
 - [About](/about): the institute and Parveen Kaur Sensei.
 - [Contact](/contact): request a free trial class.
+- [Privacy](/privacy), [Terms](/terms), [Cookies](/cookies): the legal documents.
+
+## Policies, stated plainly
+
+- The site sets no cookies and runs no analytics or tracking of any kind. The
+  trial-class form is the only place it collects anything, and what it collects
+  is emailed to the instructor rather than stored in a database.
+- Fees are non-refundable once a batch begins, but a student facing unforeseen
+  circumstances may request to pause their enrolment or transfer to a future
+  batch.
+- No JLPT result is guaranteed. Yume Ga Kanau is not affiliated with the Japan
+  Foundation or JEES, who administer the JLPT.
 
 ## Common questions
 

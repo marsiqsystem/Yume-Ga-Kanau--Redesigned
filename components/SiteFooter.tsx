@@ -76,14 +76,12 @@ export default function SiteFooter() {
 
         <div className="ft-bar">
           <span>&copy; 2025 YUME GA KANAU&trade; &middot; Est. December 2025 &middot; All rights reserved.</span>
-          {/* These three had no href in the original build and still have no page
-              behind them. Rendered as plain text rather than dead links so nothing
-              looks clickable that is not — add routes and turn them into <Link>s
-              when the pages exist. */}
+          {/* These were plain text for as long as there was no page behind them.
+              The three routes exist now, so they are real links. */}
           <div className="ft-legal">
-            <span>Privacy Policy</span><span>|</span>
-            <span>Terms of Service</span><span>|</span>
-            <span>Cookie Policy</span>
+            <Link href="/privacy">Privacy Policy</Link><span>|</span>
+            <Link href="/terms">Terms of Service</Link><span>|</span>
+            <Link href="/cookies">Cookie Policy</Link>
           </div>
           <span className="ft-cc">夢が叶う &middot; Dreams come true</span>
         </div>
