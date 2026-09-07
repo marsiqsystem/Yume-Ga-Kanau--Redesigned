@@ -143,6 +143,45 @@ export default function HomeInteractions() {
     return () => host.removeEventListener("click", onClick);
   }, []);
 
+  /* ── Reviews carousel: which edge is faded ──
+     Below 880px .rv-cards is a snapping horizontal scroller and the desktop
+     pager is hidden. This only decides which side carries the soft edge, so a
+     fade never sits over the first card before you have swiped, nor over the
+     last one once you have reached the end. The widths are in the stylesheet.
+
+     Above the breakpoint the row is not scrollable, so every class comes off —
+     and the mask is declared only inside the mobile query, so it never applies
+     there anyway. */
+  useEffect(() => {
+    const row = document.querySelector<HTMLElement>("#meet-sensei .rv-cards");
+    if (!row) return;
+
+    const paint = () => {
+      const max = row.scrollWidth - row.clientWidth;
+      if (max < 8) {
+        row.classList.remove("at-start", "at-mid", "at-end");
+        return;
+      }
+      const x = row.scrollLeft;
+      // 4px of slack: a snap routinely lands a fraction of a pixel off the end
+      row.classList.toggle("at-start", x <= 4);
+      row.classList.toggle("at-mid", x > 4 && x < max - 4);
+      row.classList.toggle("at-end", x >= max - 4);
+    };
+
+    paint();
+    row.addEventListener("scroll", paint, { passive: true });
+    // scrollable width changes when the breakpoint flips and when webfonts land
+    const ro = new ResizeObserver(paint);
+    ro.observe(row);
+    if (row.firstElementChild) ro.observe(row.firstElementChild);
+
+    return () => {
+      row.removeEventListener("scroll", paint);
+      ro.disconnect();
+    };
+  }, []);
+
   /* ── #students-section: reveal the copy, and run the map clip ──
      Both copy columns are authored with .sf-text-hidden (opacity 0) and wait for
      this to swap them to .sf-text-visible — without it the whole band renders as

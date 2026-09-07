@@ -1,6 +1,15 @@
 /* Home route sections: hero, students band, four stages, why-ygk,
    meet-sensei + reviews, FAQ, stage CTA. Verbatim from the original. */
 
+/* The two edge-fade widths for the mobile reviews carousel. A plain custom
+   property is a token to the animation engine and jumps between values; these
+   are registered as real lengths so the fade can ease in and out as you reach
+   each end of the row. Must be top level — @property is not allowed inside a
+   media query. Browsers without @property still get the fade, just without the
+   transition, because every use site passes a 0px fallback. */
+@property --fl { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --fr { syntax: "<length>"; inherits: false; initial-value: 0px; }
+
   /* assets/hero-bg.webp is exported from the supplied `HERO BACKGROUND .png` (1860×845),
      which is left in place. The plate is bright on its right half and near-black on its
      left, so the copy column sits on the dark side and .hr-scrim only has to deepen it. */
@@ -736,10 +745,45 @@
     #meet-sensei .rv-h2{font-size:clamp(22px,5.6vw,30px);margin-bottom:16px}
     #meet-sensei .rv-rule{width:52px;height:3px;margin-bottom:16px}
     #meet-sensei .rv-sub{font-size:14.5px;line-height:1.7;margin-bottom:26px}
-    /* stacked: all seven simply follow each other, so the slider and its pager go away */
-    #meet-sensei .rv-cards{display:block;overflow:visible}
-    #meet-sensei .rv-track{display:grid;grid-auto-flow:row;grid-auto-columns:auto;
-      grid-template-columns:1fr;gap:16px;height:auto;transform:none !important}
+    /* Seven stacked reviews is an enormous amount of vertical page on a phone, so
+       the row becomes a swipeable, snapping carousel instead.
+
+       The desktop pager works by translating .rv-track; here the browser's own
+       scrolling does the work, so that transform is forced off and the pager
+       hidden — otherwise the two fight and the row lands half a card off.
+
+       The fade lives on the SCROLL CONTAINER, not the track. A mask applies to
+       the element's own border box, and the container's box does not move, so
+       the fade stays pinned to the left and right edges while the cards travel
+       underneath it. Putting it on .rv-track instead would scroll the fade away
+       with the content. */
+    #meet-sensei .rv-cards{
+      display:block;position:static;overflow-y:hidden;
+      /* bleed to the screen edges so cards scroll all the way out under the fade,
+         while the first card still lines up with the copy above it */
+      margin-inline:-20px;padding-inline:20px;
+      overflow-x:auto;overscroll-behavior-x:contain;
+      scroll-snap-type:x mandatory;scroll-padding-inline:20px;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+      -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 var(--fl,0px),#000 calc(100% - var(--fr,0px)),transparent 100%);
+      mask-image:linear-gradient(90deg,transparent 0,#000 var(--fl,0px),#000 calc(100% - var(--fr,0px)),transparent 100%);
+      transition:--fl .28s ease,--fr .28s ease}
+    #meet-sensei .rv-cards::-webkit-scrollbar{display:none}
+    /* A side only fades when there is actually more row that way, so the first
+       card is never dimmed before you have swiped. .at-* is set in JS. */
+    #meet-sensei .rv-cards.at-start{--fl:0px;--fr:34px}
+    #meet-sensei .rv-cards.at-mid{--fl:34px;--fr:34px}
+    #meet-sensei .rv-cards.at-end{--fl:34px;--fr:0px}
+    #meet-sensei .rv-track{display:grid;grid-auto-flow:column;
+      grid-auto-columns:min(78%,300px);grid-template-columns:none;
+      gap:14px;height:auto;transform:none !important;padding-right:6px}
+    /* stretch, so every card in the row is the same height regardless of how long
+       its review runs — a ragged row reads as broken rather than organic */
+    #meet-sensei .rv-card{scroll-snap-align:start;height:auto;align-self:stretch;
+      display:flex;flex-direction:column}
+    /* pushes .rv-foot to the bottom of each equal-height card */
+    #meet-sensei .rv-card .rv-more{margin-top:auto}
     #meet-sensei .rv-pager{display:none}
     #meet-sensei .rv-card{padding:20px 18px;border-radius:14px}
     #meet-sensei .rv-top{margin-bottom:12px}
