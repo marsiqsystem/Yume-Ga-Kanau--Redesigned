@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { SENSEI_EMAIL } from "@/lib/seo";
+import { renderEmail, renderEmailText } from "@/lib/email";
 import { BLANK, humanDate, invoiceTotals, type DocValues } from "@/lib/documents";
-import { formatRupees } from "@/lib/money";
+import { formatRupees, parseAmount } from "@/lib/money";
 import { unsign } from "@/lib/sign";
 
 /* "I have paid — please send my receipt." -> Sensei's inbox.
@@ -43,16 +44,6 @@ const LIMITS: Record<string, number> = {
 
 function clean(v: unknown, max: number) {
   return typeof v === "string" ? v.trim().slice(0, max) : "";
-}
-
-/* The student controls every value, so nothing reaches the HTML email
-   unescaped. */
-function esc(s: string) {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }
 
 /* Header injection guard: a newline inside a header value can append headers of
@@ -143,10 +134,16 @@ export async function POST(req: Request) {
         ? `${formatRupees(totals.total)} (nothing outstanding on the invoice)`
         : "—";
 
-  const sections: Array<[string, Array<[string, string]>]> = [
-    [
-      "The invoice",
-      [
+  /* Shown with a rupee sign when it is a figure, and exactly as typed when it
+     is not — a student may well write "the second instalment" in that box, and
+     rewriting it would lose what they said. */
+  const saidPaidNum = parseAmount(f.amount);
+  const saidPaid = saidPaidNum !== null ? formatRupees(saidPaidNum) : f.amount || "Not stated";
+
+  const sections: Array<{ title: string; rows: Array<[string, string]> }> = [
+    {
+      title: "The invoice",
+      rows: [
         ["Invoice no.", invoiceNo],
         ["Dated", dash(nice(inv.issueDate?.trim() || ""))],
         ["Billed to", dash(inv.studentName?.trim() || "")],
@@ -154,64 +151,41 @@ export async function POST(req: Request) {
         ["Status on the invoice", dash(totals.status)],
         ["Amount it was asking for", asked],
       ],
-    ],
-    [
-      "What the student says they paid",
-      [
-        ["Amount paid", dash(f.amount)],
+    },
+    {
+      title: "What the student says they paid",
+      rows: [
         ["Date paid", dash(nice(f.paidDate))],
         ["Paid by", dash(f.method)],
         ["Reference / transaction ID", dash(f.reference)],
       ],
-    ],
-    [
-      "Send the receipt to",
-      [
+    },
+    {
+      title: "Send the receipt to",
+      rows: [
         ["Name for the receipt", f.name],
         ["Email", f.email],
         ["WhatsApp", dash(f.whatsapp)],
       ],
-    ],
+    },
   ];
 
-  if (f.note) sections.push(["Their note", [["", f.note]]]);
+  if (f.note) sections.push({ title: "Their note", rows: [["In their words", f.note]] });
 
-  const text = sections
-    .map(
-      ([title, rows]) =>
-        `${title.toUpperCase()}\n${rows.map(([k, v]) => (k ? `  ${k}: ${v}` : `  ${v}`)).join("\n")}`,
-    )
-    .join("\n\n");
+  const doc = {
+    eyebrow: "Payment",
+    title: "Receipt requested",
+    subtitle: `${f.name} says they have paid invoice ${invoiceNo} and would like a receipt.`,
+    highlight: { label: "Amount they say they paid", value: saidPaid },
+    sections,
+    footNote:
+      "This is a request, not a confirmation: the website has not checked that any money " +
+      "arrived and nothing has been marked paid. Check the payment yourself, then generate " +
+      `the fee receipt in the admin console and send the link back. Replying to this email writes to ${f.name}.`,
+  };
 
-  const html = `
-    <div style="font-family:system-ui,-apple-system,Segoe UI,sans-serif;font-size:15px;line-height:1.6;color:#1a1a2e">
-      <h2 style="margin:0 0 4px;font-size:18px">Receipt requested — ${esc(f.name)}</h2>
-      <p style="margin:0 0 20px;color:#666;font-size:13px">
-        Invoice ${esc(invoiceNo)} · sent from the invoice page on the Yume Ga Kanau website
-      </p>
-      ${sections
-        .map(
-          ([title, rows]) => `
-        <h3 style="margin:22px 0 8px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#8a8aa0">${esc(title)}</h3>
-        <table cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%">
-          ${rows
-            .map(
-              ([k, v]) => `
-            <tr>
-              <td style="padding:5px 16px 5px 0;color:#666;vertical-align:top;white-space:nowrap;width:210px">${esc(k)}</td>
-              <td style="padding:5px 0;white-space:pre-wrap">${esc(v)}</td>
-            </tr>`,
-            )
-            .join("")}
-        </table>`,
-        )
-        .join("")}
-      <p style="margin:26px 0 0;padding-top:14px;border-top:1px solid #e3e3ec;color:#666;font-size:13px">
-        This is a request, not a confirmation: the website has not checked that any money arrived and
-        nothing has been marked paid. Check the payment yourself, then generate the fee receipt in the
-        admin console and send the link back. Replying to this email writes to ${esc(f.name)}.
-      </p>
-    </div>`;
+  const text = renderEmailText(doc);
+  const html = renderEmail(doc);
 
   try {
     await transporter.sendMail({

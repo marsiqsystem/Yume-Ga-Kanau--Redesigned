@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { SENSEI_EMAIL } from "@/lib/seo";
+import { renderEmail, renderEmailText } from "@/lib/email";
 
 /* Trial-class enquiries -> Sensei's inbox, over Gmail SMTP.
 
@@ -25,17 +26,6 @@ const LIMITS = { name: 120, email: 200, level: 120, goal: 160, notes: 4000 } as 
 
 function clean(v: unknown, max: number) {
   return typeof v === "string" ? v.trim().slice(0, max) : "";
-}
-
-/* The enquirer controls every value here, so nothing is interpolated into HTML
-   without escaping — otherwise a submission could inject markup into the email
-   Sensei opens. */
-function esc(s: string) {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }
 
 /* Header injection guard: a newline in a header value can append headers of the
@@ -103,34 +93,34 @@ export async function POST(req: Request) {
       : { service: "gmail", auth: { user, pass } },
   );
 
-  const rows: Array<[string, string]> = [
-    ["Name", name],
-    ["Email", email],
-    ["Current level", level || "—"],
-    ["What they want", goal || "—"],
-    ["Anything else", notes || "—"],
-  ];
+  /* What the mail says, described rather than drawn — lib/email turns this into
+     both halves of the message. */
+  const doc = {
+    eyebrow: "New enquiry",
+    title: "Trial class request",
+    subtitle: `${name} would like a free trial class.`,
+    highlight: { label: "What they want", value: goal || "Not said" },
+    sections: [
+      {
+        title: "Who is asking",
+        rows: [
+          ["Name", name],
+          ["Email", email],
+        ] as Array<[string, string]>,
+      },
+      {
+        title: "Where they are starting",
+        rows: [
+          ["Current level", level || "—"],
+          ["Anything else", notes || "—"],
+        ] as Array<[string, string]>,
+      },
+    ],
+    footNote: `Reply straight to this email and it goes to ${name}.`,
+  };
 
-  const text = rows.map(([k, v]) => `${k}: ${v}`).join("\n");
-  const html = `
-    <div style="font-family:system-ui,-apple-system,Segoe UI,sans-serif;font-size:15px;line-height:1.6;color:#1a1a2e">
-      <h2 style="margin:0 0 4px;font-size:18px">Trial class request</h2>
-      <p style="margin:0 0 18px;color:#666;font-size:13px">From the Yume Ga Kanau website</p>
-      <table cellpadding="0" cellspacing="0" style="border-collapse:collapse">
-        ${rows
-          .map(
-            ([k, v]) =>
-              `<tr>
-                 <td style="padding:6px 16px 6px 0;color:#666;vertical-align:top;white-space:nowrap">${esc(k)}</td>
-                 <td style="padding:6px 0;white-space:pre-wrap">${esc(v)}</td>
-               </tr>`,
-          )
-          .join("")}
-      </table>
-      <p style="margin:20px 0 0;color:#666;font-size:13px">
-        Reply straight to this email and it goes to ${esc(name)}.
-      </p>
-    </div>`;
+  const text = renderEmailText(doc);
+  const html = renderEmail(doc);
 
   try {
     await transporter.sendMail({

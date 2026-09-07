@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { SENSEI_EMAIL } from "@/lib/seo";
+import { renderEmail, renderEmailText } from "@/lib/email";
 import { BLANK, humanDate, type DocValues } from "@/lib/documents";
 import { unsign } from "@/lib/sign";
 
@@ -64,17 +65,6 @@ function cleanList(v: unknown): string[] {
     .slice(0, 20)
     .map((x) => x.trim().slice(0, 80))
     .filter(Boolean);
-}
-
-/* The student controls every value, so nothing reaches the HTML email
-   unescaped — otherwise a submission could inject markup into the message
-   Sensei opens. */
-function esc(s: string) {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }
 
 /* Header injection guard: a newline inside a header value can append headers of
@@ -187,20 +177,20 @@ export async function POST(req: Request) {
 
   /* Sections mirror the form's own order, so Sensei reads the email in the same
      sequence the student filled it in. */
-  const sections: Array<[string, Array<[string, string]>]> = [
-    [
-      "This form",
-      [
+  const sections: Array<{ title: string; rows: Array<[string, string]> }> = [
+    {
+      title: "This form",
+      rows: [
         ["Form no.", formNo],
         ["Form dated", dash(nice(office.issueDate?.trim() || ""))],
         ["Batch assigned", dash(office.batchAssigned?.trim() || "")],
         ["Start date", dash(nice(office.startDate?.trim() || ""))],
         ["Class days & time", dash(office.classDaysTime?.trim() || "")],
       ],
-    ],
-    [
-      "Student",
-      [
+    },
+    {
+      title: "Student",
+      rows: [
         ["Full name", f.fullName],
         ["Name for certificate", dash(f.certName)],
         ["Date of birth", dash(nice(f.dob))],
@@ -211,96 +201,71 @@ export async function POST(req: Request) {
         ["Time zone", f.timezone],
         ["Occupation", dash(f.occupation)],
       ],
-    ],
-    [
-      "Language background",
-      [
+    },
+    {
+      title: "Language background",
+      rows: [
         ["Previous study", dash(f.prevStudy)],
         ["JLPT history", dash(f.jlptHistory)],
         ["Reads kana", dash(f.kana)],
         ["Kanji known", dash(f.kanji)],
         ["Speaking confidence", dash(f.speaking)],
       ],
-    ],
-    [
-      "Programme",
-      [
-        ["Programme", f.programme],
+    },
+    {
+      title: "Programme and why",
+      rows: [
         ["Format", dash(f.format)],
-      ],
-    ],
-    [
-      "Why they are learning",
-      [
         ["Reasons", dash(reasons.join(", "))],
         ["In their own words", dash(f.reasonText)],
       ],
-    ],
-    [
-      "Scheduling",
-      [
+    },
+    {
+      title: "Scheduling",
+      rows: [
         ["Preferred days", dash(days.join(", "))],
         ["Preferred time", dash(f.timeWindow)],
         ["Time zone (repeated)", dash(f.timezone2)],
       ],
-    ],
-    [
-      "Electronic agreement",
-      [
+    },
+    {
+      title: "Electronic agreement",
+      rows: [
         ["All three statements ticked", decl.length >= 3 ? "Yes" : "No"],
         ["Typed name (signature)", f.signName],
         ["Email used to enrol", f.signEmail],
         ["Dated", dash(nice(f.signDate))],
       ],
-    ],
+    },
   ];
 
   /* The guardian block only appears when there is something in it — an empty
      "guardian: —" block on every form would train Sensei to skip past it. */
   if (guardianAgreed || f.guardianName || f.guardianEmail) {
-    sections.push([
-      "Parent or guardian (student under 18)",
-      [
+    sections.push({
+      title: "Parent or guardian (student under 18)",
+      rows: [
         ["Agreed on the student's behalf", guardianAgreed ? "Yes" : "No"],
         ["Guardian name (signature)", dash(f.guardianName)],
         ["Guardian email", dash(f.guardianEmail)],
         ["Dated", dash(nice(f.guardianDate))],
       ],
-    ]);
+    });
   }
 
-  const text = sections
-    .map(([title, rows]) => `${title.toUpperCase()}\n${rows.map(([k, v]) => `  ${k}: ${v}`).join("\n")}`)
-    .join("\n\n");
+  const doc = {
+    eyebrow: "Enrolment",
+    title: "Admission form",
+    subtitle: `${f.fullName} has completed form ${formNo}.`,
+    highlight: { label: "Programme chosen", value: f.programme },
+    sections,
+    footNote:
+      `A typed name submitted from the student's own email address stands in place of a ` +
+      `handwritten signature. Reply straight to this email and it goes to ${f.signName}.`,
+  };
 
-  const html = `
-    <div style="font-family:system-ui,-apple-system,Segoe UI,sans-serif;font-size:15px;line-height:1.6;color:#1a1a2e">
-      <h2 style="margin:0 0 4px;font-size:18px">Admission form — ${esc(f.fullName)}</h2>
-      <p style="margin:0 0 20px;color:#666;font-size:13px">
-        Form no. ${esc(formNo)} · submitted from the Yume Ga Kanau website
-      </p>
-      ${sections
-        .map(
-          ([title, rows]) => `
-        <h3 style="margin:22px 0 8px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#8a8aa0">${esc(title)}</h3>
-        <table cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%">
-          ${rows
-            .map(
-              ([k, v]) => `
-            <tr>
-              <td style="padding:5px 16px 5px 0;color:#666;vertical-align:top;white-space:nowrap;width:190px">${esc(k)}</td>
-              <td style="padding:5px 0;white-space:pre-wrap">${esc(v)}</td>
-            </tr>`,
-            )
-            .join("")}
-        </table>`,
-        )
-        .join("")}
-      <p style="margin:26px 0 0;padding-top:14px;border-top:1px solid #e3e3ec;color:#666;font-size:13px">
-        A typed name submitted from the student's own email address stands in place of a handwritten
-        signature. Reply straight to this email and it goes to ${esc(f.signName)}.
-      </p>
-    </div>`;
+  const text = renderEmailText(doc);
+  const html = renderEmail(doc);
 
   try {
     await transporter.sendMail({
