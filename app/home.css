@@ -652,16 +652,14 @@
   #meet-sensei .rv-card{display:flex;flex-direction:column;padding:2.0cqw 2.15cqw 1.7cqw;
     background:rgba(255,255,255,.76);border:1px solid #EFEAFA;border-radius:1cqw;
     box-shadow:0 1.0cqw 2.4cqw rgba(70,45,130,.07);
-    -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);cursor:pointer}
-  /* the card opens the full review, so it needs a hover state — but NOT a transform one:
-     .rv-card's transform is already the slide-in reveal, and the two would fight */
-  #meet-sensei .rv-card:hover{background:rgba(255,255,255,.94);border-color:#DED2FA;
-    box-shadow:0 1.5cqw 3.2cqw rgba(70,45,130,.13)}
-  #meet-sensei .rv-card:focus-visible{outline:2px solid #6D28D9;outline-offset:3px}
-  #meet-sensei .rv-more{margin-top:.85cqw;font-family:'Nunito Sans',sans-serif;font-weight:700;
-    font-size:.88cqw;letter-spacing:.02em;color:#6D28D9}
-  #meet-sensei .rv-more span{display:inline-block;transition:transform .3s}
-  #meet-sensei .rv-card:hover .rv-more span{transform:translateX(4px)}
+    -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+  /* The card used to advertise "Read full review" and carry role="button", but
+     nothing ever opened one — the port left the label and the role with no
+     handler behind them. Both are gone, so this is a quote, not a control:
+     no cursor:pointer, no hover lift, no focus ring, no .rv-more. */
+  /* .rv-foot takes the slack instead, which is what keeps every footer on the
+     same baseline when the cards are stretched to equal height. */
+  #meet-sensei .rv-foot{margin-top:auto}
   /* the quote mark and the five stars share one row, so the rating costs the card no height */
   #meet-sensei .rv-top{display:flex;align-items:center;justify-content:space-between;
     gap:1cqw;margin-bottom:1.35cqw}
@@ -780,17 +778,23 @@
       gap:14px;height:auto;transform:none !important;padding-right:6px}
     /* stretch, so every card in the row is the same height regardless of how long
        its review runs — a ragged row reads as broken rather than organic */
+    /* opacity and transform are forced because the cards' entrance belongs to the
+       pinned desktop stage: `#meet-sensei:not(.sn-p2) .rv-card{opacity:0}` holds
+       them hidden until phase 2 arrives. There is no phase 2 on a phone — the pin
+       does not exist and the phase classes are deliberately never applied there —
+       so without this the entire row is invisible. That reveal rule outranks a
+       plain `#meet-sensei .rv-card`, hence !important. The cards' siblings
+       (.rv-h2, .rv-rule, .rv-sub) were already exempted this way; the cards
+       themselves had been missed. */
     #meet-sensei .rv-card{scroll-snap-align:start;height:auto;align-self:stretch;
-      display:flex;flex-direction:column}
-    /* pushes .rv-foot to the bottom of each equal-height card */
-    #meet-sensei .rv-card .rv-more{margin-top:auto}
+      display:flex;flex-direction:column;
+      opacity:1 !important;transform:none !important}
     #meet-sensei .rv-pager{display:none}
     #meet-sensei .rv-card{padding:20px 18px;border-radius:14px}
     #meet-sensei .rv-top{margin-bottom:12px}
     #meet-sensei .rv-qm{width:30px}
     #meet-sensei .rv-stars{font-size:15px;gap:2px}
     #meet-sensei .rv-card p{font-size:14px;line-height:1.62}
-    #meet-sensei .rv-more{font-size:13px;margin-top:10px}
     #meet-sensei .rv-foot{padding-top:14px;column-gap:12px}
     #meet-sensei .rv-av{width:46px;height:46px}
     #meet-sensei .rv-foot b{font-size:15px;margin-bottom:3px}
@@ -957,7 +961,11 @@
     #meet-sensei .fq-h2{font-size:clamp(22px,5.6vw,30px);margin-bottom:14px}
     #meet-sensei .fq-sub{font-size:14.5px;margin-bottom:22px}
     #meet-sensei .fq-list{row-gap:12px;margin-bottom:30px}
-    #meet-sensei .fq-row{border-radius:14px}
+    /* Same exemption as .rv-card above: `#meet-sensei:not(.sn-p3) .fq-row` holds
+       the questions hidden until phase 3, and there is no phase 3 on a phone.
+       The rest of the FAQ (.fq-h2, .fq-rule, .fq-sub, .fq-list, .fq-end) was
+       already exempted; the rows themselves were missed. */
+    #meet-sensei .fq-row{border-radius:14px;opacity:1 !important;transform:none !important}
     #meet-sensei .fq-q{column-gap:14px;padding:14px 16px}
     #meet-sensei .fq-ain p{padding:0 16px 15px 68px;font-size:15.5px;line-height:1.55}
     #meet-sensei .fq-end{margin-top:30px}

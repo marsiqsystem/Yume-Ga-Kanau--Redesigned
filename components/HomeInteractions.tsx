@@ -35,18 +35,31 @@ export default function HomeInteractions() {
     let p3 = false;
     let ticking = false;
 
+    const pin = el.querySelector<HTMLElement>(".sn-pin");
+
     const phase = () => {
       ticking = false;
+      /* Below the pin breakpoint the three canvases are stacked and all visible,
+         and the phase classes must come off: they carry pointer-events:none for
+         whichever canvas is not the active one, at a specificity the stacked
+         mobile rules cannot outrank. With them on, the reviews and the sensei
+         canvas look completely normal and silently accept no touches at all —
+         which is exactly why swiping the carousel did nothing on a phone.
+
+         This used to test `offsetHeight - innerHeight <= 0`, meaning "too short
+         to have a scroll track, so it cannot be pinned". That never fires on
+         mobile: the section is `height:auto` there and its stacked content still
+         runs some 4700px, far taller than the viewport. It is not short — it is
+         simply not pinned. So ask the pin directly; .sn-pin is position:sticky
+         only while the pinned layout is live, and static below 880px. */
+      const pinned = !!pin && getComputedStyle(pin).position === "sticky";
       const track = el.offsetHeight - window.innerHeight;
-      if (track <= 0) {
-        // Below the pin breakpoint the three canvases are stacked and all visible.
-        // The phase classes must come off here: they carry pointer-events:none for
-        // the inactive canvas and outrank the stacked-layout rule, which once left
-        // the reviews looking perfectly normal and taking no touches at all.
+      if (!pinned || track <= 0) {
         if (p2 || p3) {
           p2 = p3 = false;
           el.classList.remove("sn-p2", "sn-p3");
         }
+        el.style.removeProperty("--fq");
         return;
       }
       const p = -el.getBoundingClientRect().top / track;

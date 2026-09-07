@@ -477,13 +477,12 @@ export default function HomePage() {
                  Four show at a time; the pager slides the track to cards 4-7. */}
             <div className="rv-cards" data-pg="0">
              <div className="rv-track">
-              <div className="rv-card" data-rvi="0" role="button" tabIndex={0} aria-label="Read the full review">
+              <div className="rv-card" data-rvi="0">
                 <div className="rv-top">
                   <img loading="lazy" decoding="async" className="rv-qm" src="/assets/review%20page/S-rv-quote.webp" alt="" aria-hidden="true" />
                   <div className="rv-stars" aria-label="Rated 5 out of 5"><span aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div>
                 </div>
                 <p>You are kind, friendly and patient, and always motivated me to keep improving. Your teaching style makes even the difficult topics easy to understand.</p>
-                <span className="rv-more">Read full review <span aria-hidden="true">&rarr;</span></span>
                 <div className="rv-foot">
                   <img loading="lazy" decoding="async" className="rv-av" src="/assets/reviews/rv-charu.webp" alt="Charu Pawar" />
                   <div>
@@ -493,13 +492,12 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-              <div className="rv-card" data-rvi="1" role="button" tabIndex={0} aria-label="Read the full review">
+              <div className="rv-card" data-rvi="1">
                 <div className="rv-top">
                   <img loading="lazy" decoding="async" className="rv-qm" src="/assets/review%20page/S-rv-quote.webp" alt="" aria-hidden="true" />
                   <div className="rv-stars" aria-label="Rated 5 out of 5"><span aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div>
                 </div>
                 <p>I used to just memorise grammar patterns without really getting them &mdash; you&rsquo;ve taught me in a way that actually sticks. I&rsquo;d recommend you to anyone trying to clear N2.</p>
-                <span className="rv-more">Read full review <span aria-hidden="true">&rarr;</span></span>
                 <div className="rv-foot">
                   <img loading="lazy" decoding="async" className="rv-av" src="/assets/reviews/rv-amaan.webp" alt="Amaan Riaz" />
                   <div>
@@ -509,13 +507,12 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-              <div className="rv-card" data-rvi="2" role="button" tabIndex={0} aria-label="Read the full review">
+              <div className="rv-card" data-rvi="2">
                 <div className="rv-top">
                   <img loading="lazy" decoding="async" className="rv-qm" src="/assets/review%20page/S-rv-quote.webp" alt="" aria-hidden="true" />
                   <div className="rv-stars" aria-label="Rated 5 out of 5"><span aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div>
                 </div>
                 <p>I especially loved the way you explained the stories and the logic behind each kanji &mdash; it made learning so much more interesting and easier to remember.</p>
-                <span className="rv-more">Read full review <span aria-hidden="true">&rarr;</span></span>
                 <div className="rv-foot">
                   <img loading="lazy" decoding="async" className="rv-av" src="/assets/reviews/rv-priyanshu.webp" alt="Priyanshu Garg" />
                   <div>
@@ -525,13 +522,12 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-              <div className="rv-card" data-rvi="3" role="button" tabIndex={0} aria-label="Read the full review">
+              <div className="rv-card" data-rvi="3">
                 <div className="rv-top">
                   <img loading="lazy" decoding="async" className="rv-qm" src="/assets/review%20page/S-rv-quote.webp" alt="" aria-hidden="true" />
                   <div className="rv-stars" aria-label="Rated 5 out of 5"><span aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div>
                 </div>
                 <p>You explain every lesson clearly and make learning enjoyable. Whenever we have questions you help us with a smile and make sure everyone understands the topic.</p>
-                <span className="rv-more">Read full review <span aria-hidden="true">&rarr;</span></span>
                 <div className="rv-foot">
                   <img loading="lazy" decoding="async" className="rv-av" src="/assets/reviews/rv-shreya.webp" alt="Shreya Suman" />
                   <div>
@@ -541,13 +537,12 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-              <div className="rv-card" data-rvi="4" role="button" tabIndex={0} aria-label="Read the full review">
+              <div className="rv-card" data-rvi="4">
                 <div className="rv-top">
                   <img loading="lazy" decoding="async" className="rv-qm" src="/assets/review%20page/S-rv-quote.webp" alt="" aria-hidden="true" />
                   <div className="rv-stars" aria-label="Rated 5 out of 5"><span aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div>
                 </div>
                 <p>Her teaching is clear, patient and engaging, and she puts a lot of effort into making sure every student understands the lesson. My Japanese has improved significantly.</p>
-                <span className="rv-more">Read full review <span aria-hidden="true">&rarr;</span></span>
                 <div className="rv-foot">
                   <img loading="lazy" decoding="async" className="rv-av" src="/assets/reviews/rv-preethi.webp" alt="M. Preethi" />
                   <div>
@@ -557,13 +552,12 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-              <div className="rv-card" data-rvi="5" role="button" tabIndex={0} aria-label="Read the full review">
+              <div className="rv-card" data-rvi="5">
                 <div className="rv-top">
                   <img loading="lazy" decoding="async" className="rv-qm" src="/assets/review%20page/S-rv-quote.webp" alt="" aria-hidden="true" />
                   <div className="rv-stars" aria-label="Rated 5 out of 5"><span aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div>
                 </div>
                 <p>You are one of the kindest, most humble and patient teachers I have ever met, and your teaching style makes even difficult things feel simple. &#31169;&#12398;&#22823;&#22909;&#12365;&#12394;&#20808;&#29983;</p>
-                <span className="rv-more">Read full review <span aria-hidden="true">&rarr;</span></span>
                 <div className="rv-foot">
                   <img loading="lazy" decoding="async" className="rv-av" src="/assets/reviews/rv-jaskiran.webp" alt="Jaskiran Kaur" />
                   <div>
@@ -573,13 +567,12 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-              <div className="rv-card" data-rvi="6" role="button" tabIndex={0} aria-label="Read the full review">
+              <div className="rv-card" data-rvi="6">
                 <div className="rv-top">
                   <img loading="lazy" decoding="async" className="rv-qm" src="/assets/review%20page/S-rv-quote.webp" alt="" aria-hidden="true" />
                   <div className="rv-stars" aria-label="Rated 5 out of 5"><span aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div>
                 </div>
                 <p>I was weak even in N4, but you took me through a revision that made my base far firmer before N3. Your daily revision tests keep new kanji and vocab impossible to forget.</p>
-                <span className="rv-more">Read full review <span aria-hidden="true">&rarr;</span></span>
                 <div className="rv-foot">
                   <img loading="lazy" decoding="async" className="rv-av" src="/assets/reviews/rv-siddiquan.webp" alt="Siddiquan Jawaid" />
                   <div>
