@@ -68,6 +68,14 @@
     /* flat veil only — .hr-foot still draws the hand-off at the section's own bottom edge */
     #ygk-hero .hr-scrim{background:
       linear-gradient(180deg,rgba(6,10,32,.86) 0%,rgba(6,10,32,.74) 40%,rgba(6,10,32,.70) 100%)}
+    /* background-attachment:fixed is the single most expensive thing on this page
+       on a phone: the background is anchored to the viewport, so the browser
+       cannot hand the scroll to the compositor and has to repaint the plate on
+       every frame instead. That is what makes the opening screen feel choppy.
+       The effect it buys — the plate holding still while the copy travels over
+       it — is barely perceptible on a one-screen-tall mobile hero anyway, so it
+       is dropped here and kept for desktop. */
+    #ygk-hero .hr-bg,#ygk-hero .hr-scrim{background-attachment:scroll}
   }
   
 
@@ -170,7 +178,15 @@
   #four-stages .fs-curriculum:hover{color:#FFFFFF;background:rgba(14,20,52,.72);
     border-color:rgba(217,162,75,.44)}
 
-  #four-stages .fs-card{position:absolute;width:20cqw;text-shadow:0 1px 10px rgba(0,3,15,.95),0 0 26px rgba(0,3,15,.78)}
+  /* display:block is load-bearing here, not tidiness. These cards are <a>
+     elements — they were <div onClick> before the port, and became real links so
+     the four stages are crawlable — and an <a> is display:inline by default.
+     position:absolute blockifies them, so on desktop nothing looks wrong. But
+     the max-width:900px block below resets position to static; the
+     blockification goes with it, and four inline boxes ignore their vertical
+     padding and margins and collapse into one overlapping heap. That is what
+     broke this whole section on phones. */
+  #four-stages .fs-card{display:block;position:absolute;width:20cqw;text-shadow:0 1px 10px rgba(0,3,15,.95),0 0 26px rgba(0,3,15,.78)}
   #four-stages .fs-card .lvl{font-family:'Nunito Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#B4BCD8;font-size:.82cqw;margin-bottom:.8cqw}
   #four-stages .fs-card h3{font-family:'Zen Old Mincho',serif;font-weight:600;color:#F7F3EA;font-size:1.62cqw;line-height:1.16;margin:0 0 .85cqw}
   #four-stages .fs-card p{font-family:'Nunito Sans',sans-serif;color:#C6CEE8;font-size:.95cqw;line-height:1.55;margin:0 0 1.15cqw}
@@ -321,7 +337,13 @@
     #why-ygk .wy-cards{grid-template-columns:1fr}
     #why-ygk .wy-torii{display:none}
     #why-ygk .wy-bloom{width:42%}
-    #why-ygk .wy-inner{padding:clamp(112px,30vw,150px) 20px 56px}
+    /* The big top padding here was clearing the torii artwork — but .wy-torii is
+       display:none at this width (two rules up), and .wy-bloom sits entirely
+       above the section's top edge. So it was holding open ~124px of dead space
+       on a phone to clear artwork that is never drawn, which read as a gap
+       between this section and #four-stages. The only thing the copy has to
+       clear is .wy-topfade, the 70px seam gradient. */
+    #why-ygk .wy-inner{padding:clamp(76px,18vw,104px) 20px 56px}
   }
   @media (prefers-reduced-motion:reduce){
     #why-ygk .wy-l,#why-ygk .wy-left > *,#why-ygk .wy-card{transition:opacity .3s linear !important;transform:none !important}

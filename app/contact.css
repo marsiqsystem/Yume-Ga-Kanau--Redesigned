@@ -238,3 +238,10 @@
   @media (max-width:560px){
     #contact-body .cb-row{grid-template-columns:1fr}
   }
+
+/* See about.css — viewport-anchored backgrounds repaint every scroll frame on
+   phones. Desktop keeps the effect. */
+@media (max-width:900px){
+  #contact-page,#contact-page::before,#contact-page::after,
+  #contact-hero .ct-scrim{background-attachment:scroll}
+}

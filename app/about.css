@@ -271,3 +271,11 @@
     #about-wins .aw-grid{grid-template-columns:1fr}
     #about-sensei .as-msg p{font-size:16.5px}
   }
+
+/* Same reason as the hero in home.css: a viewport-anchored background forces a
+   repaint on every scroll frame on a phone, which is what makes this page feel
+   choppy. Desktop keeps the effect. */
+@media (max-width:900px){
+  #about-page,#about-page::before,#about-page::after,
+  #about-hero .ab-scrim{background-attachment:scroll}
+}
