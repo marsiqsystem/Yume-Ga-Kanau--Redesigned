@@ -88,7 +88,7 @@ export default async function DocumentPage({ params }: Params) {
     case "admission":
       return <AdmissionForm office={v} token={token} />;
     case "invoice":
-      return <Invoice v={v} />;
+      return <Invoice v={v} token={token} />;
     case "receipt":
       return <FeeReceipt v={v} />;
     case "fees":

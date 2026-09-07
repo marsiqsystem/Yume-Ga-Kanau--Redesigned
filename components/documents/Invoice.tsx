@@ -2,13 +2,12 @@ import { BUSINESS } from "@/lib/business";
 import {
   BLANK,
   dateVal,
+  invoiceTotals,
   opt,
-  repeatRows,
-  repeatSpec,
   val,
   type DocValues,
 } from "@/lib/documents";
-import { amountInWords, formatAmount, parseAmount, sumAmounts, tidyAmount } from "@/lib/money";
+import { amountInWords, formatAmount, tidyAmount } from "@/lib/money";
 import { SENSEI_EMAIL, SITE, WHATSAPP } from "@/lib/seo";
 import {
   Body,
@@ -25,6 +24,7 @@ import {
   Rule,
   SectionTitle,
 } from "./DocParts";
+import ReceiptRequest from "./ReceiptRequest";
 import UpiQr from "./UpiQr";
 
 /* The invoice: a request for payment, sent before the money arrives.
@@ -44,7 +44,6 @@ import UpiQr from "./UpiQr";
    been paid, and what is left. Sensei can override the total when the
    arithmetic is not what she means to charge, but she never has to add up. */
 
-const SPEC = repeatSpec("invoice", "What is being charged");
 const GRID = "2.4fr 1fr 1.4fr 1.1fr";
 
 function Row({
@@ -139,8 +138,12 @@ function Detail({ label, value }: { label: string; value: string }) {
   );
 }
 
-export default function Invoice({ v }: { v: DocValues }) {
-  const items = repeatRows(v, SPEC);
+export default function Invoice({ v, token }: { v: DocValues; token?: string }) {
+  /* Every figure on the page comes out of one helper, which the receipt-request
+     route calls too — so the amount Sensei is told the student owed is the
+     amount the student was looking at. */
+  const { rows: items, subtotal, discount, total, paid, due, status, skipped, nothingDue } =
+    invoiceTotals(v);
 
   const rows: Array<[string, string, string, string]> = items.map((r) => [
     r.d || "—",
@@ -149,29 +152,6 @@ export default function Invoice({ v }: { v: DocValues }) {
     r.a ? tidyAmount(r.a) : "—",
   ]);
   if (rows.length === 0) rows.push([BLANK, BLANK, BLANK, BLANK]);
-
-  const summed = sumAmounts(items.map((r) => r.a));
-  const subtotal = summed.counted > 0 ? summed.total : null;
-
-  const discount = parseAmount(opt(v, "discount"));
-  const override = parseAmount(opt(v, "totalOverride"));
-  /* The override is the final figure, discount included — that is what it is
-     for. Otherwise the total is the lines less any discount. */
-  const total =
-    override ?? (subtotal !== null ? subtotal - (discount ?? 0) : null);
-
-  const paid = parseAmount(opt(v, "paidAlready"));
-  const status = opt(v, "status");
-  const settled = status === "Paid in full";
-
-  /* What the QR asks for. A settled invoice asks for nothing; so does one where
-     the arithmetic has already reached zero. */
-  const dueRaw = total !== null ? total - (paid ?? 0) : null;
-  const due = settled ? 0 : dueRaw;
-
-  /* Marked paid, or the arithmetic has already reached zero. Both mean the same
-     thing to a reader, so they are one condition rather than two. */
-  const nothingDue = settled || (due !== null && due <= 0);
 
   /* The words describe the figure the document is about: what is still owed
      while something is, and what was charged once nothing is. "Zero rupees
@@ -279,11 +259,10 @@ export default function Invoice({ v }: { v: DocValues }) {
             ))}
           </div>
 
-          {summed.skipped > 0 && (
+          {skipped > 0 && (
             <div style={{ font: `400 12px/1.7 ${FONT_BODY}`, color: "#8F99BB", marginTop: 12 }}>
-              {summed.skipped} line{summed.skipped === 1 ? " is" : "s are"} written in words rather than
-              as a figure, so {summed.skipped === 1 ? "it is" : "they are"} not counted in the totals
-              below.
+              {skipped} line{skipped === 1 ? " is" : "s are"} written in words rather than as a
+              figure, so {skipped === 1 ? "it is" : "they are"} not counted in the totals below.
             </div>
           )}
 
@@ -373,6 +352,20 @@ export default function Invoice({ v }: { v: DocValues }) {
             </div>
           )}
         </Card>
+
+        {/* Paid it? Say so. The panel needs the signed link to prove which
+            invoice the message is about, so it appears only on a real issued
+            link — never on a preview rendered without one. */}
+        {token && (
+          <ReceiptRequest
+            token={token}
+            studentName={opt(v, "studentName")}
+            email={opt(v, "email")}
+            phone={opt(v, "phone")}
+            amountDue={due !== null && due > 0 ? formatAmount(due) : ""}
+            settled={nothingDue}
+          />
+        )}
 
         <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 24, marginTop: 26 }}>
           <Card mt={0} pad="30px 28px">

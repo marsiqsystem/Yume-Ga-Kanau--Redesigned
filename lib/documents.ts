@@ -1,4 +1,5 @@
 import { BATCH_CODES, PAYMENT } from "./business";
+import { parseAmount, sumAmounts } from "./money";
 
 /* The documents in the Enrolment & Payment Pack, described as data.
 
@@ -212,7 +213,7 @@ export const DOCS: readonly DocDef[] = [
     label: "Invoice",
     title: "Invoice",
     blurb:
-      "A request for payment, sent before the money arrives. It carries a UPI QR code for the exact amount — the student scans it and pays without typing a figure.",
+      "A request for payment, sent before the money arrives. It carries a UPI QR code for the exact amount — the student scans it and pays without typing a figure. Once they have paid, a button on it emails you to ask for their receipt.",
     interactive: false,
     groups: [
       {
@@ -569,4 +570,61 @@ export function humanDate(iso: string): string {
 export function dateVal(values: DocValues, key: string): string {
   const v = opt(values, key);
   return v ? humanDate(v) : BLANK;
+}
+
+/* ── Invoice arithmetic ─────────────────────────────────────────────────────
+
+   The invoice works out its own totals from the lines Sensei typed, and two
+   places need the same answer: the document itself, and the receipt-request
+   email, which tells Sensei what the invoice was asking for at the moment the
+   student pressed the button. Two copies of this sum would eventually disagree
+   — and disagreeing about money is the one thing these documents may not do —
+   so it lives here once. */
+export type InvoiceTotals = {
+  rows: DocValues[];
+  /* Lines written in words rather than as a figure, and so not summed. */
+  skipped: number;
+  subtotal: number | null;
+  discount: number | null;
+  total: number | null;
+  paid: number | null;
+  /* What is still owed — what the QR code asks for. */
+  due: number | null;
+  status: string;
+  /* Marked "Paid in full", or the arithmetic has already reached zero. */
+  nothingDue: boolean;
+};
+
+export function invoiceTotals(v: DocValues): InvoiceTotals {
+  const rows = repeatRows(v, repeatSpec("invoice", "What is being charged"));
+
+  const summed = sumAmounts(rows.map((r) => r.a));
+  const subtotal = summed.counted > 0 ? summed.total : null;
+
+  const discount = parseAmount(opt(v, "discount"));
+  const override = parseAmount(opt(v, "totalOverride"));
+  /* The override is the final figure, discount included — that is what it is
+     for. Otherwise the total is the lines less any discount. */
+  const total = override ?? (subtotal !== null ? subtotal - (discount ?? 0) : null);
+
+  const paid = parseAmount(opt(v, "paidAlready"));
+  const status = opt(v, "status");
+  const settled = status === "Paid in full";
+
+  /* A settled invoice asks for nothing; so does one where the arithmetic has
+     already reached zero. */
+  const dueRaw = total !== null ? total - (paid ?? 0) : null;
+  const due = settled ? 0 : dueRaw;
+
+  return {
+    rows,
+    skipped: summed.skipped,
+    subtotal,
+    discount,
+    total,
+    paid,
+    due,
+    status,
+    nothingDue: settled || (due !== null && due <= 0),
+  };
 }
