@@ -9,18 +9,35 @@ import "./globals.css";
 
 /* next/font self-hosts these at build time. The original pulled them from
    fonts.googleapis.com with a render-blocking <link>, which cost a round trip
-   to a third party before the first paint. */
+   to a third party before the first paint.
+
+   preload:false on the two Zen families is not an optimisation detail — it is
+   the difference between the site opening and the site hanging on a phone.
+   Google splits Japanese fonts into ~120 unicode-range subsets per weight, so
+   four weights of two families is roughly a thousand woff2 files. next/font
+   preloads every subset of every declared weight by default, which put 717
+   <link rel="preload" as="font"> tags — 12.5 MB — in the head of every page,
+   ahead of the stylesheet and the hero image in the request queue. On desktop
+   broadband that is absorbed; on mobile data it starves everything behind it,
+   which is exactly the blank navy hero students were reporting.
+
+   With preload off the @font-face rules and their unicode-ranges still ship,
+   so the browser fetches only the handful of subsets whose glyphs actually
+   appear on the page — the fonts still self-host, and nothing looks different.
+   Nunito Sans keeps its preload: it is latin-only and 27 files, not 490. */
 const mincho = Zen_Old_Mincho({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-mincho",
   display: "swap",
+  preload: false,
 });
 const kaku = Zen_Kaku_Gothic_New({
   subsets: ["latin"],
   weight: ["400", "500", "700", "900"],
   variable: "--font-kaku",
   display: "swap",
+  preload: false,
 });
 const nunito = Nunito_Sans({
   subsets: ["latin"],
