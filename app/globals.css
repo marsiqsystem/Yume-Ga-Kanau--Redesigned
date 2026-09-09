@@ -4,7 +4,14 @@
   html { scroll-behavior: smooth; }
   /* Header height, mirrored from #ygk-nav's own sizing (emblem height + 8px padding top and
      bottom). The bar is position:fixed, so each page's first band offsets by this. It lives
-     here, not in the hero's <style>, because that block only renders on the home page. */
+     here, not in the hero's <style>, because that block only renders on the home page.
+
+     These two values are the server-render fallback only — they hold for the first
+     paint, and SiteNav then measures the bar and overwrites --navh on :root with what
+     it actually is. They should still be kept accurate, so that first paint does not
+     visibly settle: 100px is the two-row mobile bar (18px padding + 36px brand row +
+     10px gap + 35px link row). Do not treat them as the source of truth; the bar wraps
+     differently at different widths and the measurement is what the pages trust. */
   :root { --navh: calc(clamp(40px, 3.5vw, 56px) + 16px); }
   @media (max-width: 900px) { :root { --navh: 100px; } }
   body {
@@ -259,7 +266,7 @@
    them. .nv-mark stays in the markup purely as the runtime's "this page is active" hook
    for the script to read, so the sc-if bindings that drive routing are untouched. */
 #ygk-nav .nv-mark{display:none}
-#ygk-nav .nv-slide{position:absolute;left:0;bottom:0;width:0;height:2px;border-radius:2px;
+#ygk-nav .nv-slide{position:absolute;left:0;top:0;width:0;height:2px;border-radius:2px;
   opacity:0;pointer-events:none;
   background:linear-gradient(90deg,rgba(196,8,46,0),#E23A46 50%,rgba(196,8,46,0));
   box-shadow:0 0 12px rgba(226,58,70,.95);
@@ -287,17 +294,43 @@
 @media (max-width:1180px){
   #ygk-nav .nv-tag{display:none}
 }
+/* Below 900px the bar is meant to be exactly two rows: brand and CTA sharing the
+   first, the links spanning the second. It was not. .nv-brand and .nv-cta are both
+   flex:none, so once the brand plus the CTA measured wider than the viewport the
+   CTA wrapped onto a line of its own and the bar became three rows — 150px against
+   the 100px --navh claimed, which is what pushed the hero's ONLINE CLASSES badge
+   underneath the links on both phones we have screenshots of.
+
+   The wordmark was the bulk of it: N-word.webp is 855x148, so pinning it to 19px
+   tall silently made it 110px wide. It is sized by width here instead, so it gives
+   ground on a narrow screen rather than shoving the CTA off the row. */
 @media (max-width:900px){
   #ygk-nav .nv-inner{flex-wrap:wrap;gap:10px;padding:9px 16px}
-  #ygk-nav .nv-brand{order:1}
+  #ygk-nav .nv-brand{order:1;min-width:0}
   #ygk-nav .nv-cta{order:2;margin-left:auto;font-size:10px;padding:9px 15px}
   #ygk-nav .nv-links{order:3;flex-basis:100%;margin:0;justify-content:center;gap:2px;
-    border-top:1px solid rgba(245,240,230,.1);padding-top:4px}
+    border-top:1px solid rgba(245,240,230,.1);padding-top:4px;
+    /* A row that cannot fit wraps to a second line now. It used to run off the
+       right-hand edge with CONTACT half cut away — which is what happens whenever
+       the links are wider than expected, most easily when the webfont has not
+       arrived yet and the fallback face measures wider. --navh is measured, so a
+       wrapped row is cleared correctly rather than overlapping the page. */
+    flex-wrap:wrap;row-gap:0}
   #ygk-nav .nv-link{font-size:11px;padding:8px 10px}
-  #ygk-nav .nv-word img{height:19px}
+  /* height:auto — the width clamp drives the size now, and 855:148 keeps the ratio */
+  #ygk-nav .nv-word img{height:auto;width:clamp(76px,26vw,110px)}
   #ygk-nav .nv-ja{font-size:13px}
   #ygk-nav .nv-logo{height:36px}
 }
+@media (max-width:560px){
+  /* the CTA is the widest single thing on the row; letter-spacing is most of it */
+  #ygk-nav .nv-cta{font-size:9.5px;letter-spacing:.06em;padding:8px 12px;gap:6px}
+  #ygk-nav .nv-link{padding:8px 7px;letter-spacing:.1em}
+}
 @media (max-width:420px){
   #ygk-nav .nv-ja{display:none}
+}
+@media (max-width:380px){
+  #ygk-nav .nv-logo{height:32px}
+  #ygk-nav .nv-cta{font-size:9px;padding:8px 11px}
 }

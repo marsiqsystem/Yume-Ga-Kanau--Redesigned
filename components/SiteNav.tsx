@@ -33,6 +33,41 @@ export default function SiteNav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  /* --navh is what every page's first band pads by to clear this fixed bar, and
+     it used to be a constant in the stylesheet: 100px below 900px wide. That is
+     a guess about how many rows the bar wraps into, and on a 360px phone it was
+     the wrong guess — the brand and the CTA no longer fit on one line, the CTA
+     took a third row, the bar grew to ~150px, and the hero's ONLINE CLASSES
+     badge slid up underneath the links. Sensei and a student both sent that
+     screenshot.
+
+     The CSS below now keeps the bar to two rows, but a constant can only ever
+     be right for the widths and fonts someone thought to check. Measuring it
+     instead makes the whole class of bug impossible: whatever the bar actually
+     is — three rows, a boosted font in an in-app browser, a longer CTA label
+     later — the page clears exactly that. The stylesheet value stays as the
+     server-render fallback for the first paint. */
+  useEffect(() => {
+    const nav = document.getElementById("ygk-nav");
+    if (!nav || typeof ResizeObserver === "undefined") return;
+
+    let last = 0;
+    const publish = () => {
+      const h = Math.round(nav.getBoundingClientRect().height);
+      // sub-pixel jitter would otherwise write to the root on every frame
+      if (!h || Math.abs(h - last) < 1) return;
+      last = h;
+      document.documentElement.style.setProperty("--navh", `${h}px`);
+    };
+
+    const ro = new ResizeObserver(publish);
+    ro.observe(nav);
+    publish();
+    // the webfonts land after first paint and can re-wrap the bar
+    if (document.fonts?.ready) document.fonts.ready.then(publish).catch(() => {});
+    return () => ro.disconnect();
+  }, []);
+
   /* The active-page underline: one .nv-slide that travels between the links.
      The stylesheet has always carried it, but nothing rendered or positioned it
      in the port, so the mark under the current page was simply missing.
@@ -62,6 +97,11 @@ export default function SiteNav() {
       el.style.opacity = "1";
       el.style.transform = `translateX(${x}px)`;
       el.style.width = `${w}px`;
+      /* Follow the link's own baseline rather than sitting at the row's bottom
+         edge. Identical while the links are on one line, and still correct on
+         the narrow screens where the row is now allowed to wrap instead of
+         running off the side of the phone. */
+      el.style.top = `${link.offsetTop + link.offsetHeight - 2}px`;
       if (first) {
         void el.offsetWidth; // flush, so the next change does animate
         el.style.transition = "";
