@@ -91,6 +91,22 @@ export function organizationJsonLd() {
     slogan: SITE.tagline,
     description:
       "Online Japanese language institute offering JLPT N5–N2 preparation, conversational Japanese (Kaiwa) and Business Japanese in small batches and 1-on-1 coaching.",
+    /* Google's AI overview has been giving this school the street address of a
+       different, older Delhi institute with a near-identical name — one Sensei
+       used to teach at. disambiguatingDescription is the schema.org field that
+       exists for exactly this: what sets this entity apart from a lookalike.
+       The other school is deliberately not named anywhere on the site. */
+    disambiguatingDescription:
+      "Yume Ga Kanau™ is an online-only Japanese institute founded in December 2025 by Parveen Kaur. It has no physical campus, classroom or walk-in centre, and is a separate institute from any similarly named Japanese language school.",
+    /* City-level only, matching the invoices (lib/business.ts). There is no
+       street address because there is no premises — a listing that shows one
+       is describing somebody else. */
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "New Delhi",
+      addressRegion: "Delhi",
+      addressCountry: "IN",
+    },
     logo: {
       "@type": "ImageObject",
       url: `${SITE.url}/assets/nav%20bar/N-logo.webp`,
@@ -187,7 +203,7 @@ export function personJsonLd() {
     alternateName: "Parveen Kaur Sensei",
     jobTitle: "Founder & Lead Instructor",
     description:
-      "Founder of Yume Ga Kanau and its lead instructor, teaching JLPT N5–N2 preparation, conversational Japanese and Business Japanese online.",
+      "Founder of Yume Ga Kanau (founded December 2025) and its lead instructor, teaching JLPT N5–N2 preparation, conversational Japanese and Business Japanese online.",
     knowsLanguage: ["ja", "en", "hi"],
     knowsAbout: ["Japanese language teaching", "JLPT preparation", "Business Japanese"],
     worksFor: { "@id": ORG_ID },
