@@ -39,11 +39,11 @@
     font-size:clamp(15px,1.3vw,17px);color:#E3E7F4;margin:0 0 12px}
   #ygk-foot .ft-desc{font-size:13.5px;line-height:1.75;color:#8F99BB;margin:0;max-width:330px}
 
-  #ygk-foot .ft-socs{display:flex;gap:14px;margin:26px 0 0}
-  #ygk-foot .ft-soc{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;
+  #ygk-foot .ft-socs{display:flex;flex-wrap:wrap;gap:12px;margin:26px 0 0;max-width:264px}
+  #ygk-foot .ft-soc{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;
     justify-content:center;border:1px solid rgba(226,16,60,.42);background:rgba(255,255,255,.02);
     color:#EFD9DE;transition:background .3s,border-color .3s,color .3s,transform .3s}
-  #ygk-foot .ft-soc svg{width:23px;height:23px;fill:currentColor;display:block}
+  #ygk-foot .ft-soc svg{width:22px;height:22px;fill:currentColor;display:block}
   #ygk-foot .ft-soc:hover{background:#C4082E;border-color:#C4082E;color:#FFF6F2;transform:translateY(-3px)}
   #ygk-foot .ft-soc:focus-visible{outline:2px solid #E6A44C;outline-offset:3px}
 

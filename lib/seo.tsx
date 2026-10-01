@@ -60,6 +60,10 @@ export const WHATSAPP = {
    A wrong or dead entry weakens the entity instead of strengthening it. */
 export const PROFILES = [
   "https://www.instagram.com/yumegakanau_institute/",
+  "https://www.youtube.com/@yumegakanau_institute",
+  "https://www.facebook.com/share/1Bngmmcz23/",
+  "https://www.linkedin.com/in/yume-ga-kanau-institute-86694a43b",
+  "https://jsdl.in/DT-23IIVJJH44D",
 ] as const;
 
 /* The stable @id every node points at, so Organization, WebSite, Course,
